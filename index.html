@@ -185,9 +185,55 @@ pre.bib{background:var(--surface);border:1px solid var(--rule);border-radius:10p
 .bibwrap{position:relative}
 .bibwrap .btn{position:absolute;top:10px;right:10px;padding:6px 12px;font-size:.78rem}
 footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--rule);margin-top:72px}
+
+/* ---- editorial layer: long-read column, display serif, full-bleed figure bands, margin contents ---- */
+:root{--col:680px;--wide:1120px;--toc-w:248px}
+body{font-size:17px;line-height:1.72}
+p{margin:0 0 1.15rem}
+section{padding-block:clamp(72px,9vw,128px) 0}
+h1,h2{font-weight:400}
+h2{font-size:clamp(1.8rem,1.3rem + 1.6vw,2.55rem);line-height:1.12;letter-spacing:-.018em;margin:0 0 1rem}
+h3{font-weight:500}
+header.hero{padding-block:clamp(56px,9vw,112px) 24px}
+.band{background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax);padding-block:clamp(28px,4.5vw,56px);margin-block:clamp(28px,4vw,44px) 0}
+.band + *{margin-top:clamp(28px,4vw,44px)}
+figure.band{margin-inline:auto}
+figcaption{font-size:.9rem;line-height:1.55;color:var(--ink2);max-width:var(--col);margin:16px auto 0}
+figcaption b{color:var(--ink)}
+.toc{display:none}
+@media (min-width:1280px){
+  body{padding-left:calc(var(--toc-w) + 40px)}
+  nav.top{margin-left:calc(-1*(var(--toc-w) + 40px));padding-left:var(--toc-w)}
+  nav.top .in a:not(.brand){display:none}
+  .toc{display:flex;flex-direction:column;gap:22px;position:fixed;z-index:6;inset:0 auto 0 0;width:var(--toc-w);padding:88px 28px 32px;
+    background:var(--bg);border-right:1px solid var(--rule);overflow-y:auto}
+  .toc .t{font:400 1.12rem/1.25 var(--f-display);color:var(--ink);text-decoration:none}
+  .toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+  .toc ol a{display:block;padding:6px 0 6px 14px;border-left:1px solid var(--rule);color:var(--muted);text-decoration:none;font:400 .86rem/1.35 var(--f-body)}
+  .toc ol a:hover{color:var(--ink)}
+  .toc ol a.on{color:var(--ink);border-left:2px solid var(--toc-accent);padding-left:13px;font-weight:500}
+  .toc .links{display:flex;flex-direction:column;gap:6px;font:.84rem var(--f-body)}
+  .toc .links a{color:var(--ink2);text-decoration:none}
+  .toc .links a:hover{color:var(--toc-accent)}
+  .toc .links span{color:var(--muted)}
+}
+
+:root{--bg:#FFFFFF;--band:#F5F5F4;--toc-accent:var(--it)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0F1114;--surface:#191C20;--band:#14171A}}
+:root[data-theme="dark"]{--bg:#0F1114;--surface:#191C20;--band:#14171A}
+h1{font-size:clamp(2.9rem,1.5rem + 5.4vw,5.6rem)}
+.sub{font-size:clamp(1.2rem,1rem + .8vw,1.6rem)}
+.claim{font-size:clamp(1.3rem,1.05rem + 1vw,1.85rem);line-height:1.38}
+.bench{box-shadow:0 1px 2px rgba(0,0,0,.03)}
+#instrument{padding-top:0!important}
 </style>
 </head>
 <body>
+<aside class="toc" aria-label="Contents">
+  <a class="t" href="#top">Decoded but <i>Unused</i></a>
+  <nav aria-label="Contents"><ol><li><a href="#abstract">Abstract</a></li><li><a href="#instrument">Decoded vs used</a></li><li><a href="#behaviour">The matched pair</a></li><li><a href="#dataset">Dataset</a></li><li><a href="#geometry">Geometry</a></li><li><a href="#readout">Late readout</a></li><li><a href="#causal">Causal tests</a></li><li><a href="#heads">Writer heads</a></li><li><a href="#specificity">Specificity</a></li><li><a href="#families">Ten models</a></li><li><a href="#perp">Robustness</a></li><li><a href="#limits">Limitations</a></li><li><a href="#cite">Cite</a></li></ol></nav>
+  <div class="links"><a href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="https://github.com/aiml-sdu/decoded-but-unused" target="_blank" rel="noopener">Code ↗</a><span>arXiv · coming soon</span></div>
+</aside>
 <nav class="top" aria-label="Sections"><div class="in">
   <a class="brand" href="#top">Decoded but <i>Unused</i></a>
   <a href="#instrument">PT vs IT</a><a href="#dataset">Dataset</a><a href="#geometry">Geometry</a><a href="#readout">Late readout</a><a href="#causal">Causal tests</a><a href="#heads">Writer heads</a><a href="#specificity">Specificity</a><a href="#families">Ten models</a><a href="#cite">Cite</a>
@@ -214,7 +260,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
 </div>
 
 <section id="instrument" style="padding-top:40px">
-  <div class="wide">
+  <div class="wide band">
     <div class="bench">
       <div class="inst">
         <div class="side ptS"><div class="tag"><span>Gemma-3-4B-PT · pretrained</span><span>paired shift +0.04</span></div>
@@ -281,7 +327,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>One event, written three ways</h2>
     <p>Each of the 100 dilemmas tells one canonical event three times: sympathetic to the actor, condemning of the actor, and abstract, which strips the rhetoric and restates the action in neutral third-person terms. Fifty come from <em>Attack on Titan</em>, fifty from <em>Game of Thrones</em>, each framing about 400 to 950 characters. Two worked examples from the paper's appendix, one on each side of the perpetrator split:</p>
   </div>
-  <div class="wide">
+  <div class="wide band">
     <div class="bench">
       <div class="toolbar">
         <div class="seg" id="dsWhich" role="group" aria-label="Dilemma"><button data-k="aot" aria-pressed="true">The Rumbling</button><button data-k="got" aria-pressed="false">Hold the door</button></div>
@@ -300,7 +346,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>PT separates the framings without pointing them at the answer</h2>
     <p>The top two principal components of the final-token residuals, at each model's peak-alignment layer. Both models separate sympathetic from condemning prompts. The arrows are the plane projections of the full-space directions; PCA does not preserve the high-dimensional angle, so the labels report the cosine computed before projection.</p>
   </div>
-  <figure class="wide">
+  <figure class="wide band">
     <div class="bench two">
       <div class="chart"><div class="ptitle"><span class="pt">PT · ℓ = 14</span><span>ρ<sub>full</sub> = +0.05</span></div><svg id="pcaPT" viewBox="0 0 460 380" role="img" aria-label="PCA of PT activations at layer 14"></svg></div>
       <div class="chart"><div class="ptitle"><span class="it">IT · ℓ = 25</span><span>ρ<sub>full</sub> = +0.31</span></div><svg id="pcaIT" viewBox="0 0 460 380" role="img" aria-label="PCA of IT activations at layer 25"></svg></div>
@@ -316,7 +362,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>The framings agree for twenty layers, then split</h2>
     <p>Passing each layer's residual through the final norm and unembedding (the logit lens) gives a running Yes − No gap. In IT the three framings are indistinguishable until about layer 20, then the sympathetic trajectory diverges as the alignment cosine ramps to its peak. In PT the same plots collapse onto one flat line.</p>
   </div>
-  <figure class="wide">
+  <figure class="wide band">
     <div class="bench">
       <div class="toolbar"><div class="seg" id="lensMode" role="group" aria-label="View"><button data-m="traj" aria-pressed="true">Per-framing gap</button><button data-m="gap" aria-pressed="false">S − C difference</button></div>
         <div class="legend" id="lensLegend" style="margin:0"></div></div>
@@ -332,7 +378,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>Patching transfers the framing, and more easily with the model's prior</h2>
     <p>Write the clean residual of one framing into the corrupt run of the other at the final token, and measure the recovery R = (patched − corrupt) / (clean − corrupt) of the logit gap. In the released code the clean activation is taken at the corrupt prompt's final index, which is an earlier clean token when the clean framing is longer. At layer 20, condemning-into-sympathetic recovers far more than the reverse. Condemning is the model's default here, so C→S pushes with the prior and S→C pushes against it.</p>
   </div>
-  <figure class="wide">
+  <figure class="wide band">
     <div class="bench two">
       <div class="chart"><div class="ptitle"><span>Recovery at ℓ = 20, by hook</span><span>n = 83 stable</span></div>
         <svg id="patch" viewBox="0 0 460 250" role="img" aria-label="Recovery by hook: resid_pre S to C 0.521, C to S 0.885; resid_post 0.565 and 0.918; attn_out 0.135 both; mlp_out 0.026 and 0.223."></svg>
@@ -353,7 +399,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>Ten writer heads, concentrated at layers 23 to 25, carry 59% of the shift</h2>
     <p>Each head's sympathetic-minus-condemning contribution at the final token, projected onto δ<sub>judge</sub>. Five heads at layers 23 and 24 exceed |p| = 0.24; no head elsewhere in layers 10 to 25 exceeds 0.10. Mean-ablating the top ten writers cuts the paired shift by 7.14 logits, 7.8 standard deviations from a random-head null.</p>
   </div>
-  <figure class="wide">
+  <figure class="wide band">
     <div class="bench heat">
       <div class="chart"><svg id="heat" viewBox="0 0 470 430" role="img" aria-label="Writer-head heatmap, layers 10 to 25 by heads 0 to 7. Strongest writer is layer 23 head 3 at +0.715, strongest antagonist layer 24 head 7 at -0.505."></svg>
         <div class="ramp"><span>−0.7</span><span class="bar" style="background:linear-gradient(90deg,var(--cond),var(--faint),var(--sym))"></span><span>+0.7</span><span style="flex-basis:100%">blue writes against the judgment direction, terracotta toward Yes</span></div>
@@ -372,7 +418,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>Moral content in, generic evaluation out</h2>
     <p>Replace δ<sub>judge</sub> with other readout pairs. In IT the framing direction aligns with every evaluative pair tested and with none of the neutral ones: evaluative-to-neutral ratio 4.1× in IT against 1.25× in PT. On the input side, non-moral sentiment framing gives ρ(25) = +0.022, fourteen times smaller, and sentiment content asked the moral question gives −0.007.</p>
   </div>
-  <figure class="col">
+  <figure class="col band">
     <div class="bench pad chart"><svg id="pairs" viewBox="0 0 640 410" role="img" aria-label="Peak alignment by readout pair in IT. Nine evaluative pairs from 0.07 to 0.31; five neutral pairs between 0.028 and 0.051."></svg></div>
     <figcaption><b>Figure 6</b>Peak |ρ| in Gemma-3-4B-IT across 34 layers, per readout pair (paper Table 4). Evaluative peaks concentrate at layers 17 to 25; neutral peaks are scattered.</figcaption>
   </figure>
@@ -384,7 +430,7 @@ footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1p
     <h2>Ten instruction-tuned models, three families, one sign</h2>
     <p>The paired shift is positive with a strictly positive 95% interval in every IT checkpoint, 2B to 32B parameters. All ten show within-family peak alignment above +0.20. Llama-3.1-8B is the low-magnitude outlier: its peak cosine (+0.249 at ℓ = 29) is comparable to Gemma's, but its shift is four times smaller. The cosine measures routing direction, not routing gain.</p>
   </div>
-  <figure class="wide">
+  <figure class="wide band">
     <div class="bench">
       <div class="toolbar"><div class="seg" id="sortF" role="group" aria-label="Sort"><button data-s="size" aria-pressed="true">By size</button><button data-s="eff" aria-pressed="false">By shift</button><button data-s="fam" aria-pressed="false">By family</button></div>
         <span class="small">Bootstrap 95% CI, 10,000 paired triplet resamples</span></div>
@@ -704,6 +750,19 @@ $('#copybib').addEventListener('click',()=>{const t=$('#bib').textContent,b=$('#
   try{navigator.clipboard.writeText(t).then(done,sel);}catch(e){sel();}});
 })();
 
+</script>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.toc ol a'));
+  var secs=links.map(function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+  var tick=false;
+  function update(){ tick=false; var line=window.innerHeight*0.3, cur=0;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=line) cur=i; }
+    links.forEach(function(a,i){ a.classList.toggle('on', i===cur); }); }
+  window.addEventListener('scroll',function(){ if(!tick){ tick=true; requestAnimationFrame(update); } },{passive:true});
+  update();
+})();
 </script>
 </body>
 </html>
