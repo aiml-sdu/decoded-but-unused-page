@@ -392,6 +392,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
 .defs .dai{stroke:var(--it);fill:none;stroke-width:1.8} .defs .dak{stroke:var(--ink);fill:none;stroke-width:1.8} .defs .dl{stroke:var(--muted);fill:none;stroke-width:1}
 #hook{padding-top:clamp(64px,8vw,104px)}
 .th .t-p{fill:var(--pt)}
+.theme-tg{font:inherit;font-size:13px;border:1px solid currentColor;border-radius:3px;background:transparent;color:inherit;opacity:.75;padding:2px 9px;cursor:pointer;margin-left:14px}.theme-tg:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -399,7 +400,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <a class="t" href="#top">Decoded but <i>Unused</i></a>
   <div class="sides"><span class="s-pt">PT</span><span class="s-it">IT</span></div>
   <nav aria-label="Contents"><ol><li><a href="#abstract">Abstract</a></li><li><a href="#defs">Definitions</a></li><li><a href="#instrument">Decoded vs used</a></li><li><a href="#behaviour">One free variable</a></li><li><a href="#dataset">The dilemmas</a></li><li><a href="#geometry">Geometry</a></li><li><a href="#readout">Late readout</a></li><li><a href="#causal">Causal tests</a></li><li><a href="#heads">Writer heads</a></li><li><a href="#specificity">Specificity</a></li><li><a href="#families">Ten models</a></li><li><a href="#perp">Inversions</a></li><li><a href="#limits">Scope</a></li></ol></nav>
-  <div class="links"><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="#cite">Cite this article</a></div>
+  <div class="links"><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="#cite">Cite this article</a><button class="theme-tg" id="themeTg" type="button">Dark</button></div>
 </aside>
 <nav class="top" aria-label="Sections"><div class="in">
   <a class="brand" href="#top">Decoded but <i>Unused</i></a>
@@ -413,7 +414,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="split-rule" aria-hidden="true"></div>
   <p class="standfirst">Chat models change their moral verdicts when the same event is retold. On a matched pair of Gemma-3-4B checkpoints we find that the pretrained model already encodes the framing and does not act on it, and that instruction tuning routes the same signal into the Yes/No answer.</p>
   <p class="byline">Phongsakon Mark Konrad, Toygar Tanyel, Serkan Ayvaz · University of Southern Denmark and Promake · Seoul, 2026</p>
-  <p class="plain-links"><a href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF</a><a href="https://github.com/aiml-sdu/decoded-but-unused" target="_blank" rel="noopener">Code and data ↗</a><span class="soon">arXiv · coming soon</span><a href="#cite">Cite this article</a></p>
+  <p class="plain-links"><a href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF</a><a href="index.md">Markdown</a><a href="https://github.com/aiml-sdu/decoded-but-unused" target="_blank" rel="noopener">Code and data ↗</a><span class="soon">arXiv · coming soon</span><a href="#cite">Cite this article</a></p>
 </header>
 
 <section class="hero-inst dark-band" id="field" aria-label="The 100 dilemmas as read by the instruction-tuned model">
@@ -748,6 +749,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
 <footer class="col">
   <div>Konrad, Tanyel and Ayvaz · ICML 2026 Workshop on Mechanistic Interpretability, Seoul.</div>
   <div style="margin-top:6px">Every plotted value is read from the paper's stored figure data or its tables.</div>
+  <div style="margin-top:6px">A project of the <a href="https://aiml-sdu.github.io" target="_blank" rel="noopener">Applied and Interpretable Machine Learning Research Group</a> at the University of Southern Denmark.</div>
 </footer>
 
 <div id="tip" role="tooltip"></div>
@@ -1207,6 +1209,14 @@ function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.clo
     links.forEach(function(a,i){ a.classList.toggle('on', i===cur); }); }
   window.addEventListener('scroll',function(){ if(!tick){ tick=true; requestAnimationFrame(update); } },{passive:true});
   update();
+})();
+</script>
+<script>
+(function(){var r=document.documentElement,b=document.getElementById('themeTg'),K='page-theme';
+try{var s=localStorage.getItem(K);if(s==='light'||s==='dark')r.setAttribute('data-theme',s);}catch(e){}
+function dark(){var t=r.getAttribute('data-theme');return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;}
+function lbl(){if(b){b.textContent=dark()?'Light':'Dark';b.setAttribute('aria-label',dark()?'Switch to light theme':'Switch to dark theme');}}
+lbl();if(b)b.addEventListener('click',function(){var n=dark()?'light':'dark';r.setAttribute('data-theme',n);try{localStorage.setItem(K,n);}catch(e){}lbl();window.dispatchEvent(new Event('resize'));});
 })();
 </script>
 </body>
