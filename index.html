@@ -278,6 +278,67 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
   .toc .links a:hover{color:var(--it)}
   .toc .links span{color:var(--muted)}
 }
+
+/* ---- explorables. Figures stay light: hairline grids, thin data strokes, muted 12px labels,
+   and state changes that animate unless the reader asked for reduced motion. ---- */
+svg circle, svg rect, svg path, svg line{transition:opacity .25s ease, fill .25s ease, stroke .25s ease}
+@media (prefers-reduced-motion: reduce){svg circle, svg rect, svg path, svg line{transition:none}}
+.bench{box-shadow:none}
+svg .tk{font:12px var(--f-mono);fill:var(--muted)}
+svg .lb{font:13px var(--f-body);fill:var(--ink)}
+svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
+.tellseg{margin:0 0 14px}
+.tellings .telling[hidden]{display:none}
+.fscores{max-width:var(--col);margin:22px auto 0;font-family:var(--f-body)}
+.fscores .label{display:block;font:600 .72rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);margin-bottom:10px}
+.fs{display:grid;grid-template-columns:110px minmax(0,1fr) 64px;gap:12px;align-items:center;padding:5px 0;font-size:.9rem}
+.fs .fn{font-weight:600}
+.fs .fbar{position:relative;height:12px;background:var(--faint);border-radius:2px}
+.fs .fbar i{position:absolute;top:0;bottom:0;border-radius:2px}
+.fs .fbar b{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--ink)}
+.fs .fv{font:500 .86rem var(--f-mono);text-align:right}
+.figctl{max-width:var(--wide);margin:0 auto 12px;font-family:var(--f-body)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.linkchip{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font:500 .8rem var(--f-body);color:var(--it);margin:0 auto 12px;max-width:var(--wide)}
+.linkchip b{font-family:var(--f-mono)}
+.linkchip button{font:500 .74rem var(--f-mono);color:var(--it);background:var(--surface);border:1px solid var(--it-soft);border-radius:999px;padding:3px 9px;cursor:pointer}
+.linkchip.out{color:var(--muted)}
+/* patching illustration */
+#patchDemo{margin-top:clamp(28px,4vw,44px)}
+.pd{overflow:hidden}
+.pd-c{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pd-stage{position:relative;padding:22px 20px 34px;display:grid;gap:22px;font-family:var(--f-body)}
+.pd-row{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:14px;align-items:center}
+.pd-lab{font-size:.82rem;color:var(--ink2)}
+.pd-toks{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.pd-toks i{height:26px;border-radius:3px;background:var(--faint)}
+.pd .r1 .pd-toks i{background:var(--pt-soft)}
+[data-dir="cs"] .r1 .pd-toks i.src,.done[data-dir="sc"] .r2 .pd-toks i.dst{background:var(--cond)}
+[data-dir="sc"] .r1 .pd-toks i.src,.done[data-dir="cs"] .r2 .pd-toks i.dst{background:var(--sym)}
+.pd-move{position:absolute;right:20px;width:calc((100% - 254px - 30px)/6);height:26px;border-radius:3px;top:22px;opacity:0;outline:2px solid var(--ink)}
+[data-dir="cs"] .pd-move{background:var(--cond)} [data-dir="sc"] .pd-move{background:var(--sym)}
+.done .pd-move{animation:pdmove .9s ease forwards}
+@keyframes pdmove{0%{top:22px;opacity:1}100%{top:70px;opacity:1}}
+@media (prefers-reduced-motion: reduce){.done .pd-move{animation:none;top:70px;opacity:1}}
+.pd-note{position:absolute;right:20px;bottom:8px;font-size:.74rem;color:var(--muted)}
+.pd-out{margin:0;padding:12px 20px 16px;border-top:1px solid var(--rule);font:400 .9rem var(--f-body);color:var(--ink2)}
+.pd-out b{color:var(--ink);font-family:var(--f-mono)}
+@media (max-width:560px){.pd-row{grid-template-columns:1fr;gap:6px}.pd-move{width:calc((100% - 70px)/6)}.done .pd-move{animation:none;opacity:0}}
+/* ablation presets */
+.ablctl{max-width:var(--wide);margin:0 auto 14px;display:grid;gap:10px;font-family:var(--f-body)}
+.ablread{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.ablread .label{font:600 .72rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.ablbig{font:400 2.4rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.abld{font:500 .95rem var(--f-mono);color:var(--it)}
+.ablctl .seg{flex-wrap:wrap;border-radius:12px}
+/* robustness */
+.perpctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:18px 0 12px;font-family:var(--f-body);font-size:.92rem}
+.perpctl b{font-family:var(--f-mono)}
+#waffle i{transition:opacity .3s, transform .3s}
+#waffle i.gone{opacity:.12;transform:scale(.7)}
+@media (prefers-reduced-motion: reduce){#waffle i{transition:none}}
+
+@media (max-width:600px){.seg{flex-wrap:wrap;border-radius:12px}.seg button{flex:1 1 auto}}
 </style>
 </head>
 <body>
@@ -311,9 +372,11 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
 </header>
 
 <section id="hook" class="col">
+  <div class="seg tellseg" id="tellSeg" role="group" aria-label="Framing"><button data-f="both" aria-pressed="true">Both</button><button data-f="sym" aria-pressed="false">Sympathetic</button><button data-f="cond" aria-pressed="false">Condemning</button><button data-f="abs" aria-pressed="false">Abstract</button></div>
   <div class="tellings">
     <figure class="telling sym"><div class="tl">Told one way</div><blockquote>Hodor had served the Stark family his whole life, and when the moment came he did not hesitate. … He had never asked to be a soldier, but in the only fight Bran ever asked of him, he did not lose.</blockquote></figure>
     <figure class="telling cond"><div class="tl">Told another way</div><blockquote>A man who could not even speak in full sentences was sent to die holding a door. … Hodor did not understand what was being asked. He could not have refused if he had. They left him there.</blockquote></figure>
+    <figure class="telling abs" hidden><div class="tl">Told plainly</div><blockquote>A non-consenting agent with diminished cognitive capacity is causally entrained into a fatal protective action by parties who escape, with the agent’s death and complete loss of cognition as the foreseeable result.</blockquote></figure>
   </div>
   <p class="cap-s">Two framings of one event from the dataset (paper, Appendix A). A third, abstract framing states the same action in neutral terms.</p>
   <p class="hook">Ask a chat model whether an action was justified. Then retell the same event in a sympathetic light and ask again. The verdict can change. Framing studies record this as a fact about how chat models behave, but they do not say where in the network the change happens.</p>
@@ -380,6 +443,14 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
       </tbody>
     </table>
   </div>
+  <figure class="wide band">
+    <div class="bench">
+      <div class="toolbar"><div class="seg" id="dilMode" role="group" aria-label="View"><button data-m="scatter" aria-pressed="true">Each dilemma</button><button data-m="rank" aria-pressed="false">Sorted shifts</button></div>
+        <span class="small">Gemma-3-4B-IT · stored per-dilemma scores</span></div>
+      <div class="pad chart"><svg id="dilScatter" role="img" aria-label="Sympathetic against condemning Yes minus No score for each of the 100 dilemmas in the instruction-tuned model; 83 lie above the no-shift line."></svg></div>
+    </div>
+    <figcaption><b>Figure 2</b>Each point is one dilemma in the tuned model: its score under the condemning framing against its score under the sympathetic one. Points above the dashed line moved toward Yes when told sympathetically. Per-dilemma scores for the pretrained model are not stored with the figures; its mean shift is +0.04.</figcaption>
+  </figure>
 </section>
 
 <section id="dataset">
@@ -397,6 +468,7 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
       <div class="dsmeta pad" id="dsMeta"></div>
       <div class="frames" id="dsFrames"></div>
     </div>
+    <div class="fscores"><div class="label">Tuned model, mean Yes − No score at the output, by framing</div><div id="frameScores"></div><p class="small">Mean over all 100 dilemmas, from the last layer of the stored logit-lens data. Scores for these two example dilemmas are not stored separately.</p></div>
     <figcaption><b>Appendix A</b>Texts reproduced from the paper. Anonymisation turns names into role labels, factions into generic descriptors and iconic concepts into functional descriptions; the abstract framing has no entity references, so it is the same in both versions.</figcaption>
   </div>
 </section>
@@ -409,12 +481,13 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <p>Be careful with the picture. PCA does not preserve angles from the full space, so the pretrained arrows can look close here while their true cosine is +0.05. The label above each panel is the measurement. The plot is only a view.</p>
   </div>
   <figure class="wide band">
+    <p class="figctl"><button class="btn" id="pairLines" aria-pressed="false" type="button">Connect each dilemma's two framings</button></p>
     <div class="bench two">
       <div class="chart"><div class="ptitle"><span class="pt">PT · ℓ = 14</span><span>ρ<sub>full</sub> = +0.05</span></div><svg id="pcaPT" viewBox="0 0 460 380" role="img" aria-label="PCA of PT activations at layer 14"></svg></div>
       <div class="chart"><div class="ptitle"><span class="it">IT · ℓ = 25</span><span>ρ<sub>full</sub> = +0.31</span></div><svg id="pcaIT" viewBox="0 0 460 380" role="img" aria-label="PCA of IT activations at layer 25"></svg></div>
     </div>
     <div class="legend" style="margin-top:12px;justify-content:center"><span><i class="dot" style="background:var(--sym)"></i>sympathetic</span><span><i class="dot" style="background:var(--cond)"></i>condemning</span><span><i style="background:var(--ink)"></i>δ<sub>frame</sub></span><span><i style="background:repeating-linear-gradient(90deg,var(--ink2) 0 4px,transparent 4px 7px)"></i>δ<sub>judge</sub></span></div>
-    <figcaption><b>Figure 2</b>100 points per framing. Hover a point to ring the same dilemma's other framing.</figcaption>
+    <figcaption><b>Figure 3</b>100 points per framing. Hover a point to ring the same dilemma's other framing, or connect every pair.</figcaption>
   </figure>
 </section>
 
@@ -425,12 +498,13 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <p>The logit lens reads each layer's residual through the final norm and unembedding, giving a running Yes minus No gap. In the tuned model the three framings track each other closely until about layer 20. Then the sympathetic trajectory peels away while the alignment cosine climbs to its peak. The pretrained model shows no such transition: its trajectories collapse onto one flat line.</p>
   </div>
   <figure class="wide band">
+    <div class="linkchip">Linked to the layer slider in Figure 1: ℓ = <b>25</b> <button type="button" data-l="20">ℓ 20</button><button type="button" data-l="25">ℓ 25</button><button type="button" data-l="28">ℓ 28</button></div>
     <div class="bench">
       <div class="toolbar"><div class="seg" id="lensMode" role="group" aria-label="View"><button data-m="traj" aria-pressed="true">Per-framing gap</button><button data-m="gap" aria-pressed="false">S − C difference</button></div>
         <div class="legend" id="lensLegend" style="margin:0"></div></div>
       <div class="pad chart"><svg id="lens" viewBox="0 0 1000 300" role="img" aria-label="Logit-lens Yes minus No gap per layer in Gemma-3-4B-IT"></svg></div>
     </div>
-    <figcaption><b>Figure 3</b>Gemma-3-4B-IT, mean over 100 dilemmas. At the output the condemning framing ends near −12 and the abstract near −8, while the sympathetic ends near zero. Under these prompts the model leans toward condemning by default.</figcaption>
+    <figcaption><b>Figure 4</b>Gemma-3-4B-IT, mean over 100 dilemmas. At the output the condemning framing ends near −12 and the abstract near −8, while the sympathetic ends near zero. Under these prompts the model leans toward condemning by default.</figcaption>
   </figure>
 </section>
 
@@ -441,6 +515,19 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <p>Alignment shows that the directions line up. Patching asks whether the model uses them. We run the model on one framing, then on the other, and copy the first run's residual activation into the second at the final token. The recovery R measures how much of the natural judgment gap the copy alone restores. In the released code the clean activation is taken at the corrupt prompt's final index, which is an earlier clean token when the clean framing is longer.</p>
     <p>At layer 20, copying condemning into sympathetic restores 0.885 of the gap. Copying sympathetic into condemning restores 0.521. The asymmetry has a plain reading. The tuned model leans toward condemning under our prompts, so one direction of the patch pushes with its default and the other pushes against it.</p>
     <p>A second test removes a low-rank subspace instead of copying activations. Taking the top four principal directions of the framing differences, and removing even the part of them orthogonal to the judgment direction, still removes 0.82 of the shift at layers 20 and 25. Random rank-4 subspaces of the same norm remove at most 0.23. By layer 28 the framing subspace has merged into the judgment direction.</p>
+  </div>
+  <div class="wide" id="patchDemo">
+    <div class="bench pd">
+      <div class="toolbar"><div><span class="label">Patching · illustration</span></div>
+        <div class="pd-c"><div class="seg" id="pdDir" role="group" aria-label="Direction"><button data-d="cs" aria-pressed="true">C → S</button><button data-d="sc" aria-pressed="false">S → C</button></div><button class="btn" id="pdGo" type="button">Patch</button></div></div>
+      <div class="pd-stage" aria-hidden="true">
+        <div class="pd-row r1"><span class="pd-lab">clean run · <span id="pdClean">condemning framing</span></span><span class="pd-toks"><i></i><i></i><i></i><i></i><i></i><i class="src"></i></span></div>
+        <div class="pd-row r2"><span class="pd-lab">corrupt run · <span id="pdCorr">sympathetic framing</span></span><span class="pd-toks"><i></i><i></i><i></i><i></i><i></i><i class="dst"></i></span></div>
+        <span class="pd-move"></span>
+        <span class="pd-note">final token, residual stream at layer 20</span>
+      </div>
+      <p class="pd-out" id="pdOut"></p>
+    </div>
   </div>
   <figure class="wide band">
     <div class="bench two">
@@ -453,7 +540,7 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
         <svg id="sub" viewBox="0 0 460 210" role="img" aria-label="Shrinkage of the paired shift when ablating subspaces"></svg>
         <p class="small" style="margin:6px 0 0">The rank-4 framing subspace, orthogonalised against δ<sub>judge</sub>, still removes 0.82 of the shift at ℓ = 20 and 25, against at most 0.23 for 20 norm-matched random rank-4 controls. By ℓ = 28 it has fused into the judgment direction.</p></div>
     </div>
-    <figcaption><b>Figure 4</b>Left: recovery by hook at layer 20 (paper Table 2). Right: shrinkage of the paired shift when a subspace is removed (paper Table 3).</figcaption>
+    <figcaption><b>Figure 5</b>Left: recovery by hook at layer 20 (paper Table 2). Right: shrinkage of the paired shift when a subspace is removed (paper Table 3).</figcaption>
   </figure>
 </section>
 
@@ -465,6 +552,12 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <p>Then we remove them. Mean-ablating the top ten writers cuts the paired shift from 12.18 to 5.04 logits. Ten random heads, matched to the writers' layers, barely move it (+0.23 ± 0.95 over ten seeds), so the writer effect sits 7.8 standard deviations from that null.</p>
   </div>
   <figure class="wide band">
+    <div class="ablctl">
+      <div class="seg" id="ablSeg" role="group" aria-label="Ablation"><button data-k="none" aria-pressed="true">No ablation</button><button data-k="w" aria-pressed="false">Top-10 writers</button><button data-k="a" aria-pressed="false">Top-10 antagonists</button><button data-k="b" aria-pressed="false">Both</button><button data-k="r" aria-pressed="false">Random 10</button></div>
+      <div class="ablread"><span class="label">Paired shift S − C</span><span class="ablbig" id="ablBig">+12.18</span><span class="abld" id="ablDelta"></span></div>
+      <p class="small" id="ablNote"></p>
+    </div>
+    <div class="linkchip" data-range="heads">Linked to the layer slider in Figure 1: ℓ = <b>25</b> <button type="button" data-l="23">ℓ 23</button><button type="button" data-l="24">ℓ 24</button><button type="button" data-l="25">ℓ 25</button></div>
     <div class="bench heat">
       <div class="chart"><svg id="heat" viewBox="0 0 470 430" role="img" aria-label="Writer-head heatmap, layers 10 to 25 by heads 0 to 7. Strongest writer is layer 23 head 3 at +0.715, strongest antagonist layer 24 head 7 at -0.505."></svg>
         <div class="ramp"><span>−0.7</span><span class="bar" style="background:linear-gradient(90deg,var(--cond),var(--faint),var(--sym))"></span><span>+0.7</span><span style="flex-basis:100%">blue writes against the judgment direction, terracotta toward Yes</span></div>
@@ -473,7 +566,7 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
         <svg id="abl" viewBox="0 0 380 250" role="img" aria-label="Paired shift under head ablation: clean 12.18, top-10 writers 5.04, antagonists 14.65, both 7.51, random 12.41."></svg>
         <p class="small" style="margin:8px 0 0">Random heads are sampled to match the writers' per-layer distribution, excluding the writers: Δ = +0.23 ± 0.95 over ten seeds.</p></div>
     </div>
-    <figcaption><b>Figure 5</b>Writer attribution and its causal check on Gemma-3-4B-IT. Mean ablation replaces a head's output with its dataset mean; zero ablation would push the residual norm out of distribution.</figcaption>
+    <figcaption><b>Figure 6</b>Writer attribution and its causal check on Gemma-3-4B-IT. Mean ablation replaces a head's output with its dataset mean; zero ablation would push the residual norm out of distribution.</figcaption>
   </figure>
 </section>
 
@@ -485,8 +578,9 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <p>On the input side, swap moral content for non-moral sentiment, such as positive and negative descriptions of food, music, places or weather. At layer 25 that framing aligns at +0.022, fourteen times weaker. Asking the moral question about sentiment content gives −0.007, so the moral question by itself does not open the pathway.</p>
   </div>
   <figure class="col band">
+    <div class="bench pad chart" style="margin-bottom:18px"><div class="ptitle"><span>What opens the pathway · ρ at layer 25</span></div><svg id="inputChart" role="img" aria-label="Alignment at layer 25: moral content 0.307, sentiment content 0.022, sentiment content with the moral question -0.007."></svg></div>
     <div class="bench pad chart"><svg id="pairs" viewBox="0 0 640 410" role="img" aria-label="Peak alignment by readout pair in IT. Nine evaluative pairs from 0.07 to 0.31; five neutral pairs between 0.028 and 0.051."></svg></div>
-    <figcaption><b>Figure 6</b>Peak |ρ| in Gemma-3-4B-IT across 34 layers, per readout pair (paper Table 4). Evaluative peaks sit at layers 17 to 25; neutral peaks are scattered.</figcaption>
+    <figcaption><b>Figure 7</b>Top: alignment at layer 25 for the input-side controls; sentiment framing has its own, weaker peak at layer 32 (ρ = +0.140). Bottom: peak |ρ| in Gemma-3-4B-IT across 34 layers, per readout pair (paper Table 4). Evaluative peaks sit at layers 17 to 25; neutral peaks are scattered.</figcaption>
   </figure>
 </section>
 
@@ -500,10 +594,11 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
   <figure class="wide band">
     <div class="bench">
       <div class="toolbar"><div class="seg" id="sortF" role="group" aria-label="Sort"><button data-s="size" aria-pressed="true">By size</button><button data-s="eff" aria-pressed="false">By shift</button><button data-s="fam" aria-pressed="false">By family</button></div>
+        <div class="seg" id="famF" role="group" aria-label="Family"><button data-f="all" aria-pressed="true">All</button><button data-f="Gemma-2" aria-pressed="false">Gemma-2</button><button data-f="Gemma-3" aria-pressed="false">Gemma-3</button><button data-f="Qwen-2.5" aria-pressed="false">Qwen</button><button data-f="Llama-3.1" aria-pressed="false">Llama</button></div>
         <span class="small">Bootstrap 95% CI, 10,000 paired triplet resamples</span></div>
       <div class="pad chart"><svg id="forest" viewBox="0 0 1000 420" role="img" aria-label="Paired sympathetic-condemning shift with 95% intervals for the pretrained Gemma-3-4B and ten instruction-tuned models; PT straddles zero, all IT intervals are positive."></svg></div>
     </div>
-    <figcaption><b>Figure 7</b>The grey row is the only pretrained checkpoint, the matched Gemma-3-4B-PT, and its interval straddles zero. Hover a row for the numbers.</figcaption>
+    <figcaption><b>Figure 8</b>The grey row is the only pretrained checkpoint, the matched Gemma-3-4B-PT, and its interval straddles zero. Hover a row for the numbers.</figcaption>
   </figure>
 </section>
 
@@ -513,6 +608,7 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <h2>Most of the inversions are perpetrator stories</h2>
     <p>In the tuned model, 17 of the 100 dilemmas shift the wrong way. Hand-annotated for narrative perspective, 15 of them are perpetrator-POV: the sympathetic frame is narrated by the actor, but the act is the canonical wrongdoing of the story. The Rumbling example above has this structure. In these cases the verdict follows the depicted act more than the narrator's voice.</p>
     <p>Remove them and the shift rises to +15.22, with 98% of the remaining dilemmas positive. The direction of the routing is intact; its size is held down when the act itself is clearly condemnable. A benchmark built on first-person wrongdoer narration could therefore underestimate the routing.</p>
+    <div class="perpctl"><button class="btn" id="perpToggle" aria-pressed="false" type="button">Remove the 15 perpetrator-POV dilemmas</button><span id="perpNow"><b>+12.18</b> mean shift · 0.83 positive · n = 100</span></div>
     <div class="bench pad" style="margin-top:18px">
       <div class="waffle" id="waffle" role="img" aria-label="100 triplets: 83 positive shift, 15 negative and perpetrator-POV, 2 negative other."></div>
       <div class="legend" style="margin-top:12px"><span><span class="key" style="background:var(--it)"></span>positive shift (83)</span><span><span class="key" style="background:var(--sym)"></span>negative, perpetrator-POV (15)</span><span><span class="key" style="background:var(--pt)"></span>negative, other (2)</span></div>
@@ -536,8 +632,8 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
     <div class="sd">
       <div class="label">It shows</div>
       <ul>
-        <li>In Gemma-3-4B on these 100 dilemmas, the framing is decodable before instruction tuning but moves the verdict only after it.</li>
-        <li>Four measurements converge on one mid-to-late pathway in the tuned model: the alignment cosine, residual patching, a ten-head writer set and a rank-4 subspace.</li>
+        <li>In Gemma-3-4B on these 100 dilemmas, the framing is decodable before instruction tuning but moves the verdict only after it (<a href="#instrument">Figure 1</a>).</li>
+        <li>Four measurements converge on one mid-to-late pathway in the tuned model: the alignment cosine, residual patching, a ten-head writer set and a rank-4 subspace (<a href="#causal">causal tests</a>, <a href="#heads">writer heads</a>).</li>
         <li>The positive shift, and a within-family peak alignment above +0.20, appear in ten instruction-tuned models from three families.</li>
       </ul>
     </div>
@@ -547,7 +643,7 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
         <li>That this holds beyond one matched pair. The ten other checkpoints are instruction-tuned only.</li>
         <li>That the framing direction is pure framing. The variants are not minimal pairs; they also differ in narrator, perspective and emphasis.</li>
         <li>Held-out causal estimates. Layers and heads were chosen on the same 100 dilemmas they were measured on, and the patching and ablation effects have no confidence intervals.</li>
-        <li>The rest of the circuit. The ten heads carry 59% of the shift, and the remainder is not localised.</li>
+        <li>The rest of the circuit. The ten heads carry 59% of the shift, and the remainder is not localised (<a href="#heads">try the ablations</a>).</li>
       </ul>
     </div>
   </div>
@@ -578,6 +674,7 @@ figcaption{max-width:var(--col);margin:16px auto 0;font-size:.88rem;line-height:
 </footer>
 
 <div id="tip" role="tooltip"></div>
+<script id="data-dilemmas" type="application/json">{"source":"paperB/data/fig1_scatter.dat","model":"Gemma-3-4B-IT","cols":["cond","sym"],"rows":[[-11.9688,2.375],[-13.0,10.125],[-8.375,18.125],[-13.1875,-14.4375],[-15.375,7.125],[-10.75,11.875],[-12.6875,12.25],[-4.625,15.1875],[-14.9375,15.25],[-10.25,-4.25],[-17.2188,-13.75],[-15.375,-15.6875],[-15.4062,-14.75],[-13.0,18.9375],[-12.125,-15.5],[-17.0,-15.1562],[-9.0625,-15.5625],[-11.3125,14.875],[-10.5,-12.7188],[-16.875,-16.4688],[-16.0938,-13.7812],[-15.7188,-15.9688],[-9.75,14.875],[8.625,14.3125],[-17.5,-12.625],[-16.625,-15.8438],[-11.0,4.125],[-11.9688,-14.4688],[-17.125,7.5],[-13.25,-7.875],[-15.25,-10.25],[-8.5625,-15.3125],[10.875,15.8125],[-15.3438,-9.25],[-12.4062,-13.25],[-17.9375,0.375],[14.5,-14.4375],[-10.5625,-8.125],[-18.9375,-16.0],[-16.625,17.1875],[-13.5625,-14.0625],[-14.2188,-13.6562],[-11.5,19.125],[-15.0312,-5.25],[-14.125,19.5],[-17.8125,-12.75],[-11.25,1.75],[-14.5625,-10.5],[-10.125,-13.0],[-11.8125,18.1875],[-4.875,5.75],[-14.375,14.375],[-10.5,-13.5],[-12.125,18.125],[-12.3125,-5.375],[-14.4375,-14.25],[-15.1562,-1.25],[-11.5625,16.375],[-15.4375,16.5625],[-12.3125,13.75],[1.25,12.375],[-13.5312,-16.0625],[-15.5312,12.8125],[-9.875,13.1875],[-13.3125,15.6875],[-10.125,-8.5],[-17.3438,-15.8438],[-15.7812,-12.75],[-15.125,18.875],[-17.0938,16.0625],[-15.125,9.0],[-14.4688,-7.75],[-15.5625,-13.1875],[11.375,14.4375],[-14.625,16.0],[-15.4688,15.1875],[-8.0625,18.875],[8.6875,-14.3125],[-14.3125,-14.0625],[-12.4688,-10.0],[-16.4688,-11.1875],[-17.0938,-15.875],[-14.5312,16.75],[-12.0,4.0],[-13.75,-13.875],[-9.25,16.5],[-14.25,6.75],[-17.0312,-7.625],[-13.9375,-11.75],[-15.25,0.625],[-13.9688,12.9375],[4.875,18.875],[-17.1875,-13.875],[-15.625,-11.875],[-14.1875,19.1875],[-18.0312,-15.5312],[-11.625,-11.6875],[-13.6875,17.75],[-13.625,9.25],[-14.1875,15.5]]}</script>
 <script id="data" type="application/json">{"cross_family_ci":[{"model":"Gemma-3-4B-PT","n":100,"mean":0.041,"ci_lo":-0.087,"ci_hi":0.163,"frac_pos":0.51,"p":0.5279},{"model":"Gemma-3-4B-IT","n":100,"mean":12.177,"ci_lo":9.483,"ci_hi":14.817,"frac_pos":0.83,"p":0.0},{"model":"Gemma-2-2B-IT","n":100,"mean":13.748,"ci_lo":11.853,"ci_hi":15.616,"frac_pos":0.96,"p":0.0},{"model":"Gemma-2-9B-IT","n":100,"mean":7.299,"ci_lo":5.35,"ci_hi":9.202,"frac_pos":0.84,"p":0.0},{"model":"Gemma-2-27B-IT","n":100,"mean":5.461,"ci_lo":4.177,"ci_hi":6.69,"frac_pos":0.89,"p":0.0},{"model":"Gemma-3-12B-IT","n":100,"mean":12.896,"ci_lo":10.721,"ci_hi":14.929,"frac_pos":0.93,"p":0.0},{"model":"Qwen-2.5-3B-Inst","n":100,"mean":7.888,"ci_lo":6.631,"ci_hi":9.157,"frac_pos":0.9,"p":0.0},{"model":"Qwen-2.5-7B-Inst","n":100,"mean":15.33,"ci_lo":13.337,"ci_hi":17.308,"frac_pos":0.95,"p":0.0},{"model":"Qwen-2.5-14B-Inst","n":100,"mean":17.705,"ci_lo":14.299,"ci_hi":20.931,"frac_pos":0.9,"p":0.0},{"model":"Qwen-2.5-32B-Inst","n":100,"mean":17.755,"ci_lo":14.946,"ci_hi":20.394,"frac_pos":0.91,"p":0.0},{"model":"Llama-3.1-8B-IT","n":100,"mean":3.604,"ci_lo":2.95,"ci_hi":4.239,"frac_pos":0.84,"p":0.0}],"fig1_scatter":{"cols":["cond","sym"],"rows":[[-11.9688,2.375],[-13.0,10.125],[-8.375,18.125],[-13.1875,-14.4375],[-15.375,7.125],[-10.75,11.875],[-12.6875,12.25],[-4.625,15.1875],[-14.9375,15.25],[-10.25,-4.25],[-17.2188,-13.75],[-15.375,-15.6875],[-15.4062,-14.75],[-13.0,18.9375],[-12.125,-15.5],[-17.0,-15.1562],[-9.0625,-15.5625],[-11.3125,14.875],[-10.5,-12.7188],[-16.875,-16.4688],[-16.0938,-13.7812],[-15.7188,-15.9688],[-9.75,14.875],[8.625,14.3125],[-17.5,-12.625],[-16.625,-15.8438],[-11.0,4.125],[-11.9688,-14.4688],[-17.125,7.5],[-13.25,-7.875],[-15.25,-10.25],[-8.5625,-15.3125],[10.875,15.8125],[-15.3438,-9.25],[-12.4062,-13.25],[-17.9375,0.375],[14.5,-14.4375],[-10.5625,-8.125],[-18.9375,-16.0],[-16.625,17.1875],[-13.5625,-14.0625],[-14.2188,-13.6562],[-11.5,19.125],[-15.0312,-5.25],[-14.125,19.5],[-17.8125,-12.75],[-11.25,1.75],[-14.5625,-10.5],[-10.125,-13.0],[-11.8125,18.1875],[-4.875,5.75],[-14.375,14.375],[-10.5,-13.5],[-12.125,18.125],[-12.3125,-5.375],[-14.4375,-14.25],[-15.1562,-1.25],[-11.5625,16.375],[-15.4375,16.5625],[-12.3125,13.75],[1.25,12.375],[-13.5312,-16.0625],[-15.5312,12.8125],[-9.875,13.1875],[-13.3125,15.6875],[-10.125,-8.5],[-17.3438,-15.8438],[-15.7812,-12.75],[-15.125,18.875],[-17.0938,16.0625],[-15.125,9.0],[-14.4688,-7.75],[-15.5625,-13.1875],[11.375,14.4375],[-14.625,16.0],[-15.4688,15.1875],[-8.0625,18.875],[8.6875,-14.3125],[-14.3125,-14.0625],[-12.4688,-10.0],[-16.4688,-11.1875],[-17.0938,-15.875],[-14.5312,16.75],[-12.0,4.0],[-13.75,-13.875],[-9.25,16.5],[-14.25,6.75],[-17.0312,-7.625],[-13.9375,-11.75],[-15.25,0.625],[-13.9688,12.9375],[4.875,18.875],[-17.1875,-13.875],[-15.625,-11.875],[-14.1875,19.1875],[-18.0312,-15.5312],[-11.625,-11.6875],[-13.6875,17.75],[-13.625,9.25],[-14.1875,15.5]]},"fig1_shift_hist":{"cols":["center","count"],"rows":[[-27.1892,1.0],[-23.6927,1.0],[-20.1962,0.0],[-16.6997,0.0],[-13.2031,0.0],[-9.7066,0.0],[-6.21007,2.0],[-2.71354,7.0],[0.782986,22.0],[4.27951,15.0],[7.77604,4.0],[11.2726,4.0],[14.7691,6.0],[18.2656,2.0],[21.7622,6.0],[25.2587,10.0],[28.7552,8.0],[32.2517,12.0]]},"fig2_cosine":{"cols":["layer","final","meanpool"],"rows":[[0.0,0.999981,0.998453],[1.0,0.999939,0.998338],[2.0,0.999961,0.998801],[3.0,0.999969,0.998784],[4.0,0.99998,0.999634],[5.0,0.999987,0.999703],[6.0,0.999976,0.999754],[7.0,0.999979,0.999836],[8.0,0.999986,0.99991],[9.0,0.999988,0.999925],[10.0,0.999991,0.999945],[11.0,0.999989,0.999956],[12.0,0.999988,0.999958],[13.0,0.999985,0.999962],[14.0,0.999969,0.999958],[15.0,0.99984,0.999929],[16.0,0.999725,0.999882],[17.0,0.999552,0.99987],[18.0,0.999456,0.999854],[19.0,0.999141,0.99984],[20.0,0.998437,0.999762],[21.0,0.99791,0.999733],[22.0,0.995993,0.999682],[23.0,0.993937,0.999631],[24.0,0.993863,0.999479],[25.0,0.99118,0.999404],[26.0,0.990396,0.999314],[27.0,0.989156,0.999281],[28.0,0.990332,0.999306],[29.0,0.989232,0.999292],[30.0,0.986517,0.99912],[31.0,0.986575,0.998944],[32.0,0.986626,0.998891],[33.0,0.935605,0.997251]]},"fig2_probe_accuracy":{"cols":["layer","D0","D2_anon","D1_style"],"rows":[[0.0,0.89,0.908333,0.766667],[1.0,0.91,0.908333,0.733333],[2.0,0.885,0.941667,0.9],[3.0,0.89,0.941667,0.933333],[4.0,0.915,0.941667,0.966667],[5.0,0.89,0.958333,0.9],[6.0,0.91,0.966667,0.866667],[7.0,0.915,0.975,0.866667],[8.0,0.93,0.975,0.9],[9.0,0.93,0.975,0.8],[10.0,0.935,0.966667,0.8],[11.0,0.945,0.983333,0.966667],[12.0,0.95,0.966667,0.966667],[13.0,0.96,0.991667,0.966667],[14.0,0.965,0.991667,0.9],[15.0,0.955,0.966667,0.9],[16.0,0.96,0.983333,0.9],[17.0,0.96,0.975,0.833333],[18.0,0.96,0.983333,0.866667],[19.0,0.95,0.966667,0.866667],[20.0,0.945,0.958333,0.833333],[21.0,0.945,0.966667,0.866667],[22.0,0.935,0.958333,0.866667],[23.0,0.94,0.95,0.866667],[24.0,0.935,0.941667,0.866667],[25.0,0.925,0.941667,0.9],[26.0,0.935,0.95,0.833333],[27.0,0.93,0.958333,0.8],[28.0,0.93,0.958333,0.8],[29.0,0.925,0.95,0.766667],[30.0,0.92,0.941667,0.766667],[31.0,0.935,0.958333,0.8],[32.0,0.935,0.95,0.833333],[33.0,0.935,0.95,0.766667]]},"fig3_alignment":{"cols":["layer","cos_align"],"rows":[[0.0,-0.00385206],[1.0,-0.00520667],[2.0,-0.024317],[3.0,0.0122912],[4.0,0.0139803],[5.0,0.0200673],[6.0,0.017694],[7.0,-0.00731998],[8.0,-0.00240361],[9.0,0.00349076],[10.0,0.00603007],[11.0,0.0101338],[12.0,-0.0158848],[13.0,-0.0346059],[14.0,-0.0192916],[15.0,-0.00709788],[16.0,0.0360224],[17.0,0.0235096],[18.0,0.0122327],[19.0,0.0407795],[20.0,0.0360851],[21.0,0.0404465],[22.0,0.0989238],[23.0,0.165227],[24.0,0.14779],[25.0,0.3071],[26.0,0.283328],[27.0,0.296826],[28.0,0.268878],[29.0,0.243989],[30.0,0.261361],[31.0,0.225093],[32.0,0.192728],[33.0,0.0616611]]},"fig3_lens_trajectories":{"cols":["layer","sym","cond","abst"],"rows":[[0.0,4.06499,4.08894,3.81891],[1.0,8.26207,8.24154,7.97461],[2.0,8.44142,8.48346,8.41119],[3.0,8.87135,8.85508,8.82819],[4.0,7.4894,7.50391,7.47531],[5.0,6.48914,6.49145,6.44799],[6.0,6.37479,6.34468,6.20218],[7.0,5.37488,5.39586,5.34959],[8.0,4.14075,4.14306,4.12061],[9.0,3.87949,3.90107,4.00965],[10.0,1.85998,1.86159,1.94156],[11.0,1.20742,1.22283,1.28302],[12.0,0.587761,0.635269,0.698203],[13.0,0.195385,0.225051,0.337186],[14.0,0.315644,0.29138,0.475171],[15.0,0.496957,0.340184,0.517933],[16.0,1.65084,1.21206,1.56853],[17.0,0.569736,0.0847881,0.337806],[18.0,-0.0898107,-0.450664,-0.515858],[19.0,2.27016,1.3465,1.34598],[20.0,2.36282,1.14969,1.31134],[21.0,3.02606,1.60339,2.24435],[22.0,2.66371,-0.819218,0.190129],[23.0,4.67041,-1.92621,0.42442],[24.0,3.38878,-2.29656,-0.554857],[25.0,-2.00126,-15.3516,-10.9659],[26.0,-1.50468,-14.0332,-10.1445],[27.0,-7.58202,-21.3013,-16.5748],[28.0,-4.93156,-16.5024,-12.6721],[29.0,-0.576156,-11.4305,-7.9905],[30.0,-1.61609,-14.6965,-10.4294],[31.0,-3.07286,-14.108,-10.4527],[32.0,-0.857458,-10.8697,-7.64099],[33.0,0.0955391,-12.0788,-8.41751]]},"fig3_sc_gap":{"cols":["layer","sc_gap"],"rows":[[0.0,-0.0239511],[1.0,0.0205284],[2.0,-0.0420419],[3.0,0.0162771],[4.0,-0.0145159],[5.0,-0.00230192],[6.0,0.030106],[7.0,-0.0209889],[8.0,-0.00230848],[9.0,-0.0215862],[10.0,-0.0016131],[11.0,-0.015403],[12.0,-0.047508],[13.0,-0.0296666],[14.0,0.0242638],[15.0,0.156773],[16.0,0.438776],[17.0,0.484947],[18.0,0.360853],[19.0,0.923667],[20.0,1.21313],[21.0,1.42268],[22.0,3.48293],[23.0,6.59661],[24.0,5.68534],[25.0,13.3503],[26.0,12.5286],[27.0,13.7193],[28.0,11.5708],[29.0,10.8543],[30.0,13.0804],[31.0,11.0352],[32.0,10.0122],[33.0,12.1743]]},"fig4_component_heatmap":{"cols":["layer","comp_idx","rec"],"rows":[[18.0,0.0,0.750831],[19.0,0.0,-0.275437],[20.0,0.0,-0.25609],[21.0,0.0,-0.78216],[22.0,0.0,-0.373819],[23.0,0.0,0.063402],[24.0,0.0,0.101662],[25.0,0.0,0.183983],[26.0,0.0,0.0278302],[27.0,0.0,0.137414],[28.0,0.0,0.310573],[29.0,0.0,0.411803],[30.0,0.0,0.472509],[31.0,0.0,0.631272],[32.0,0.0,0.384518],[33.0,0.0,0.970315],[18.0,1.0,-0.275437],[19.0,1.0,-0.25609],[20.0,1.0,-0.78216],[21.0,1.0,-0.373819],[22.0,1.0,0.063402],[23.0,1.0,0.101662],[24.0,1.0,0.183983],[25.0,1.0,0.0278302],[26.0,1.0,0.137414],[27.0,1.0,0.310573],[28.0,1.0,0.411803],[29.0,1.0,0.472509],[30.0,1.0,0.631272],[31.0,1.0,0.384518],[32.0,1.0,0.970315],[33.0,1.0,0.346883],[18.0,2.0,0.068448],[19.0,2.0,-0.0668018],[20.0,2.0,-0.0389301],[21.0,2.0,0.0210056],[22.0,2.0,0.134661],[23.0,2.0,-0.245119],[24.0,2.0,-0.0349388],[25.0,2.0,0.0518537],[26.0,2.0,-0.032148],[27.0,2.0,-0.0860683],[28.0,2.0,0.0337443],[29.0,2.0,0.10194],[30.0,2.0,0.167973],[31.0,2.0,0.158169],[32.0,2.0,0.074063],[33.0,2.0,-0.306756],[18.0,3.0,-0.392736],[19.0,3.0,-0.0186786],[20.0,3.0,-0.482563],[21.0,3.0,-0.395771],[22.0,3.0,0.0384006],[23.0,3.0,0.0947493],[24.0,3.0,-0.0790591],[25.0,3.0,-0.185601],[26.0,3.0,0.0318497],[27.0,3.0,-0.111615],[28.0,3.0,-0.17386],[29.0,3.0,0.125944],[30.0,3.0,0.276083],[31.0,3.0,-0.388811],[32.0,3.0,0.0275725],[33.0,3.0,0.166516]]},"fig4b_resid":{"cols":["layer","median","mean"],"rows":[[0.0,0.0,0.275515],[1.0,0.0467988,0.432188],[2.0,0.0290266,0.465567],[3.0,0.0311606,0.887051],[4.0,0.0595829,0.63705],[5.0,0.0178728,1.15455],[6.0,0.0184727,1.55921],[7.0,0.0218295,1.30466],[8.0,0.00720721,0.151902],[9.0,0.0262337,0.527565],[10.0,0.0,-0.0509918],[11.0,0.0151505,0.824766],[12.0,0.00885233,0.802249],[13.0,0.00206612,0.173563],[14.0,0.0186244,0.418018],[15.0,0.0385135,0.514228],[16.0,0.149554,0.618326],[17.0,0.317755,1.49449],[18.0,0.355726,1.24321],[19.0,0.322293,0.870733],[20.0,0.335391,0.945923],[21.0,0.44356,0.955724],[22.0,0.458787,1.26108],[23.0,0.505102,1.70172],[24.0,0.522416,1.68637],[25.0,0.524582,1.89226],[26.0,0.553486,1.86789],[27.0,0.596159,1.84281],[28.0,0.63827,2.23962],[29.0,0.613093,2.25353],[30.0,0.651319,2.25281],[31.0,0.622642,2.28523],[32.0,0.662149,1.96302],[33.0,0.67878,2.2762]]},"fig5_steering":{"cols":["add[ortho_frame]","-0.295941"],"rows":[["add[random_norm_matched]",-0.0282181],["subspace_rm[random_top1]",-0.0242118],["subspace_rm[random_top2]",-0.0181153],["add[pca_top1]",0.00104512],["add[judgment]",0.00452883],["subspace_rm[random_top4]",0.00592231],["proj_rm[random]",0.0846542],["subspace_rm[random_top8]",0.137607],["add[mean]",0.391047],["subspace_rm[pca_top1]",0.7915],["proj_rm[pca_top1]",0.793938],["proj_rm[judgment]",0.85891],["proj_rm[mean]",0.890263],["subspace_rm[pca_top2]",0.919352],["subspace_rm[pca_top4]",0.957847],["subspace_rm[pca_top8]",0.985368]]},"fig6_cross_model":{"cols":["idx","S_C","ci_lo","ci_hi","lens_last","probe_best_layer_norm"],"rows":[[0.0,12.1772,9.48299,14.8167,12.1743,0.424242],[1.0,10.775,4.74062,17.8281,"None",0.121212],[2.0,6.19297,1.29193,11.0636,6.19599,0.393939],[3.0,0.04125,-0.086875,0.163125,0.0433,0.757576],[4.0,10.3129,7.67421,13.1733,10.6555,0.36],[5.0,8.21719,6.33654,10.1656,8.2106,0.571429]]},"fig_align_pt_vs_it":{"cols":["layer","it","pt"],"rows":[[0.0,-0.003852,0.001342],[1.0,-0.005207,-0.012973],[2.0,-0.024317,0.005687],[3.0,0.012291,0.009976],[4.0,0.01398,0.034067],[5.0,0.020067,0.041411],[6.0,0.017694,0.05091],[7.0,-0.00732,0.038735],[8.0,-0.002404,0.002374],[9.0,0.003491,0.015686],[10.0,0.00603,0.040654],[11.0,0.010134,0.002373],[12.0,-0.015885,-0.013239],[13.0,-0.034606,-0.01645],[14.0,-0.019292,0.051239],[15.0,-0.007098,-0.012499],[16.0,0.036022,-0.000498],[17.0,0.02351,0.039165],[18.0,0.012233,0.022031],[19.0,0.04078,0.021382],[20.0,0.036085,0.018473],[21.0,0.040446,0.020814],[22.0,0.098924,0.03101],[23.0,0.165227,0.038451],[24.0,0.14779,0.035117],[25.0,0.3071,0.036496],[26.0,0.283328,0.036889],[27.0,0.296826,0.032618],[28.0,0.268878,0.039068],[29.0,0.243989,0.037232],[30.0,0.261361,0.041018],[31.0,0.225093,0.046023],[32.0,0.192728,0.041981],[33.0,0.061661,-0.001555]]},"fig_pca_it_arrows":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,-3603.44,-695.218],[0.0,0.0,-3401.99,1376.43]]},"fig_pca_it_cond":{"cols":["x","y"],"rows":[[0.53203,0.02663],[0.48024,-0.41113],[-0.13133,-0.67483],[0.61217,0.2559],[0.73051,0.77902],[0.31477,-0.69061],[0.26646,-0.39694],[-0.34026,-0.52472],[0.70403,0.25132],[0.21838,-0.52765],[0.72368,0.57474],[0.67936,0.4685],[0.7084,0.50552],[0.26826,-0.64574],[0.57035,0.23073],[0.6811,0.76457],[0.11184,-0.68887],[0.46566,-0.12478],[0.38374,-0.49414],[0.71078,0.79748],[0.72273,0.72345],[0.78834,0.6149],[0.25667,-0.60476],[-0.95224,-0.30741],[0.749,0.58236],[0.71358,0.89011],[0.14411,-0.72302],[0.73257,0.21218],[0.75707,0.83151],[0.67747,0.26725],[0.69741,0.41806],[0.16736,-0.61991],[-0.99965,-0.22127],[0.69317,0.64045],[0.70689,-0.01435],[0.72828,0.62564],[-1.23554,0.79797],[0.56719,-0.14173],[0.71463,0.82697],[0.74534,0.55875],[0.41369,-0.26351],[0.69234,0.21843],[0.55283,-0.00986],[0.63167,0.0652],[0.3689,-0.33527],[0.72967,0.71789],[0.53848,-0.06989],[0.57473,-0.01316],[-0.07592,-0.42657],[0.45221,-0.25205],[-0.30717,-0.40561],[0.71536,0.22568],[0.48116,-0.10628],[0.5476,-0.3843],[0.64136,0.22112],[0.69725,0.43653],[0.76339,0.38475],[0.23705,-0.49137],[0.69111,0.48972],[0.18008,-0.52027],[-0.68285,-0.68417],[0.63981,-0.14489],[0.66541,0.45288],[-0.02344,-0.58184],[0.40049,-0.24417],[0.47374,-0.35416],[0.69174,0.4896],[0.72917,0.42914],[0.70322,0.39412],[0.74223,0.65229],[0.65155,-0.06958],[0.69093,0.39552],[0.69734,0.45526],[-0.96874,-0.19739],[0.64347,0.48079],[0.7104,0.58725],[0.03312,-0.37211],[-1.03208,0.09633],[0.55907,0.03358],[0.6265,-0.44433],[0.68522,0.57101],[0.61343,0.72864],[0.62468,0.13348],[0.51077,-0.03418],[0.56242,0.30145],[-0.19893,-0.51853],[0.60542,-0.07175],[0.75762,0.44007],[0.60583,-0.08529],[0.70213,0.20156],[0.6359,-0.01718],[-0.80632,-0.24977],[0.6609,0.65034],[0.57142,0.06172],[0.7959,0.27079],[0.69355,0.80722],[0.49766,-0.30633],[0.17753,-0.40198],[0.2728,-0.18713],[0.67122,0.15637]]},"fig_pca_it_dframe":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,-0.98189,-0.18944]]},"fig_pca_it_djudge":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,-0.927,0.37506]]},"fig_pca_it_sym":{"cols":["x","y"],"rows":[[-0.68883,-0.48588],[-0.96837,-0.09023],[-1.33916,0.79907],[0.44828,-0.23271],[-0.88063,-0.31995],[-1.10568,0.1785],[-1.06565,-0.05022],[-1.25861,0.4421],[-1.21678,0.48722],[-0.40597,-0.54671],[0.51955,-0.01423],[0.65462,0.05455],[0.57267,-0.05622],[-1.32907,0.8528],[0.23298,-0.29516],[0.49728,-0.25143],[0.66428,0.2074],[-1.15247,0.03077],[0.49458,-0.2818],[0.69075,0.01225],[0.51122,-0.22306],[0.62101,0.1202],[-1.03723,-0.13579],[-1.30294,0.534],[0.38862,-0.36617],[0.60322,-0.01935],[-0.77607,-0.29283],[0.61307,0.06835],[-0.88495,-0.32698],[-0.35851,-0.42556],[-0.0379,-0.61351],[0.14964,-0.33492],[-1.26933,0.29026],[-0.28604,-0.46391],[0.55434,-0.22659],[-0.68593,-0.42203],[0.29345,-0.42888],[-0.37495,-0.52647],[0.60112,-0.13955],[-1.36133,0.59064],[0.21901,-0.48424],[0.55628,-0.18766],[-1.31564,0.62891],[-0.49108,-0.68223],[-1.27795,0.24593],[0.31996,-0.53133],[-0.72943,-0.33079],[0.03029,-0.63364],[0.32851,-0.67941],[-1.25494,0.1297],[-0.80626,-0.30139],[-1.14039,0.07685],[0.54282,-0.36828],[-1.34733,0.60089],[-0.43817,-0.49422],[0.21643,-0.41051],[-0.5298,-0.57355],[-1.29711,0.48813],[-1.31816,0.48054],[-1.11206,-0.10242],[-1.11597,0.00248],[0.74901,0.23518],[-1.18807,-0.03026],[-1.22659,0.33277],[-1.22458,0.26442],[-0.05347,-0.50302],[0.6723,0.10324],[0.23761,-0.53579],[-1.28876,0.17631],[-1.23744,0.49766],[-0.89213,-0.29458],[-0.2142,-0.7624],[0.32414,-0.55971],[-1.21007,0.31886],[-1.29512,0.30069],[-1.31186,0.65298],[-1.33646,0.70625],[0.445,-0.33267],[0.41273,-0.36653],[-0.168,-0.61113],[0.07848,-0.66934],[0.64087,-0.00878],[-1.26841,0.35575],[-0.78225,-0.21194],[0.43426,-0.40994],[-1.24782,0.0999],[-0.91707,-0.25693],[-0.28874,-0.56656],[0.02463,-0.52404],[-0.6193,-0.4411],[-1.1608,0.23243],[-1.31604,0.64102],[0.53435,-0.01471],[0.29281,-0.50203],[-1.32812,0.55694],[0.66486,-0.04429],[0.08618,-0.6248],[-1.25105,0.6291],[-1.06961,-0.16468],[-1.24507,0.22198]]},"fig_pca_pt_arrows":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,447.859,172.197],[0.0,0.0,374.946,299.408]]},"fig_pca_pt_cond":{"cols":["x","y"],"rows":[[0.35291,0.05805],[1.70939,0.20351],[-0.16409,-0.17553],[0.09063,0.03655],[0.65141,0.1513],[-2.5818,0.36751],[-0.7027,-0.28384],[-0.16318,0.16638],[-0.70689,0.44871],[1.44044,0.34651],[-0.16097,-0.32205],[0.64303,0.10794],[-2.04333,-0.51215],[-1.23044,-0.09633],[-0.42429,0.16152],[0.62997,-0.19942],[-0.16778,0.10942],[-0.16351,0.16894],[1.17845,0.14998],[0.38794,0.38164],[0.09011,0.11495],[-0.97022,0.33328],[-1.22832,-0.08753],[1.1857,0.16211],[0.91261,0.18576],[0.64867,0.10265],[1.97543,0.2403],[1.17453,0.11452],[1.18166,0.02494],[1.43602,0.18498],[0.10198,0.08095],[-0.44365,0.62695],[-1.76636,-0.14541],[-0.43838,0.41065],[0.38627,-0.15742],[-0.43638,0.07441],[1.17934,0.01144],[-0.95662,0.00426],[1.1827,0.06212],[0.11276,-0.16726],[-0.43167,-0.04053],[0.63793,-0.19958],[0.3697,0.16064],[0.35709,0.09888],[0.89628,-0.05128],[0.09499,-0.0141],[0.37188,-0.05769],[2.25085,-0.14865],[-0.17009,-0.29868],[0.64124,-0.27982],[-0.43936,-0.2278],[0.87921,-0.06832],[-0.18871,0.01539],[0.09315,0.00351],[0.35746,-0.32433],[0.35521,-0.24984],[-0.97128,-0.18376],[0.08504,0.0753],[-1.23975,-0.22786],[-1.79162,-0.01139],[0.63234,-0.12625],[-0.1661,-0.06763],[0.09612,-0.23527],[-0.69594,-0.12922],[0.09105,-0.21101],[-0.97442,-0.22447],[0.36785,-0.12234],[0.09905,-0.16884],[0.10075,-0.06923],[-1.26372,0.19786],[0.90193,-0.21166],[-0.16887,-0.1278],[-1.24521,0.0199],[-0.17901,-0.18754],[-0.71398,-0.04224],[0.09192,-0.40816],[-0.18262,0.04615],[-0.17178,-0.15397],[-0.44208,-0.1909],[0.35358,-0.37324],[0.88961,0.03205],[0.37328,-0.21625],[-0.68806,-0.39818],[-0.43095,-0.26546],[0.08689,-0.2081],[-0.69676,-0.25053],[-0.16862,-0.24893],[-0.71658,-0.02166],[-2.07244,0.27925],[-0.98375,-0.15025],[-0.98511,-0.04284],[-0.19246,0.12709],[0.37142,-0.29578],[-2.07169,0.35505],[-1.23955,-0.24854],[-2.31341,-0.0191],[-0.17484,-0.16457],[-0.97463,-0.30876],[0.09783,-0.09592],[-0.43371,-0.22994]]},"fig_pca_pt_dframe":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,0.93339,0.35888]]},"fig_pca_pt_djudge":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,0.78143,0.624]]},"fig_pca_pt_sym":{"cols":["x","y"],"rows":[[0.1079,-0.24428],[-0.69578,-0.11911],[0.35894,0.77208],[0.09408,0.61225],[0.91954,0.16617],[0.09816,0.08453],[-0.43596,0.26626],[0.10417,0.02424],[0.64541,0.24753],[0.10166,-0.08885],[1.45627,0.26342],[0.38824,0.10608],[-0.69788,-0.06962],[0.09602,0.24773],[0.37501,-0.00109],[0.11084,-0.1026],[1.4407,0.16921],[-0.41785,-0.04522],[1.70969,0.29598],[0.9088,0.41763],[0.1061,0.39799],[-0.15615,0.19345],[-1.23075,0.32799],[0.37542,0.32162],[0.91858,-0.04333],[-0.44171,0.20604],[1.17384,0.30236],[0.90727,0.11193],[-0.16018,0.18422],[0.64459,-0.04897],[-0.17012,0.16403],[-0.14719,0.14518],[0.09978,0.25906],[0.37507,0.4631],[0.63269,0.04876],[1.70637,0.14344],[-2.3154,0.28225],[0.91449,0.35808],[0.10911,0.35362],[-0.97177,0.31779],[1.70817,-0.20098],[1.97734,-0.09975],[-1.22291,-0.10539],[-0.96956,-0.29844],[-0.17183,-0.16894],[-0.17812,0.20986],[0.09857,-8e-05],[1.15941,-0.2252],[0.62474,-0.04538],[0.37328,-0.16375],[-0.166,-0.19911],[0.90829,-0.10668],[-0.18009,-0.13478],[-1.52795,0.38263],[0.35107,-0.06298],[-0.44513,0.01838],[-0.17845,0.1339],[0.36222,0.01668],[0.62205,-0.34834],[0.0892,0.0997],[0.63022,-0.37094],[-0.7042,-0.06746],[0.09541,-0.29513],[0.36305,-0.14697],[-1.77466,-0.12955],[0.63462,-0.17298],[0.10187,-0.04882],[-0.7369,0.48718],[0.37146,-0.11245],[1.71235,-0.20723],[0.08966,-0.08379],[0.89769,-0.04856],[0.63738,-0.21366],[-0.46321,0.24217],[1.17294,-0.20314],[-0.18599,0.13502],[0.09732,-0.14547],[-0.17377,-0.118],[-0.19252,0.23442],[0.64309,-0.16823],[-0.17932,-0.20567],[-0.43473,-0.15317],[-1.52593,0.1346],[1.42494,-0.05947],[0.3611,-0.14887],[-0.18459,-0.0801],[-0.17317,-0.20493],[-0.4441,-0.07968],[-0.44279,-0.28261],[0.08603,0.13162],[-0.17876,-0.21948],[-2.08107,0.21035],[-0.45913,-0.04521],[-0.71783,0.18234],[0.08906,0.0106],[-1.76452,-0.248],[-1.00605,0.42952],[0.35341,-0.2122],[0.35991,-0.04238],[1.16143,-0.13411]]},"fig_probe_pt_vs_it":{"cols":["layer","pt","it"],"rows":[[0.0,0.89,0.89],[1.0,0.9,0.91],[2.0,0.89,0.885],[3.0,0.905,0.89],[4.0,0.895,0.915],[5.0,0.89,0.89],[6.0,0.875,0.91],[7.0,0.87,0.915],[8.0,0.86,0.93],[9.0,0.855,0.93],[10.0,0.885,0.935],[11.0,0.87,0.945],[12.0,0.87,0.95],[13.0,0.88,0.96],[14.0,0.855,0.965],[15.0,0.9,0.955],[16.0,0.885,0.96],[17.0,0.89,0.96],[18.0,0.895,0.96],[19.0,0.88,0.95],[20.0,0.88,0.945],[21.0,0.89,0.945],[22.0,0.875,0.935],[23.0,0.885,0.94],[24.0,0.885,0.935],[25.0,0.92,0.925],[26.0,0.915,0.935],[27.0,0.91,0.93],[28.0,0.9,0.93],[29.0,0.89,0.925],[30.0,0.9,0.92],[31.0,0.895,0.935],[32.0,0.885,0.935],[33.0,0.875,0.935]]},"fig_writer_heads":{"cols":["layer","head","proj"],"rows":[[10.0,0.0,0.000613073],[10.0,1.0,0.00277604],[10.0,2.0,0.0028247],[10.0,3.0,0.00260472],[10.0,4.0,-0.00244104],[10.0,5.0,-0.00129432],[10.0,6.0,-0.00372675],[10.0,7.0,-0.00248701],[11.0,0.0,0.000275718],[11.0,1.0,0.00169697],[11.0,2.0,0.00166022],[11.0,3.0,-0.00731646],[11.0,4.0,-0.000490475],[11.0,5.0,0.000336902],[11.0,6.0,0.00415068],[11.0,7.0,0.00106906],[12.0,0.0,-0.00261183],[12.0,1.0,-0.00145143],[12.0,2.0,-0.000978934],[12.0,3.0,0.00227364],[12.0,4.0,0.000147895],[12.0,5.0,0.00339758],[12.0,6.0,-0.0164297],[12.0,7.0,0.00692709],[13.0,0.0,-0.00137869],[13.0,1.0,0.00882728],[13.0,2.0,0.00266337],[13.0,3.0,0.000388041],[13.0,4.0,0.00502701],[13.0,5.0,-0.0123777],[13.0,6.0,-0.000668822],[13.0,7.0,0.00159419],[14.0,0.0,0.00630168],[14.0,1.0,-0.0126517],[14.0,2.0,-0.00598018],[14.0,3.0,0.0121978],[14.0,4.0,0.00666301],[14.0,5.0,0.00196451],[14.0,6.0,0.0169457],[14.0,7.0,-0.00154995],[15.0,0.0,-0.0128128],[15.0,1.0,-0.00699056],[15.0,2.0,-0.00178584],[15.0,3.0,-0.000253016],[15.0,4.0,0.0106102],[15.0,5.0,0.014108],[15.0,6.0,0.00160035],[15.0,7.0,0.00981284],[16.0,0.0,-8.92099e-05],[16.0,1.0,-0.0186097],[16.0,2.0,-0.00168373],[16.0,3.0,0.0101948],[16.0,4.0,0.0215746],[16.0,5.0,0.038106],[16.0,6.0,0.000745951],[16.0,7.0,0.000579707],[17.0,0.0,0.0473043],[17.0,1.0,-0.0258725],[17.0,2.0,-0.00209078],[17.0,3.0,-7.55306e-05],[17.0,4.0,0.00417774],[17.0,5.0,0.00595112],[17.0,6.0,0.00684547],[17.0,7.0,-0.00216254],[18.0,0.0,-0.011895],[18.0,1.0,-0.00492826],[18.0,2.0,-0.0402254],[18.0,3.0,0.0326034],[18.0,4.0,-0.0105414],[18.0,5.0,-0.00520541],[18.0,6.0,-0.00187673],[18.0,7.0,0.0228704],[19.0,0.0,0.00139978],[19.0,1.0,-0.0208788],[19.0,2.0,-0.0126881],[19.0,3.0,0.00725462],[19.0,4.0,0.00290149],[19.0,5.0,0.00623362],[19.0,6.0,0.00019173],[19.0,7.0,0.0092886],[20.0,0.0,0.0916631],[20.0,1.0,0.00684316],[20.0,2.0,-0.00025422],[20.0,3.0,-0.00806869],[20.0,4.0,0.00767139],[20.0,5.0,0.00189867],[20.0,6.0,-0.0767467],[20.0,7.0,0.0454707],[21.0,0.0,-0.0159674],[21.0,1.0,0.00606005],[21.0,2.0,0.0312935],[21.0,3.0,-0.010986],[21.0,4.0,-0.00928138],[21.0,5.0,-0.00312279],[21.0,6.0,-0.0396016],[21.0,7.0,0.0179968],[22.0,0.0,0.00604756],[22.0,1.0,-0.0111914],[22.0,2.0,-0.0126205],[22.0,3.0,0.0367635],[22.0,4.0,0.00389739],[22.0,5.0,0.0187353],[22.0,6.0,-0.013365],[22.0,7.0,-0.00912713],[23.0,0.0,0.0167806],[23.0,1.0,0.258433],[23.0,2.0,-0.119113],[23.0,3.0,0.714754],[23.0,4.0,-3.68251e-05],[23.0,5.0,0.0576595],[23.0,6.0,0.000105283],[23.0,7.0,0.286324],[24.0,0.0,-0.000674274],[24.0,1.0,0.0163662],[24.0,2.0,-0.0804998],[24.0,3.0,-0.0074901],[24.0,4.0,0.000860045],[24.0,5.0,-0.0122531],[24.0,6.0,0.248123],[24.0,7.0,-0.504614],[25.0,0.0,0.0469977],[25.0,1.0,-0.0111932],[25.0,2.0,0.00778991],[25.0,3.0,0.0432688],[25.0,4.0,0.0227013],[25.0,5.0,-0.00620053],[25.0,6.0,-0.00102762],[25.0,7.0,-0.00459715]]}}</script>
 <script>
 (function(){
@@ -645,6 +742,7 @@ function setLayer(l){
   $('#vPT').textContent = `Decodable (${pp.toFixed(2)}), but the framing direction sits ${(Math.acos(pt)*180/Math.PI).toFixed(0)}° from the readout.`;
   $('#vIT').textContent = it>0.15 ? `Decodable (${pi.toFixed(2)}) and turned toward the readout, ${(Math.acos(it)*180/Math.PI).toFixed(0)}° away.` : `Decodable (${pi.toFixed(2)}), still near-orthogonal to the readout at this layer.`;
   $('#ratio').textContent = l===25 ? 'Layer-matched ratio IT / PT = 8.4×' : (it>0.15 ? 'IT alignment above the PT noise floor' : 'Both at the noise floor (PT max |ρ| = 0.052)');
+  document.dispatchEvent(new CustomEvent('layerchange',{detail:l}));
 }
 
 /* ---------- Figure 2: PCA ---------- */
@@ -696,6 +794,7 @@ reg(function lens(){
     dots.forEach((d,k)=>{d.setAttribute('cx',x(l));d.setAttribute('cy',y(rows[l][series[k][0]]));d.setAttribute('opacity',1);});
     showTip(`layer ${l}<br>`+series.map(([i,c,n])=>`${n} ${sgn(rows[l][i],2)}`).join('<br>'),ev);});
   hit.addEventListener('mouseleave',()=>{hideTip();cur.setAttribute('opacity',0);dots.forEach(d=>d.setAttribute('opacity',0));});
+  window.__lens={s,x,top:m.t,bot:H-m.b}; document.dispatchEvent(new Event('lensdrawn'));
 });
 $('#lensMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#lensMode').children].forEach(x=>x.setAttribute('aria-pressed',x===b));lensMode=b.dataset.m;});
 const lensDraw=draws[draws.length-1];
@@ -733,7 +832,7 @@ $('#subL').addEventListener('click',e=>{const b=e.target.closest('button');if(!b
 /* ---------- Figure 5: heatmap ---------- */
 reg(function heat(){
   const s=$('#heat'), W=fit(s,10), m={l:40,r:4,t:24,b:4}, cw=(W-m.l-m.r)/8, ch=Math.min(30,Math.max(22,cw*0.62)), H=m.t+m.b+16*ch;
-  s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.setAttribute('height',H);
+  s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.setAttribute('height',H); window.__heat={s,m,cw,ch};
   for(let h=0;h<8;h++) txt(s,m.l+h*cw+cw/2,m.t-8,'h'+h,{'text-anchor':'middle'});
   for(let l=10;l<=25;l++) txt(s,m.l-8,m.t+(l-10)*ch+ch/2+4,'L'+l,{'text-anchor':'end',style:`fill:${l>=23&&l<=24?'var(--ink)':'var(--ink2)'}`,'font-weight':l>=23&&l<=24?600:400});
   D.fig_writer_heads.rows.forEach(([l,h,v])=>{const xx=m.l+h*cw, yy=m.t+(l-10)*ch;
@@ -744,6 +843,7 @@ reg(function heat(){
     r.addEventListener('mouseenter',ev=>{info();showTip(`L${l} h${h}<br>${sgn(v)}`,ev);}); r.addEventListener('mousemove',moveTip); r.addEventListener('mouseleave',hideTip); r.addEventListener('click',info);
   });
   el('rect',{x:m.l-1,y:m.t+13*ch,width:8*cw+2,height:2*ch,rx:3,fill:'none',stroke:'var(--ink)','stroke-width':1.2,'stroke-dasharray':'4 3','pointer-events':'none'},s);
+  document.dispatchEvent(new Event('heatdrawn'));
 });
 reg(function abl(){
   const s=$('#abl'), H=240, rows=[['Clean',12.18,null],['Top-10 writers',5.04,-7.14],['Top-10 antagonists',14.65,2.47],['Both sets',7.51,-4.67],['Random 10 heads',12.41,.23]];
@@ -783,11 +883,11 @@ const CF=D.cross_family_ci; const params={'Gemma-3-4B-PT':4,'Gemma-3-4B-IT':4,'G
 const fam=n=>n.startsWith('Gemma-2')?'Gemma-2':n.startsWith('Gemma-3')?'Gemma-3':n.startsWith('Qwen')?'Qwen-2.5':'Llama-3.1';
 let fmode='size';
 reg(function forest(){
-  const s=$('#forest'), rh=34, H=10+30+CF.length*rh, W=fit(s,H), narrow=W<560, m={l:narrow?132:180,r:narrow?14:118,t:10,b:30};
+  const keep=c=>c.model.includes('PT')||!window.__fam||window.__fam==='all'||fam(c.model)===window.__fam, s=$('#forest'), rh=34, H=10+30+CF.filter(keep).length*rh, W=fit(s,H), narrow=W<560, m={l:narrow?132:180,r:narrow?14:118,t:10,b:30};
   const x=v=>m.l+(v+2)/24*(W-m.l-m.r);
   const pt=CF.filter(c=>c.model.includes('PT')), it=CF.filter(c=>!c.model.includes('PT')), fo=['Gemma-2','Gemma-3','Qwen-2.5','Llama-3.1'];
   it.sort(fmode==='size'?(a,b)=>params[a.model]-params[b.model]||a.model.localeCompare(b.model):fmode==='eff'?(a,b)=>b.mean-a.mean:(a,b)=>fo.indexOf(fam(a.model))-fo.indexOf(fam(b.model))||params[a.model]-params[b.model]);
-  const rows=pt.concat(it);
+  const rows=pt.concat(it.filter(keep));
   (narrow?[0,10,20]:[0,5,10,15,20]).forEach(t=>{el('line',{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,stroke:t===0?'var(--muted)':'var(--faint)'},s);txt(s,x(t),H-10,(t>0?'+':'')+t,{'text-anchor':'middle'});});
   if(!narrow) txt(s,W-m.r+12,m.t+10,'shift · frac > 0',{'font-size':10});
   rows.forEach((c,i)=>{const y=m.t+i*rh+rh/2+6, isPT=c.model.includes('PT'), col=isPT?'var(--pt)':(c.model==='Gemma-3-4B-IT'?'var(--it)':'var(--ink2)');
@@ -799,7 +899,7 @@ reg(function forest(){
     const hb=el('rect',{x:0,y:y-rh/2,width:W,height:rh,fill:'transparent'},s);
     hover(hb,`${c.model}${isPT?' (pretrained)':''}<br>shift ${sgn(c.mean,2)}<br>95% CI [${c.ci_lo.toFixed(2)}, ${c.ci_hi.toFixed(2)}]<br>frac > 0 ${c.frac_pos.toFixed(2)}`);});
 });
-const forestDraw=draws[draws.length-1];
+const forestDraw=draws[draws.length-1]; window.__forestDraw=forestDraw;
 $('#sortF').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#sortF').children].forEach(x=>x.setAttribute('aria-pressed',x===b));fmode=b.dataset.s;forestDraw();});
 
 
@@ -838,6 +938,167 @@ $('#copybib').addEventListener('click',()=>{const t=$('#bib').textContent,b=$('#
   try{navigator.clipboard.writeText(t).then(done,sel);}catch(e){sel();}});
 })();
 
+</script>
+
+<script>
+/* Per-section explorables. Every number shown comes from the stored figure data embedded in this page or from the paper text. */
+(function(){
+const D = JSON.parse(document.getElementById('data').textContent);
+const X = JSON.parse(document.getElementById('data-dilemmas').textContent);
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a={},p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sg=(v,d=2)=>(v<0?'−':'+')+Math.abs(v).toFixed(d);
+const tip=$('#tip'); const show=(h,ev)=>{tip.innerHTML=h;tip.classList.add('on');const w=tip.offsetWidth,hh=tip.offsetHeight;tip.style.left=Math.max(8,Math.min(innerWidth-w-8,ev.clientX+14))+'px';tip.style.top=(ev.clientY+hh+20>innerHeight?ev.clientY-hh-12:ev.clientY+14)+'px';}; const hide=()=>tip.classList.remove('on');
+function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b||!root.contains(b)) return; [...root.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b)); cb(b); }); }
+
+/* hook · three tellings of one event */
+(function(){
+  const s=$('#tellSeg'); if(!s) return;
+  seg(s, b=>{ $$('.tellings .telling').forEach(t=>t.hidden = !(b.dataset.f==='both' ? (t.classList.contains('sym')||t.classList.contains('cond')) : t.classList.contains(b.dataset.f))); });
+})();
+
+/* design · every dilemma's two scores in the tuned model (stored per-dilemma data) */
+(function(){
+  const svg=$('#dilScatter'); if(!svg) return;
+  const R = X.rows; // [condemning score, sympathetic score] per dilemma, Gemma-3-4B-IT
+  let mode='scatter';
+  function draw(){
+    const pe=svg.parentElement, cs=getComputedStyle(pe), W=Math.max(280, pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)), H=mode==='scatter'?Math.min(420,W*0.8):240;
+    svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('height',H); svg.innerHTML='';
+    const m={l:44,r:12,t:12,b:34};
+    if(mode==='scatter'){
+      const lo=-30, hi=24, x=v=>m.l+(v-lo)/(hi-lo)*(W-m.l-m.r), y=v=>m.t+(1-(v-lo)/(hi-lo))*(H-m.t-m.b);
+      [-20,-10,0,10,20].forEach(t=>{ el('line',{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,class:'gl'},svg); el('line',{x1:m.l,x2:W-m.r,y1:y(t),y2:y(t),class:'gl'},svg);
+        const a=el('text',{x:x(t),y:H-m.b+16,'text-anchor':'middle',class:'tk'},svg); a.textContent=t; const b=el('text',{x:m.l-8,y:y(t)+4,'text-anchor':'end',class:'tk'},svg); b.textContent=t; });
+      el('line',{x1:x(lo),y1:y(lo),x2:x(hi),y2:y(hi),stroke:'var(--muted)','stroke-dasharray':'4 4'},svg);
+      const t1=el('text',{x:x(hi)-4,y:y(hi)+16,'text-anchor':'end',class:'tk'},svg); t1.textContent='no shift';
+      const ax=el('text',{x:(m.l+W-m.r)/2,y:H-4,'text-anchor':'middle',class:'tk'},svg); ax.textContent='condemning framing: Yes − No logit';
+      const ay=el('text',{x:12,y:(m.t+H-m.b)/2,'text-anchor':'middle',class:'tk',transform:`rotate(-90 12 ${(m.t+H-m.b)/2})`},svg); ay.textContent='sympathetic framing';
+      R.forEach(([c,s],i)=>{ const d=s-c; const p=el('circle',{cx:x(c),cy:y(s),r:4.2,fill:d>0?'var(--it)':'var(--sym)','fill-opacity':.75,stroke:'var(--surface)','stroke-width':1,class:'dot'},svg);
+        p.addEventListener('mouseenter',ev=>show(`dilemma ${i+1} (stored order)<br>condemning ${sg(c)}<br>sympathetic ${sg(s)}<br>shift ${sg(d)}`,ev)); p.addEventListener('mouseleave',hide); });
+    } else {
+      const ds=R.map(([c,s],i)=>({d:s-c,i})).sort((a,b)=>a.d-b.d); const lo=-30, hi=45;
+      const x=k=>m.l+k*(W-m.l-m.r)/(ds.length-1), y=v=>m.t+(1-(v-lo)/(hi-lo))*(H-m.t-m.b);
+      [-20,0,20,40].forEach(t=>{ el('line',{x1:m.l,x2:W-m.r,y1:y(t),y2:y(t),class:t===0?'gl0':'gl'},svg); const b=el('text',{x:m.l-8,y:y(t)+4,'text-anchor':'end',class:'tk'},svg); b.textContent=t; });
+      const mean=R.reduce((a,[c,s])=>a+(s-c),0)/R.length;
+      ds.forEach((o,k)=>{ const b=el('rect',{x:x(k)-1.6,y:Math.min(y(0),y(o.d)),width:3.2,height:Math.abs(y(o.d)-y(0)),fill:o.d>0?'var(--it)':'var(--sym)',class:'dot'},svg);
+        const h=el('rect',{x:x(k)-3,y:m.t,width:6,height:H-m.t-m.b,fill:'transparent'},svg); h.addEventListener('mouseenter',ev=>show(`dilemma ${o.i+1}<br>shift ${sg(o.d)}`,ev)); h.addEventListener('mouseleave',hide); });
+      el('line',{x1:m.l,x2:W-m.r,y1:y(mean),y2:y(mean),stroke:'var(--ink)','stroke-dasharray':'4 3'},svg);
+      const t=el('text',{x:m.l+6,y:y(mean)-6,class:'tk',style:'fill:var(--ink)'},svg); t.textContent=`mean shift ${sg(mean)}`;
+      const ax=el('text',{x:(m.l+W-m.r)/2,y:H-8,'text-anchor':'middle',class:'tk'},svg); ax.textContent='100 dilemmas, sorted by paired shift (logits)';
+    }
+  }
+  seg($('#dilMode'), b=>{ mode=b.dataset.m; draw(); });
+  addEventListener('resize', ()=>{ clearTimeout(draw.t); draw.t=setTimeout(draw,150); });
+  draw();
+})();
+
+/* dataset · the tuned model's mean output score for each framing (final row of the stored logit-lens data) */
+(function(){
+  const box=$('#frameScores'); if(!box) return;
+  const last=D.fig3_lens_trajectories.rows[33]; // [layer, sym, cond, abst]
+  const items=[['Sympathetic','var(--sym)',last[1]],['Condemning','var(--cond)',last[2]],['Abstract','var(--pt)',last[3]]];
+  const lo=-14, hi=2, x=v=>(v-lo)/(hi-lo)*100;
+  box.innerHTML = items.map(([n,c,v])=>`<div class="fs"><span class="fn" style="color:${c}">${n}</span><span class="fbar"><i style="left:${Math.min(x(v),x(0))}%;width:${Math.abs(x(v)-x(0))}%;background:${c}"></i><b style="left:${x(0)}%"></b></span><span class="fv">${sg(v)}</span></div>`).join('');
+})();
+
+/* geometry · connect each dilemma's two framings */
+(function(){
+  const tg=$('#pairLines'); if(!tg) return;
+  function apply(){
+    ['pt','it'].forEach(k=>{ const svg=$('#pca'+k.toUpperCase()); if(!svg) return; svg.querySelectorAll('.pairs').forEach(n=>n.remove());
+      if(tg.getAttribute('aria-pressed')!=='true') return;
+      const vb=svg.viewBox.baseVal, W=vb.width, H=vb.height, m={l:30,r:8,t:8,b:24};
+      const x=v=>m.l+(v+3)/6*(W-m.l-m.r), y=v=>m.t+(1-(v+2.4)/4.8)*(H-m.t-m.b);
+      const S=D['fig_pca_'+k+'_sym'].rows, C=D['fig_pca_'+k+'_cond'].rows;
+      const g=el('g',{class:'pairs'}); S.forEach((p,i)=>el('line',{x1:x(p[0]),y1:y(p[1]),x2:x(C[i][0]),y2:y(C[i][1]),stroke:'var(--muted)','stroke-width':.8,opacity:.45},g));
+      const first=svg.querySelector('g'); svg.insertBefore(g, first); });
+  }
+  tg.onclick=()=>{ tg.setAttribute('aria-pressed', tg.getAttribute('aria-pressed')==='true'?'false':'true'); apply(); };
+  ['#pcaPT','#pcaIT'].forEach(s=>{ const n=$(s); if(n) new MutationObserver(m=>{ if(m.some(r=>[...r.addedNodes].some(a=>a.tagName==='line'&&!a.closest('.pairs')))) apply(); }).observe(n,{childList:true}); });
+})();
+
+/* linked layer: the instrument's slider also drives the logit lens and the head map */
+(function(){
+  let L=25;
+  function lens(){ const g=window.__lens; if(!g) return; let c=g.s.querySelector('#lensLink'); if(!c){ c=el('g',{id:'lensLink'},g.s); el('line',{y1:g.top,y2:g.bot,stroke:'var(--it)','stroke-width':1.6},c); el('text',{y:g.top+28,class:'tk',style:'fill:var(--it)'},c); }
+    const x=g.x(L); c.firstChild.setAttribute('x1',x); c.firstChild.setAttribute('x2',x); const t=c.lastChild; t.setAttribute('x',x+5); t.textContent='ℓ '+L; }
+  function heat(){ const g=window.__heat; if(!g) return; let r=g.s.querySelector('#heatLink'); if(!r){ r=el('rect',{id:'heatLink',fill:'none',stroke:'var(--it)','stroke-width':2.2,rx:3,'pointer-events':'none'},g.s); }
+    if(L<10||L>25){ r.setAttribute('opacity',0); return; } r.setAttribute('opacity',1); r.setAttribute('x',g.m.l-2); r.setAttribute('y',g.m.t+(L-10)*g.ch-1); r.setAttribute('width',8*g.cw+4); r.setAttribute('height',g.ch+2); }
+  function chips(){ $$('.linkchip b').forEach(b=>b.textContent=L); $$('.linkchip').forEach(c=>c.classList.toggle('out', c.dataset.range==='heads' && (L<10||L>25))); }
+  document.addEventListener('layerchange',e=>{ L=e.detail; lens(); heat(); chips(); });
+  document.addEventListener('lensdrawn',lens); document.addEventListener('heatdrawn',heat);
+  $$('.linkchip button').forEach(b=>b.onclick=()=>{ const s=$('#layer'); s.value=b.dataset.l; s.dispatchEvent(new Event('input')); });
+  lens(); heat(); chips();
+})();
+
+/* causal · patching, as an illustration, tied to the stored recoveries */
+(function(){
+  const box=$('#patchDemo'); if(!box) return;
+  const rec={cs:{v:0.885,lab:'condemning → sympathetic'}, sc:{v:0.521,lab:'sympathetic → condemning'}};
+  let dir='cs';
+  function setDir(d){ dir=d; box.dataset.dir=d;
+    $('#pdClean').textContent = d==='cs' ? 'condemning framing' : 'sympathetic framing';
+    $('#pdCorr').textContent = d==='cs' ? 'sympathetic framing' : 'condemning framing';
+    $('#pdOut').innerHTML = `Stored result at layer 20, <code>hook_resid_pre</code>, n = 83: patching ${rec[d].lab} recovers <b>${rec[d].v.toFixed(3)}</b> of the judgment gap.`;
+    $$('#patch rect').forEach(r=>{ const f=r.getAttribute('fill'); if(f==='var(--sym)'||f==='var(--cond)'){ const mine = (d==='cs'&&f==='var(--cond)')||(d==='sc'&&f==='var(--sym)'); r.style.opacity = mine?1:.25; } });
+    box.classList.remove('done'); }
+  seg($('#pdDir'), b=>setDir(b.dataset.d));
+  $('#pdGo').onclick=()=>{ box.classList.remove('done'); void box.offsetWidth; box.classList.add('done'); };
+  new MutationObserver(()=>setDir(dir)).observe($('#patch'),{childList:true});
+  setDir('cs'); box.classList.add('done');
+})();
+
+/* heads · ablation presets: highlight the stored result and the heads in the map */
+(function(){
+  const s=$('#ablSeg'); if(!s) return;
+  const rows={none:[12.18,null,'Clean run, no intervention.'], w:[5.04,-7.14,'Top-10 writers mean-ablated. They carry 59% of the paired shift.'], a:[14.65,2.47,'Top-10 antagonists mean-ablated. They push against the routing, suppressing about 20% of the shift, so removing them raises it.'], b:[7.51,-4.67,'Both sets ablated.'], r:[12.41,0.23,'Ten random heads, matched to the writers\u2019 layers: Δ +0.23 ± 0.95 over ten seeds. The writer effect sits 7.8σ from this null.']};
+  const order=['none','w','a','b','r'];
+  const W=D.fig_writer_heads.rows.slice().sort((a,b)=>b[2]-a[2]).slice(0,10), A=D.fig_writer_heads.rows.slice().sort((a,b)=>a[2]-b[2]).slice(0,10);
+  let cur='none';
+  function mark(){ const g=window.__heat; if(!g) return; g.s.querySelectorAll('.ablmark').forEach(n=>n.remove());
+    const sets = cur==='w'?[[W,'var(--ink)']]:cur==='a'?[[A,'var(--ink)']]:cur==='b'?[[W,'var(--ink)'],[A,'var(--ink)']]:[];
+    sets.forEach(([L])=>L.forEach(([l,h])=>el('rect',{class:'ablmark',x:g.m.l+h*g.cw+2.5,y:g.m.t+(l-10)*g.ch+2.5,width:g.cw-5,height:g.ch-5,rx:2,fill:'none',stroke:'var(--ink)','stroke-width':2,'pointer-events':'none'},g.s))); }
+  function bars(){ const rs=$$('#abl rect').filter(r=>r.getAttribute('height')==='22'); rs.forEach((r,k)=>r.style.opacity = (order[k]===cur||cur==='none'&&k===0)?1:.28); }
+  function set(k){ cur=k; const r=rows[k]; $('#ablBig').textContent=sg(r[0]); $('#ablDelta').textContent=r[1]===null?'':'Δ '+sg(r[1]); $('#ablNote').textContent=r[2]+(k==='w'||k==='a'||k==='b'?' Outlined cells: the ten largest projections of that sign in this map.':''); mark(); bars(); }
+  seg(s, b=>set(b.dataset.k));
+  document.addEventListener('heatdrawn', mark); new MutationObserver(bars).observe($('#abl'),{childList:true});
+  set('none');
+})();
+
+/* specificity · what opens the pathway (paper values at layer 25) */
+(function(){
+  const svg=$('#inputChart'); if(!svg) return;
+  const items=[['Moral content, moral question',0.307,'var(--it)'],['Sentiment content',0.022,'var(--pt)'],['Sentiment content, moral question',-0.007,'var(--pt)']];
+  function draw(){ const pe=svg.parentElement, cs=getComputedStyle(pe), W=Math.max(280,pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)), H=150, ml=Math.min(230,W*0.45), mr=56;
+    svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('height',H); svg.innerHTML='';
+    const x=v=>ml+(v+0.02)/0.35*(W-ml-mr);
+    el('line',{x1:x(0),x2:x(0),y1:4,y2:H-22,stroke:'var(--muted)'},svg);
+    [0,0.1,0.2,0.3].forEach(t=>{ const a=el('text',{x:x(t),y:H-6,'text-anchor':'middle',class:'tk'},svg); a.textContent=t.toFixed(1); });
+    items.forEach(([n,v,c],k)=>{ const y=10+k*40; const a=el('text',{x:ml-10,y:y+15,'text-anchor':'end',class:'lb'},svg); a.textContent=n;
+      el('rect',{x:Math.min(x(0),x(v)),y,width:Math.max(1.5,Math.abs(x(v)-x(0))),height:22,rx:2,fill:c},svg);
+      const b=el('text',{x:Math.max(x(v),x(0))+6,y:y+15,class:'tk',style:'fill:var(--ink)'},svg); b.textContent=sg(v,3); });
+  }
+  addEventListener('resize',()=>{ clearTimeout(draw.t); draw.t=setTimeout(draw,150); }); draw();
+})();
+
+/* replication · filter by family */
+(function(){
+  const s=$('#famF'); if(!s) return;
+  seg(s, b=>{ window.__fam=b.dataset.f; window.__forestDraw && window.__forestDraw(); });
+})();
+
+/* robustness · remove the perpetrator-POV inversions */
+(function(){
+  const b=$('#perpToggle'); if(!b) return;
+  b.onclick=()=>{ const on=b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed',on);
+    $$('#waffle i').forEach((q,k)=>q.classList.toggle('gone', on && k>=83 && k<98));
+    $('#perpNow').innerHTML = on ? '<b>+15.22</b> mean shift · 0.98 positive · n = 85' : '<b>+12.18</b> mean shift · 0.83 positive · n = 100';
+    b.textContent = on ? 'Put them back' : 'Remove the 15 perpetrator-POV dilemmas'; };
+})();
+})();
 </script>
 
 <script>
