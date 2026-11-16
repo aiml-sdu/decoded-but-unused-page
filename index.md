@@ -6,13 +6,13 @@ Instruction tuning routes moral framing into the judgment readout
 
 Chat models change their moral verdicts when the same event is retold. On a matched pair of Gemma-3-4B checkpoints we find that the pretrained model already encodes the framing and does not act on it, and that instruction tuning routes the same signal into the Yes/No answer.
 
-Phongsakon Mark Konrad, Toygar Tanyel, Serkan Ayvaz · University of Southern Denmark and Promake · Seoul, 2026
+Phongsakon Mark Konrad, Toygar Tanyel, Serkan Ayvaz · University of Southern Denmark and Promake
 
-[OpenReview](https://openreview.net/forum?id=da9ylT2doy) · [PDF](https://openreview.net/pdf?id=da9ylT2doy) · [Markdown](index.md) · [Code and data](https://github.com/aiml-sdu/decoded-but-unused) · arXiv · coming soon · Cite this article
+ICML 2026 Workshop on Mechanistic Interpretability · Seoul, 2026
 
-Each dot is one dilemma, placed by the tuned model's Yes minus No logit when the event is told to condemn the actor (across) and to sympathise with the actor (up). Dots above the dashed line moved toward Yes when told sympathetically, which 83 of 100 did. The 17 inversions are drawn in terracotta. Hand annotation found that 15 of them are told from the perpetrator's own point of view, and which 15 those are is not stored with the figure data. The pretrained model has stored aggregates only, a mean shift of +0.04 with a 95% interval of −0.09 to 0.16.
+Explore the 100 dilemmas ↓[OpenReview](https://openreview.net/forum?id=da9ylT2doy) · [PDF](https://openreview.net/pdf?id=da9ylT2doy) · [Markdown version](index.md) · [Code and data](https://github.com/aiml-sdu/decoded-but-unused) · arXiv · coming soon · Cite this article
 
-We compared Gemma-3-4B before and after instruction tuning on 100 moral dilemmas, each told in a sympathetic, a condemning and an abstract framing. A linear probe reads the framing from both models, at 0.92 accuracy before tuning and 0.97 after. Only the tuned model acts on it, and the framing moves its Yes/No verdict by 12.18 logits against 0.04 before tuning. Inside the tuned model the framing direction turns toward the answer direction at layer 25, where the alignment is 8.4 times the pretrained value, and patching and head ablations show that this route is used. For this one matched pair and this dataset, instruction tuning changes how the representation is read out, not whether it exists.
+**Figure 0**Each dot is one dilemma, placed by the tuned model's Yes minus No logit when the event is told to condemn the actor (across) and to sympathise with the actor (up). Dots above the dashed line moved toward Yes when told sympathetically, which 83 of 100 did. The 17 inversions are drawn in terracotta. Hand annotation found that 15 of them are told from the perpetrator's own point of view, and which 15 those are is not stored with the figure data. The pretrained model has stored aggregates only, a mean shift of +0.04 with a 95% interval of −0.09 to 0.16.
 
 ## Abstract
 
@@ -20,43 +20,33 @@ Framing studies record that moral verdicts in language models shift when an even
 
 First, the framing is decoded in both checkpoints and used only after tuning. A probe recovers it at 0.92 accuracy in the pretrained model. The paired shift, the change in the Yes minus No logit between the sympathetic and the condemning telling of one dilemma, is +0.04 there and +12.18 after tuning, with 83 of 100 dilemmas moving toward Yes. Second, the route is local. The alignment between the framing direction and the answer direction peaks at layer 25 at 0.307, which is 8.4 times the pretrained value, and ten writer heads concentrated at layers 23 to 25 carry 59% of the shift. Finally, the pattern is specific and it replicates. The framing direction aligns with all 9 evaluative answer pairs we tested and stays at or below 0.05 for all 5 neutral pairs, and the shift is positive in all 10 instruction-tuned models we tested, from three families.
 
-### What a bad outcome would have looked like
+## Introduction
 
-Three results would have spoken against routing. If the pretrained verdict already moved with the framing, instruction tuning would be beside the point. A tuned model whose alignment had no layer-localised peak would leave no route to point at. And if patching at that depth recovered nothing, or ablating the candidate heads did no more than ablating random ones, the route would be decorative. None of these happened, although each was tested on one matched pair and this dataset only.
+We compared Gemma-3-4B before and after instruction tuning on 100 moral dilemmas, each told in a sympathetic, a condemning and an abstract framing. A linear probe reads the framing from both models, at 0.92 accuracy before tuning and 0.97 after. Only the tuned model acts on it, and the framing moves its Yes/No verdict by 12.18 logits against 0.04 before tuning. Inside the tuned model the framing direction turns toward the answer direction at layer 25, where the alignment is 8.4 times the pretrained value, and patching and head ablations show that this route is used. For this one matched pair and this dataset, instruction tuning changes how the representation is read out, not whether it exists.
 
-Framing triplet
-
-One event told three times, sympathetic to the actor, condemning of the actor, and abstract.
-
-Paired shift
-
-For one dilemma, the Yes minus No logit under the sympathetic telling minus the same quantity under the condemning telling.
-
-δ_frame(ℓ)
-
-The mean activation of sympathetic prompts minus that of condemning prompts, at the last token and layer ℓ.
-
-δ_judge
-
-Two columns of the unembedding matrix give the output directions for “ Yes” and “ No”, and δ_judge is their difference.
-
-ρ(ℓ)
-
-Cosine between δ_frame(ℓ) and δ_judge, near 0 when the framing points away from the answer and grows as it turns toward it.
-
-Recovery R
-
-The share of the natural gap between two runs that is restored when one run's activation is copied into the other.
-
-Writer head
-
-An attention head whose sympathetic-minus-condemning output points along δ_judge, so that it writes the framing toward the answer.
-
-## The same event, told two ways
+Three results would have spoken against this reading, and we tested each. If the pretrained verdict already moved with the framing, instruction tuning would be beside the point. A tuned model whose alignment had no layer-localised peak would leave no route to point at. And if patching at that depth recovered nothing, or ablating the candidate heads did no more than ablating random ones, the route would be decorative. None of these happened, although each was tested on one matched pair and this dataset only.
 
 Two framings of one event from the dataset (paper, Appendix A). A third, abstract framing states the same action in neutral terms.
 
 Ask a chat model whether an action was justified, then retell the same event in a sympathetic light and ask again. The verdict can change. We asked a narrower question with a matched pair of models. Does the pretrained model already represent the framing, and if it does, why does the framing leave its verdict alone?
+
+## Some definitions
+
+Seven terms carry the rest of the post. Each is defined on one dilemma told two ways.
+
+**Framing triplet.** One event told three times, sympathetic to the actor, condemning of the actor, and abstract.
+
+**Paired shift.** For one dilemma, the Yes minus No logit under the sympathetic telling minus the same quantity under the condemning telling.
+
+**δ_frame(ℓ).** The mean activation of sympathetic prompts minus that of condemning prompts, at the last token and layer ℓ.
+
+**δ_judge.** Two columns of the unembedding matrix give the output directions for “ Yes” and “ No”, and δ_judge is their difference.
+
+**ρ(ℓ).** Cosine between δ_frame(ℓ) and δ_judge, near 0 when the framing points away from the answer and grows as it turns toward it.
+
+**Recovery R.** The share of the natural gap between two runs that is restored when one run's activation is copied into the other.
+
+**Writer head.** An attention head whose sympathetic-minus-condemning output points along δ_judge, so that it writes the framing toward the answer.
 
 ## Both models encode the framing. Only the tuned model uses it.
 
