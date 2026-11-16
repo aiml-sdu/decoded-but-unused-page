@@ -392,15 +392,16 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
 .defs .dai{stroke:var(--it);fill:none;stroke-width:1.8} .defs .dak{stroke:var(--ink);fill:none;stroke-width:1.8} .defs .dl{stroke:var(--muted);fill:none;stroke-width:1}
 #hook{padding-top:clamp(64px,8vw,104px)}
 .th .t-p{fill:var(--pt)}
-.theme-tg{font:inherit;font-size:13px;border:1px solid currentColor;border-radius:3px;background:transparent;color:inherit;opacity:.75;padding:2px 9px;cursor:pointer;margin-left:14px}.theme-tg:hover{opacity:1}
+.theme-tg{position:fixed;right:14px;bottom:14px;z-index:60;font:500 13px/1 system-ui,sans-serif;border:1px solid var(--rule,var(--line,#8888));border-radius:3px;background:var(--bg);color:var(--ink);padding:7px 11px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12)}.theme-tg:hover{border-color:var(--ink)}
 </style>
 </head>
 <body>
+<button class="theme-tg" id="themeTg" type="button">Dark</button>
 <aside class="toc" aria-label="Contents">
   <a class="t" href="#top">Decoded but <i>Unused</i></a>
   <div class="sides"><span class="s-pt">PT</span><span class="s-it">IT</span></div>
   <nav aria-label="Contents"><ol><li><a href="#abstract">Abstract</a></li><li><a href="#defs">Definitions</a></li><li><a href="#instrument">Decoded vs used</a></li><li><a href="#behaviour">One free variable</a></li><li><a href="#dataset">The dilemmas</a></li><li><a href="#geometry">Geometry</a></li><li><a href="#readout">Late readout</a></li><li><a href="#causal">Causal tests</a></li><li><a href="#heads">Writer heads</a></li><li><a href="#specificity">Specificity</a></li><li><a href="#families">Ten models</a></li><li><a href="#perp">Inversions</a></li><li><a href="#limits">Scope</a></li></ol></nav>
-  <div class="links"><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="#cite">Cite this article</a><button class="theme-tg" id="themeTg" type="button">Dark</button></div>
+  <div class="links"><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="#cite">Cite this article</a></div>
 </aside>
 <nav class="top" aria-label="Sections"><div class="in">
   <a class="brand" href="#top">Decoded but <i>Unused</i></a>
