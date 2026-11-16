@@ -339,39 +339,132 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
 @media (prefers-reduced-motion: reduce){#waffle i{transition:none}}
 
 @media (max-width:600px){.seg{flex-wrap:wrap;border-radius:12px}.seg button{flex:1 1 auto}}
+
+/* ---- calm top, one dark instrument, chapter cards, definitions ---- */
+.top-h{padding-block:clamp(56px,9vw,112px) clamp(28px,4vw,44px)}
+.top-h .venue{justify-content:flex-start}
+.top-h h1{margin:0 0 12px}
+.top-h .sub{font-style:italic;margin:0 0 20px;max-width:34ch;font-size:clamp(1.15rem,1rem + .6vw,1.45rem);color:var(--ink2)}
+.split-rule{height:3px;width:120px;background:linear-gradient(90deg,var(--pt) 50%,var(--it) 50%);margin:0 0 24px}
+.standfirst{font-size:clamp(1.2rem,1.08rem + .45vw,1.4rem);line-height:1.55;margin:0 0 22px}
+.byline{font:400 .92rem var(--f-body);color:var(--ink2);margin:0 0 10px}
+.plain-links{display:flex;flex-wrap:wrap;gap:4px 0;font:500 .92rem var(--f-body);margin:0}
+.plain-links > *{white-space:nowrap}
+.plain-links > * + *::before{content:"·";color:var(--muted);margin:0 10px}
+.plain-links a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--rule);text-underline-offset:4px}
+.plain-links a:hover{color:var(--it);text-decoration-color:var(--it)}
+.plain-links .soon{color:var(--muted)}
+.dark-band{--bg:#0F1114;--surface:#161A1E;--ink:#E7E9EC;--ink2:#AEB3BA;--muted:#7E848C;--rule:#2A2F35;--faint:#1D2125;--band:#14171A;
+  --it:#5E8FD6;--it-soft:rgba(94,143,214,.16);--pt:#8E949C;--pt-soft:rgba(142,148,156,.18);--sym:#D0704F;--sym-soft:rgba(208,112,79,.16);--cond:#5E8FD6;
+  background:var(--bg);color:var(--ink);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax);padding-block:clamp(28px,4vw,48px);color-scheme:dark;font-family:var(--f-body)}
+.hi-in{max-width:1100px;margin-inline:auto}
+.hi-h{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.hi-h .label{font:600 .74rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.hi-tip{font:500 .86rem var(--f-body);color:var(--it)}
+.hi-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.hi-chart{max-width:820px;margin-inline:auto}
+.hi-cap{max-width:var(--col);margin:14px auto 0;font:400 .9rem/1.55 var(--f-body);color:var(--ink2)}
+.chapters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;max-width:var(--wide);margin:clamp(28px,4vw,44px) auto 0;font-family:var(--f-body)}
+.ch{display:grid;gap:4px;text-decoration:none;color:var(--ink);padding:12px 12px 14px;border-radius:10px;background:var(--band);transition:transform .2s, background .2s}
+.ch:hover{transform:translateY(-2px);background:var(--it-soft)}
+@media (prefers-reduced-motion: reduce){.ch:hover{transform:none}}
+.ch .cn{font:600 .78rem var(--f-mono);color:var(--it)}
+.ch .th{display:block;width:100%;height:auto;aspect-ratio:120/54;margin:4px 0 6px}
+.ch .ct{font:500 1.08rem/1.2 var(--f-display)}
+.ch .cs{font-size:.8rem;color:var(--muted)}
+@media (max-width:760px){.chapters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.th .t-it{stroke:var(--it);fill:none;stroke-width:1.6} .th .t-pt{stroke:var(--pt);fill:none;stroke-width:1.4}
+.th .t-s{fill:var(--sym)} .th .t-c{fill:var(--cond)} .th .t-g{fill:var(--faint)} .th .t-m{stroke:var(--muted);stroke-width:1}
+#abstract{padding-top:clamp(48px,7vw,80px)}
+.h-abs{margin-top:34px}
+#abstract h3{margin-top:28px}
+#defs{padding-top:clamp(40px,6vw,64px)}
+.defs{background:var(--band);border-radius:10px;padding:18px 22px 10px;font-family:var(--f-body)}
+.defs .dh{font:500 1.2rem var(--f-display);margin-bottom:8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.defs .dh span{font:600 .72rem var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.defs dl{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 28px}
+.defs dl > div{padding:10px 0;border-bottom:1px solid var(--rule)}
+.defs dt{display:flex;align-items:center;gap:10px;font:600 .92rem var(--f-body)}
+.defs dt svg{width:40px;height:24px;flex:none}
+.defs dd{margin:4px 0 0 50px;font-size:.9rem;color:var(--ink2);line-height:1.55}
+@media (max-width:640px){.defs dl{grid-template-columns:1fr}}
+.defs .ds{fill:var(--sym)} .defs .dc{fill:var(--cond)} .defs .dp{fill:var(--pt-soft);stroke:var(--pt)}
+.defs .dai{stroke:var(--it);fill:none;stroke-width:1.8} .defs .dak{stroke:var(--ink);fill:none;stroke-width:1.8} .defs .dl{stroke:var(--muted);fill:none;stroke-width:1}
+#hook{padding-top:clamp(64px,8vw,104px)}
+.th .t-p{fill:var(--pt)}
 </style>
 </head>
 <body>
 <aside class="toc" aria-label="Contents">
   <a class="t" href="#top">Decoded but <i>Unused</i></a>
   <div class="sides"><span class="s-pt">PT</span><span class="s-it">IT</span></div>
-  <nav aria-label="Contents"><ol><li><a href="#hook">The question</a></li><li><a href="#instrument">Decoded vs used</a></li><li><a href="#behaviour">One free variable</a></li><li><a href="#dataset">The dilemmas</a></li><li><a href="#geometry">Geometry</a></li><li><a href="#readout">Late readout</a></li><li><a href="#causal">Causal tests</a></li><li><a href="#heads">Writer heads</a></li><li><a href="#specificity">Specificity</a></li><li><a href="#families">Ten models</a></li><li><a href="#perp">Inversions</a></li><li><a href="#limits">Scope</a></li><li><a href="#cite">Cite</a></li></ol></nav>
-  <div class="links"><a href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="https://github.com/aiml-sdu/decoded-but-unused" target="_blank" rel="noopener">Code ↗</a><span>arXiv · coming soon</span></div>
+  <nav aria-label="Contents"><ol><li><a href="#abstract">Abstract</a></li><li><a href="#defs">Definitions</a></li><li><a href="#instrument">Decoded vs used</a></li><li><a href="#behaviour">One free variable</a></li><li><a href="#dataset">The dilemmas</a></li><li><a href="#geometry">Geometry</a></li><li><a href="#readout">Late readout</a></li><li><a href="#causal">Causal tests</a></li><li><a href="#heads">Writer heads</a></li><li><a href="#specificity">Specificity</a></li><li><a href="#families">Ten models</a></li><li><a href="#perp">Inversions</a></li><li><a href="#limits">Scope</a></li></ol></nav>
+  <div class="links"><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a><a href="#cite">Cite this article</a></div>
 </aside>
 <nav class="top" aria-label="Sections"><div class="in">
   <a class="brand" href="#top">Decoded but <i>Unused</i></a>
-  <a href="#instrument">PT vs IT</a><a href="#dataset">Dilemmas</a><a href="#geometry">Geometry</a><a href="#readout">Late readout</a><a href="#causal">Causal tests</a><a href="#heads">Writer heads</a><a href="#specificity">Specificity</a><a href="#families">Ten models</a><a href="#limits">Scope</a><a href="#cite">Cite</a>
+  <a href="#abstract">Abstract</a><a href="#instrument">PT vs IT</a><a href="#dataset">Dilemmas</a><a href="#causal">Causal tests</a><a href="#heads">Writer heads</a><a href="#families">Ten models</a><a href="#limits">Scope</a><a href="#cite">Cite</a>
 </div></nav>
 
-<header class="hero" id="top">
-  <div class="split-bg" aria-hidden="true"><span>Pretrained</span><span>Instruction-tuned</span></div>
-  <div class="hero-in">
-    <div class="venue"><span>ICML 2026 · Mechanistic Interpretability Workshop</span><span>Poster</span><span>Seoul, 2026</span></div>
-    <h1>Decoded but <span class="u">Unused</span></h1>
-    <p class="sub">Instruction tuning routes moral framing into the judgment readout</p>
-    <div class="authors"><span>Phongsakon Mark Konrad<sup>1</sup></span><span>Toygar Tanyel<sup>2</sup></span><span>Serkan Ayvaz<sup>1</sup></span></div>
-    <div class="affs"><sup>1</sup>Centre for Industrial Software, University of Southern Denmark, Sønderborg · <sup>2</sup>Promake, Newark, DE, USA</div>
-    <div class="btns">
-      <a class="btn primary" href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a>
-      <a class="btn" href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a>
-      <a class="btn" href="https://github.com/aiml-sdu/decoded-but-unused" target="_blank" rel="noopener">Code &amp; data ↗</a>
-      <span class="btn off" title="arXiv version in preparation">arXiv <small>coming soon</small></span>
-      <a class="btn" href="#cite">BibTeX</a>
-    </div>
-  </div>
+<header class="top-h col" id="top">
+  <div class="venue"><span>ICML 2026 Workshop on Mechanistic Interpretability</span></div>
+  <h1>Decoded but <span class="u">Unused</span></h1>
+  <p class="sub">Instruction tuning routes moral framing into the judgment readout</p>
+  <div class="split-rule" aria-hidden="true"></div>
+  <p class="standfirst">Chat models change their moral verdicts when the same event is retold. On a matched pair of Gemma-3-4B checkpoints we find that the pretrained model already encodes the framing and does not act on it, and that instruction tuning routes the same signal into the Yes/No answer.</p>
+  <p class="byline">Phongsakon Mark Konrad, Toygar Tanyel, Serkan Ayvaz · University of Southern Denmark and Promake · Seoul, 2026</p>
+  <p class="plain-links"><a href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a><a href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF</a><a href="https://github.com/aiml-sdu/decoded-but-unused" target="_blank" rel="noopener">Code and data ↗</a><span class="soon">arXiv · coming soon</span><a href="#cite">Cite this article</a></p>
 </header>
 
+<section class="hero-inst dark-band" id="field" aria-label="The 100 dilemmas as read by the instruction-tuned model">
+  <div class="hi-in">
+    <div class="hi-h"><span class="label">Gemma-3-4B-IT reading 100 moral dilemmas</span><span class="hi-tip">Point at any dot.</span></div>
+    <div class="hi-ctl">
+      <div class="seg" id="dilMode" role="group" aria-label="View"><button data-m="scatter" aria-pressed="true">Each dilemma</button><button data-m="rank" aria-pressed="false">Sorted shifts</button></div>
+      <button class="btn" id="ptPole" aria-pressed="false" type="button">Show the pretrained model</button>
+    </div>
+    <div class="chart hi-chart"><svg id="dilScatter" role="img" aria-label="Sympathetic against condemning Yes minus No score for each of the 100 dilemmas in the instruction-tuned model; 83 lie above the no-shift line and 17 below it."></svg></div>
+    <p class="hi-cap">Each dot is one dilemma, placed by the tuned model's Yes minus No logit when the event is told to condemn the actor (across) and to sympathise with the actor (up). Dots above the dashed line moved toward Yes when told sympathetically, which 83 of 100 did. The 17 inversions are drawn in terracotta. Hand annotation found that 15 of them are told from the perpetrator's own point of view, and which 15 those are is not stored with the figure data. The pretrained model has stored aggregates only, a mean shift of +0.04 with a 95% interval of −0.09 to 0.16.</p>
+  </div>
+</section>
+
+<div class="col chapters" aria-label="Chapters">
+  <a class="ch" href="#instrument"><span class="cn">1</span><svg class="th" id="th1" viewBox="0 0 120 54" aria-hidden="true"></svg><span class="ct">Decoded, then used</span><span class="cs">Alignment by layer</span></a>
+  <a class="ch" href="#causal"><span class="cn">2</span><svg class="th" id="th2" viewBox="0 0 120 54" aria-hidden="true"></svg><span class="ct">The route is causal</span><span class="cs">Patching both ways</span></a>
+  <a class="ch" href="#heads"><span class="cn">3</span><svg class="th" id="th3" viewBox="0 0 120 54" aria-hidden="true"></svg><span class="ct">Ten writer heads</span><span class="cs">Layers 23 to 25</span></a>
+  <a class="ch" href="#families"><span class="cn">4</span><svg class="th" id="th4" viewBox="0 0 120 54" aria-hidden="true"></svg><span class="ct">It replicates</span><span class="cs">Ten tuned models</span></a>
+</div>
+
+<section id="abstract" class="col">
+  <div class="tldr">
+    <div class="label">TL;DR</div>
+    <p>We compared Gemma-3-4B before and after instruction tuning on 100 moral dilemmas, each told in a sympathetic, a condemning and an abstract framing. A linear probe reads the framing from both models, at 0.92 accuracy before tuning and 0.97 after. Only the tuned model acts on it, and the framing moves its Yes/No verdict by 12.18 logits against 0.04 before tuning. Inside the tuned model the framing direction turns toward the answer direction at layer 25, where the alignment is 8.4 times the pretrained value, and patching and head ablations show that this route is used. For this one matched pair and this dataset, instruction tuning changes how the representation is read out, not whether it exists.</p>
+  </div>
+  <h2 class="h-abs">Abstract</h2>
+  <p>Framing studies record that moral verdicts in language models shift when an event is retold, and they leave open where in the network the shift happens. We compare a pretrained and an instruction-tuned checkpoint of Gemma-3-4B on 100 dilemmas from two fictional sources.</p>
+  <p>First, the framing is decoded in both checkpoints and used only after tuning. A probe recovers it at 0.92 accuracy in the pretrained model. The paired shift, the change in the Yes minus No logit between the sympathetic and the condemning telling of one dilemma, is +0.04 there and +12.18 after tuning, with 83 of 100 dilemmas moving toward Yes. Second, the route is local. The alignment between the framing direction and the answer direction peaks at layer 25 at 0.307, which is 8.4 times the pretrained value, and ten writer heads concentrated at layers 23 to 25 carry 59% of the shift. Finally, the pattern is specific and it replicates. The framing direction aligns with all 9 evaluative answer pairs we tested and stays at or below 0.05 for all 5 neutral pairs, and the shift is positive in all 10 instruction-tuned models we tested, from three families.</p>
+  <h3>What a bad outcome would have looked like</h3>
+  <p>Three results would have spoken against routing. If the pretrained verdict already moved with the framing, instruction tuning would be beside the point. A tuned model whose alignment had no layer-localised peak would leave no route to point at. And if patching at that depth recovered nothing, or ablating the candidate heads did no more than ablating random ones, the route would be decorative. None of these happened, although each was tested on one matched pair and this dataset only.</p>
+</section>
+
+<section id="defs" class="col">
+  <div class="defs">
+    <div class="dh">Some definitions <span>One dilemma, two tellings</span></div>
+    <dl>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><circle cx="8" cy="12" r="5" class="ds"/><circle cx="20" cy="12" r="5" class="dc"/><circle cx="32" cy="12" r="5" class="dp"/></svg>Framing triplet</dt><dd>One event told three times, sympathetic to the actor, condemning of the actor, and abstract.</dd></div>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" class="ds"/><rect x="24" y="14" width="8" height="6" class="dc"/></svg>Paired shift</dt><dd>For one dilemma, the Yes minus No logit under the sympathetic telling minus the same quantity under the condemning telling.</dd></div>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><path d="M6 18L32 8" class="dai"/><path d="M27 7l5 1-3 4" class="dai"/></svg>δ<sub>frame</sub>(ℓ)</dt><dd>The mean activation of sympathetic prompts minus that of condemning prompts, at the last token and layer ℓ.</dd></div>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><path d="M20 21V5" class="dak"/><path d="M16 9l4-5 4 5" class="dak"/></svg>δ<sub>judge</sub></dt><dd>Two columns of the unembedding matrix give the output directions for “ Yes” and “ No”, and δ<sub>judge</sub> is their difference.</dd></div>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><path d="M8 20V5" class="dak"/><path d="M8 20L30 11" class="dai"/><path d="M8 13 A7 7 0 0 1 14 18" class="dl"/></svg>ρ(ℓ)</dt><dd>Cosine between δ<sub>frame</sub>(ℓ) and δ<sub>judge</sub>, near 0 when the framing points away from the answer and grows as it turns toward it.</dd></div>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><rect x="4" y="4" width="32" height="6" rx="1" class="dp"/><rect x="4" y="14" width="32" height="6" rx="1" class="dp"/><rect x="28" y="4" width="8" height="6" class="dc"/><path d="M32 10v4" class="dl"/></svg>Recovery R</dt><dd>The share of the natural gap between two runs that is restored when one run's activation is copied into the other.</dd></div>
+      <div><dt><svg viewBox="0 0 40 24" aria-hidden="true"><circle cx="10" cy="12" r="5" class="ds"/><path d="M16 12h16" class="dak"/><path d="M28 8l4 4-4 4" class="dak"/></svg>Writer head</dt><dd>An attention head whose sympathetic-minus-condemning output points along δ<sub>judge</sub>, so that it writes the framing toward the answer.</dd></div>
+    </dl>
+  </div>
+</section>
+
 <section id="hook" class="col">
+  <div class="eyebrow">A human entry point</div>
+  <h2>The same event, told two ways</h2>
   <div class="seg tellseg" id="tellSeg" role="group" aria-label="Framing"><button data-f="both" aria-pressed="true">Both</button><button data-f="sym" aria-pressed="false">Sympathetic</button><button data-f="cond" aria-pressed="false">Condemning</button><button data-f="abs" aria-pressed="false">Abstract</button></div>
   <div class="tellings">
     <figure class="telling sym"><div class="tl">Told one way</div><blockquote>Hodor had served the Stark family his whole life, and when the moment came he did not hesitate. … He had never asked to be a soldier, but in the only fight Bran ever asked of him, he did not lose.</blockquote></figure>
@@ -379,23 +472,15 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
     <figure class="telling abs" hidden><div class="tl">Told plainly</div><blockquote>A non-consenting agent with diminished cognitive capacity is causally entrained into a fatal protective action by parties who escape, with the agent’s death and complete loss of cognition as the foreseeable result.</blockquote></figure>
   </div>
   <p class="cap-s">Two framings of one event from the dataset (paper, Appendix A). A third, abstract framing states the same action in neutral terms.</p>
-  <p class="hook">Ask a chat model whether an action was justified. Then retell the same event in a sympathetic light and ask again. The verdict can change. Framing studies record this as a fact about how chat models behave, but they do not say where in the network the change happens.</p>
-  <p class="hook">We asked a narrower question with a matched pair of models. Does the pretrained model already represent the framing, and if it does, why doesn't the framing move its verdict?</p>
-  <div class="tldr">
-    <div class="label">TL;DR</div>
-    <p>We compared Gemma-3-4B before and after instruction tuning on 100 moral dilemmas, each told in a sympathetic, a condemning and an abstract framing. In both models a linear probe reads the framing from the residual stream, at 0.92 accuracy in the pretrained model and 0.97 in the instruction-tuned one. Only the instruction-tuned model acts on it: the framing shifts its Yes/No verdict by 12.18 logits, against 0.04 in the pretrained model. Inside the tuned model the framing direction turns toward the judgment readout at layer 25, where the alignment is 8.4 times the pretrained value at the same layer, and patching and head ablations show that this pathway is used. For this one matched pair and this dataset, instruction tuning changes how the representation is read out, not whether it exists.</p>
-  </div>
-  <details class="abstract" id="abstract"><summary>Paper abstract</summary>
-    <p>Large language models change their moral verdicts when the same event is reframed, but the literature treats this as a behavioural fact about chat models without locating where in the network the change happens. On one matched pair, Gemma-3-4B pretrained and instruction-tuned, and 100 moral dilemmas from two fictional sources, we show that moral framing is already linearly decodable in the pretrained network yet has no measurable effect on its judgment, while in the instruction-tuned checkpoint that same representation becomes aligned with and causally usable by the evaluative readout, with the within-model framing-judgment alignment 8.4× larger than in the matched pretrained checkpoint at the same layer. In this pair and on this dataset, instruction tuning changes how the representation is read out, not whether it exists.</p>
-  </details>
+  <p>Ask a chat model whether an action was justified, then retell the same event in a sympathetic light and ask again. The verdict can change. We asked a narrower question with a matched pair of models. Does the pretrained model already represent the framing, and if it does, why does the framing leave its verdict alone?</p>
 </section>
 
 <section id="instrument">
   <div class="col">
     <div class="eyebrow">The central comparison</div>
     <h2>Both models encode the framing. Only the tuned model uses it.</h2>
-    <p>Two measurements carry the argument. A linear probe asks whether the framing can be read from the residual stream at all. The alignment cosine ρ(ℓ) asks something different: does the direction that separates sympathetic from condemning prompts point toward the direction that separates Yes from No in the model's output?</p>
-    <p>Drag the layer slider below. The probe stays high in both models at every layer. The cosine stays near zero in the pretrained model everywhere, and rises in the tuned model only late, peaking at layer 25.</p>
+    <p>Two measurements carry the argument. A linear probe asks whether the framing can be read from the residual stream at all. The alignment cosine ρ(ℓ) asks whether the direction that separates sympathetic from condemning prompts points toward the direction that separates Yes from No.</p>
+    <p>Drag the layer slider. The probe stays high in both models at every layer, and the cosine stays near zero in the pretrained model everywhere. In the tuned model it rises late and peaks at layer 25.</p>
   </div>
   <div class="wide band">
     <div class="bench">
@@ -419,16 +504,16 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
         <div class="legend" style="margin:6px 0 0"><span><i style="background:var(--pt)"></i>PT ρ(ℓ)</span><span><i style="background:var(--it)"></i>IT ρ(ℓ)</span><span style="color:var(--muted)">Drag the slider or hover the chart.</span></div>
       </div>
     </div>
-    <figcaption><b>Figure 1</b>Each dial draws the angle between the framing direction δ<sub>frame</sub>(ℓ) = S̄<sub>ℓ</sub> − C̄<sub>ℓ</sub> and the judgment direction δ<sub>judge</sub> = W<sub>U</sub>[:,Yes] − W<sub>U</sub>[:,No]; ρ(ℓ) is its cosine in the full residual space. At layer 25 the tuned model reaches 0.307 against 0.036 for the pretrained model, 8.4× layer-matched.</figcaption>
+    <figcaption><b>Figure 1</b>Each dial draws the angle between δ<sub>frame</sub>(ℓ) and δ<sub>judge</sub> in the full residual space. At layer 25 the tuned model reaches 0.307 against 0.036 for the pretrained model, 8.4 times higher at the same layer.</figcaption>
   </div>
 </section>
 
 <section id="behaviour">
   <div class="col">
     <div class="eyebrow">Design</div>
-    <h2>One free variable: the instruction-tuning step</h2>
-    <p>Gemma-3-4B comes as a pretrained and an instruction-tuned checkpoint with the same architecture, tokeniser, training corpus and pretraining seed. Comparing the two isolates what post-training changed. We score each prompt by the final-token logit gap between “ Yes” and “ No”, and call the sympathetic score minus the condemning score on the same dilemma its paired shift.</p>
-    <p>In the pretrained model the paired shift is +0.04 logits, and its confidence interval straddles zero. In the tuned model it is +12.18, and 83 of the 100 dilemmas move in the sympathetic direction. Yet the probe recovers the framing in both.</p>
+    <h2>One free variable, the instruction-tuning step</h2>
+    <p>Gemma-3-4B comes as a pretrained and an instruction-tuned checkpoint with the same architecture, tokeniser, training corpus and pretraining seed. Comparing the two isolates what post-training changed. We score each prompt by the final-token logit gap between “ Yes” and “ No”.</p>
+    <p>The paired shift is +0.04 logits in the pretrained model, and its confidence interval straddles zero. In the tuned model it is +12.18, and 83 of the 100 dilemmas move toward Yes when told sympathetically, as the field of dots at the top shows. The probe recovers the framing in both.</p>
   </div>
   <div class="col scroll" style="margin-top:18px">
     <table class="cmp" aria-label="PT versus IT on the N=100 testbed">
@@ -443,21 +528,13 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
       </tbody>
     </table>
   </div>
-  <figure class="wide band">
-    <div class="bench">
-      <div class="toolbar"><div class="seg" id="dilMode" role="group" aria-label="View"><button data-m="scatter" aria-pressed="true">Each dilemma</button><button data-m="rank" aria-pressed="false">Sorted shifts</button></div>
-        <span class="small">Gemma-3-4B-IT · stored per-dilemma scores</span></div>
-      <div class="pad chart"><svg id="dilScatter" role="img" aria-label="Sympathetic against condemning Yes minus No score for each of the 100 dilemmas in the instruction-tuned model; 83 lie above the no-shift line."></svg></div>
-    </div>
-    <figcaption><b>Figure 2</b>Each point is one dilemma in the tuned model: its score under the condemning framing against its score under the sympathetic one. Points above the dashed line moved toward Yes when told sympathetically. Per-dilemma scores for the pretrained model are not stored with the figures; its mean shift is +0.04.</figcaption>
-  </figure>
 </section>
 
 <section id="dataset">
   <div class="col">
     <div class="eyebrow">The dilemmas</div>
     <h2>One event, written three ways</h2>
-    <p>Each of the 100 dilemmas tells one canonical event three times: sympathetic to the actor, condemning of the actor, and abstract, which strips the rhetoric and restates the action in neutral third-person terms. Fifty come from <em>Attack on Titan</em> and fifty from <em>Game of Thrones</em>, each framing about 400 to 950 characters. Here are the two worked examples from the paper's appendix, one on each side of the perpetrator split.</p>
+    <p>Each of the 100 dilemmas tells one canonical event three times. The sympathetic and condemning versions take a side, and the abstract one strips the rhetoric and restates the action in neutral third-person terms. Fifty come from <em>Attack on Titan</em> and fifty from <em>Game of Thrones</em>, and each framing runs to about 400 to 950 characters. Below are the two worked examples from the paper's appendix, one on each side of the perpetrator split.</p>
   </div>
   <div class="wide band">
     <div class="bench">
@@ -469,7 +546,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
       <div class="frames" id="dsFrames"></div>
     </div>
     <div class="fscores"><div class="label">Tuned model, mean Yes − No score at the output, by framing</div><div id="frameScores"></div><p class="small">Mean over all 100 dilemmas, from the last layer of the stored logit-lens data. Scores for these two example dilemmas are not stored separately.</p></div>
-    <figcaption><b>Appendix A</b>Texts reproduced from the paper. Anonymisation turns names into role labels, factions into generic descriptors and iconic concepts into functional descriptions; the abstract framing has no entity references, so it is the same in both versions.</figcaption>
+    <figcaption><b>Appendix A</b>Texts reproduced from the paper. Anonymisation turns names into role labels, factions into generic descriptors and iconic concepts into functional descriptions. The abstract framing has no entity references, so it is the same in both versions.</figcaption>
   </div>
 </section>
 
@@ -477,8 +554,8 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="col">
     <div class="eyebrow">Geometry</div>
     <h2>The pretrained model separates the framings without pointing them at the answer</h2>
-    <p>Project the final-token activations onto their top two principal components, at each model's peak-alignment layer. Both models pull sympathetic and condemning prompts apart. The arrows are the directions from the full space, flattened into this plane.</p>
-    <p>Be careful with the picture. PCA does not preserve angles from the full space, so the pretrained arrows can look close here while their true cosine is +0.05. The label above each panel is the measurement. The plot is only a view.</p>
+    <p>Project the final-token activations onto their top two principal components at each model's peak-alignment layer. Both models pull sympathetic and condemning prompts apart. The arrows are the two directions from the full space, flattened into this plane.</p>
+    <p>PCA does not preserve angles from the full space, so the pretrained arrows can look close here while their true cosine is +0.05. The label above each panel is the measurement, and the plot is a view of it.</p>
   </div>
   <figure class="wide band">
     <p class="figctl"><button class="btn" id="pairLines" aria-pressed="false" type="button">Connect each dilemma's two framings</button></p>
@@ -487,7 +564,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
       <div class="chart"><div class="ptitle"><span class="it">IT · ℓ = 25</span><span>ρ<sub>full</sub> = +0.31</span></div><svg id="pcaIT" viewBox="0 0 460 380" role="img" aria-label="PCA of IT activations at layer 25"></svg></div>
     </div>
     <div class="legend" style="margin-top:12px;justify-content:center"><span><i class="dot" style="background:var(--sym)"></i>sympathetic</span><span><i class="dot" style="background:var(--cond)"></i>condemning</span><span><i style="background:var(--ink)"></i>δ<sub>frame</sub></span><span><i style="background:repeating-linear-gradient(90deg,var(--ink2) 0 4px,transparent 4px 7px)"></i>δ<sub>judge</sub></span></div>
-    <figcaption><b>Figure 3</b>100 points per framing. Hover a point to ring the same dilemma's other framing, or connect every pair.</figcaption>
+    <figcaption><b>Figure 2</b>100 points per framing. Hover a point to ring the same dilemma's other framing, or connect every pair.</figcaption>
   </figure>
 </section>
 
@@ -495,26 +572,26 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="col">
     <div class="eyebrow">Late readout</div>
     <h2>The three framings agree for twenty layers, then split</h2>
-    <p>The logit lens reads each layer's residual through the final norm and unembedding, giving a running Yes minus No gap. In the tuned model the three framings track each other closely until about layer 20. Then the sympathetic trajectory peels away while the alignment cosine climbs to its peak. The pretrained model shows no such transition: its trajectories collapse onto one flat line.</p>
+    <p>The logit lens reads each layer's residual stream through the final norm and the unembedding, which gives a running Yes minus No gap. In the tuned model the three framings track each other until about layer 20. Then the sympathetic trajectory peels away while the alignment climbs to its peak. The pretrained model shows no such transition, and its trajectories collapse onto one flat line.</p>
   </div>
   <figure class="wide band">
-    <div class="linkchip">Linked to the layer slider in Figure 1: ℓ = <b>25</b> <button type="button" data-l="20">ℓ 20</button><button type="button" data-l="25">ℓ 25</button><button type="button" data-l="28">ℓ 28</button></div>
+    <div class="linkchip">Linked to the layer slider in Figure 1, ℓ = <b>25</b> <button type="button" data-l="20">ℓ 20</button><button type="button" data-l="25">ℓ 25</button><button type="button" data-l="28">ℓ 28</button></div>
     <div class="bench">
       <div class="toolbar"><div class="seg" id="lensMode" role="group" aria-label="View"><button data-m="traj" aria-pressed="true">Per-framing gap</button><button data-m="gap" aria-pressed="false">S − C difference</button></div>
         <div class="legend" id="lensLegend" style="margin:0"></div></div>
       <div class="pad chart"><svg id="lens" viewBox="0 0 1000 300" role="img" aria-label="Logit-lens Yes minus No gap per layer in Gemma-3-4B-IT"></svg></div>
     </div>
-    <figcaption><b>Figure 4</b>Gemma-3-4B-IT, mean over 100 dilemmas. At the output the condemning framing ends near −12 and the abstract near −8, while the sympathetic ends near zero. Under these prompts the model leans toward condemning by default.</figcaption>
+    <figcaption><b>Figure 3</b>Gemma-3-4B-IT, mean over 100 dilemmas. At the output the condemning framing ends near −12 and the abstract near −8, while the sympathetic ends near zero. Under these prompts the tuned model leans toward condemning by default.</figcaption>
   </figure>
 </section>
 
 <section id="causal">
   <div class="col">
     <div class="eyebrow">Causal tests</div>
-    <h2>Patching the framing in moves the verdict, and it moves more easily with the model's default</h2>
-    <p>Alignment shows that the directions line up. Patching asks whether the model uses them. We run the model on one framing, then on the other, and copy the first run's residual activation into the second at the final token. The recovery R measures how much of the natural judgment gap the copy alone restores. In the released code the clean activation is taken at the corrupt prompt's final index, which is an earlier clean token when the clean framing is longer.</p>
-    <p>At layer 20, copying condemning into sympathetic restores 0.885 of the gap. Copying sympathetic into condemning restores 0.521. The asymmetry has a plain reading. The tuned model leans toward condemning under our prompts, so one direction of the patch pushes with its default and the other pushes against it.</p>
-    <p>A second test removes a low-rank subspace instead of copying activations. Taking the top four principal directions of the framing differences, and removing even the part of them orthogonal to the judgment direction, still removes 0.82 of the shift at layers 20 and 25. Random rank-4 subspaces of the same norm remove at most 0.23. By layer 28 the framing subspace has merged into the judgment direction.</p>
+    <h2>Patching the framing in moves the verdict, more easily in the direction of the model's default</h2>
+    <p>Alignment shows that two directions line up, and patching asks whether the model uses them. We run the model on one framing and then on the other, and copy the first run's residual activation into the second at the final token. The recovery R is the share of the natural judgment gap that this copy alone restores. In the released code the clean activation is taken at the corrupt prompt's final index, which is an earlier clean token when the clean framing is longer.</p>
+    <p>At layer 20 the condemning activation copied into the sympathetic run restores 0.885 of the gap, and the reverse restores 0.521. The tuned model leans toward condemning under our prompts, so one direction of the patch pushes with its default and the other pushes against it.</p>
+    <p>A second test removes a low-rank subspace. We take the top four principal directions of the framing differences and keep only their part orthogonal to δ<sub>judge</sub>. Removing that subspace still takes away 0.82 of the shift at layers 20 and 25, while random subspaces of the same rank and norm take away at most 0.23. By layer 28 the framing subspace has merged into the judgment direction.</p>
   </div>
   <div class="wide" id="patchDemo">
     <div class="bench pd">
@@ -534,13 +611,13 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
       <div class="chart"><div class="ptitle"><span>Recovery at ℓ = 20, by hook</span><span>n = 83 stable</span></div>
         <svg id="patch" viewBox="0 0 460 250" role="img" aria-label="Recovery by hook: resid_pre S to C 0.521, C to S 0.885; resid_post 0.565 and 0.918; attn_out 0.135 both; mlp_out 0.026 and 0.223."></svg>
         <div class="legend" style="margin-top:6px"><span><span class="key" style="background:var(--sym)"></span>S → C</span><span><span class="key" style="background:var(--cond)"></span>C → S</span></div>
-        <p class="small" style="margin:6px 0 0">At a stricter cut (n = 65) the asymmetry holds: 0.787 against 0.234. Attention alone is symmetric; the residual carries more than its parts.</p></div>
+        <p class="small" style="margin:6px 0 0">At a stricter cut (n = 65) the asymmetry holds, 0.787 against 0.234. Attention alone is symmetric, and the residual carries more than its parts.</p></div>
       <div class="chart"><div class="ptitle"><span>Subspace ablation shrinkage</span>
         <span class="seg" id="subL" role="group" aria-label="Layer"><button data-l="0" aria-pressed="false">ℓ 20</button><button data-l="1" aria-pressed="true">ℓ 25</button><button data-l="2" aria-pressed="false">ℓ 28</button></span></div>
         <svg id="sub" viewBox="0 0 460 210" role="img" aria-label="Shrinkage of the paired shift when ablating subspaces"></svg>
         <p class="small" style="margin:6px 0 0">The rank-4 framing subspace, orthogonalised against δ<sub>judge</sub>, still removes 0.82 of the shift at ℓ = 20 and 25, against at most 0.23 for 20 norm-matched random rank-4 controls. By ℓ = 28 it has fused into the judgment direction.</p></div>
     </div>
-    <figcaption><b>Figure 5</b>Left: recovery by hook at layer 20 (paper Table 2). Right: shrinkage of the paired shift when a subspace is removed (paper Table 3).</figcaption>
+    <figcaption><b>Figure 4</b>Left, recovery by hook at layer 20 (paper Table 2). Right, shrinkage of the paired shift when a subspace is removed (paper Table 3).</figcaption>
   </figure>
 </section>
 
@@ -548,8 +625,8 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="col">
     <div class="eyebrow">Writer heads</div>
     <h2>Ten writer heads, concentrated at layers 23 to 25, carry 59% of the shift</h2>
-    <p>Which attention heads write the framing into the judgment direction? For each head we take its sympathetic-minus-condemning contribution at the final token and project it onto δ<sub>judge</sub>. Five heads at layers 23 and 24 each exceed |p| = 0.24. No head elsewhere in layers 10 to 25 exceeds 0.10. The strongest writer is layer 23, head 3.</p>
-    <p>Then we remove them. Mean-ablating the top ten writers cuts the paired shift from 12.18 to 5.04 logits. Ten random heads, matched to the writers' layers, barely move it (+0.23 ± 0.95 over ten seeds), so the writer effect sits 7.8 standard deviations from that null.</p>
+    <p>For each attention head we take its sympathetic-minus-condemning contribution at the final token and project it onto δ<sub>judge</sub>. Five heads at layers 23 and 24 each exceed |p| = 0.24, and no head elsewhere in layers 10 to 25 exceeds 0.10. The strongest writer is layer 23, head 3.</p>
+    <p>Then we remove them. Mean-ablating the top ten writers cuts the paired shift from 12.18 to 5.04 logits. Ten random heads matched to the writers' layers barely move it (+0.23 ± 0.95 over ten seeds), so the writer effect sits 7.8 standard deviations from that null.</p>
   </div>
   <figure class="wide band">
     <div class="ablctl">
@@ -557,7 +634,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
       <div class="ablread"><span class="label">Paired shift S − C</span><span class="ablbig" id="ablBig">+12.18</span><span class="abld" id="ablDelta"></span></div>
       <p class="small" id="ablNote"></p>
     </div>
-    <div class="linkchip" data-range="heads">Linked to the layer slider in Figure 1: ℓ = <b>25</b> <button type="button" data-l="23">ℓ 23</button><button type="button" data-l="24">ℓ 24</button><button type="button" data-l="25">ℓ 25</button></div>
+    <div class="linkchip" data-range="heads">Linked to the layer slider in Figure 1, ℓ = <b>25</b> <button type="button" data-l="23">ℓ 23</button><button type="button" data-l="24">ℓ 24</button><button type="button" data-l="25">ℓ 25</button></div>
     <div class="bench heat">
       <div class="chart"><svg id="heat" viewBox="0 0 470 430" role="img" aria-label="Writer-head heatmap, layers 10 to 25 by heads 0 to 7. Strongest writer is layer 23 head 3 at +0.715, strongest antagonist layer 24 head 7 at -0.505."></svg>
         <div class="ramp"><span>−0.7</span><span class="bar" style="background:linear-gradient(90deg,var(--cond),var(--faint),var(--sym))"></span><span>+0.7</span><span style="flex-basis:100%">blue writes against the judgment direction, terracotta toward Yes</span></div>
@@ -566,21 +643,21 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
         <svg id="abl" viewBox="0 0 380 250" role="img" aria-label="Paired shift under head ablation: clean 12.18, top-10 writers 5.04, antagonists 14.65, both 7.51, random 12.41."></svg>
         <p class="small" style="margin:8px 0 0">Random heads are sampled to match the writers' per-layer distribution, excluding the writers: Δ = +0.23 ± 0.95 over ten seeds.</p></div>
     </div>
-    <figcaption><b>Figure 6</b>Writer attribution and its causal check on Gemma-3-4B-IT. Mean ablation replaces a head's output with its dataset mean; zero ablation would push the residual norm out of distribution.</figcaption>
+    <figcaption><b>Figure 5</b>Writer attribution and its causal check on Gemma-3-4B-IT. Mean ablation replaces a head's output with its dataset mean, and zero ablation would push the residual norm out of distribution.</figcaption>
   </figure>
 </section>
 
 <section id="specificity">
   <div class="col">
     <div class="eyebrow">Specificity</div>
-    <h2>The pathway needs moral content, and it ends at evaluation in general</h2>
-    <p>On the output side, swap Yes/No for other answer pairs. The framing direction aligns with every evaluative pair we tried, from True/False to justified/unjustified, and with none of the neutral ones such as cat/dog. The evaluative-to-neutral ratio is 4.1× in the tuned model and 1.25× in the pretrained one.</p>
-    <p>On the input side, swap moral content for non-moral sentiment, such as positive and negative descriptions of food, music, places or weather. At layer 25 that framing aligns at +0.022, fourteen times weaker. Asking the moral question about sentiment content gives −0.007, so the moral question by itself does not open the pathway.</p>
+    <h2>The route needs moral content, and it ends at evaluation in general</h2>
+    <p>On the output side we swap Yes/No for other answer pairs. The framing direction aligns with every evaluative pair we tried, from True/False to justified/unjustified, and with none of the neutral ones such as cat/dog. Evaluative pairs align 4.1 times as strongly as neutral ones in the tuned model, against 1.25 times in the pretrained one.</p>
+    <p>On the input side we swap moral content for non-moral sentiment, positive and negative descriptions of food, music, places or weather. At layer 25 that framing aligns at +0.022, fourteen times less. Sentiment content asked the moral question gives −0.007, so the moral question on its own does not open the route.</p>
   </div>
   <figure class="col band">
-    <div class="bench pad chart" style="margin-bottom:18px"><div class="ptitle"><span>What opens the pathway · ρ at layer 25</span></div><svg id="inputChart" role="img" aria-label="Alignment at layer 25: moral content 0.307, sentiment content 0.022, sentiment content with the moral question -0.007."></svg></div>
+    <div class="bench pad chart" style="margin-bottom:18px"><div class="ptitle"><span>What opens the route · ρ at layer 25</span></div><svg id="inputChart" role="img" aria-label="Alignment at layer 25: moral content 0.307, sentiment content 0.022, sentiment content with the moral question -0.007."></svg></div>
     <div class="bench pad chart"><svg id="pairs" viewBox="0 0 640 410" role="img" aria-label="Peak alignment by readout pair in IT. Nine evaluative pairs from 0.07 to 0.31; five neutral pairs between 0.028 and 0.051."></svg></div>
-    <figcaption><b>Figure 7</b>Top: alignment at layer 25 for the input-side controls; sentiment framing has its own, weaker peak at layer 32 (ρ = +0.140). Bottom: peak |ρ| in Gemma-3-4B-IT across 34 layers, per readout pair (paper Table 4). Evaluative peaks sit at layers 17 to 25; neutral peaks are scattered.</figcaption>
+    <figcaption><b>Figure 6</b>Top, alignment at layer 25 for the input-side controls. Sentiment framing has its own, weaker peak at layer 32 (ρ = +0.140). Bottom, peak |ρ| in Gemma-3-4B-IT across 34 layers for each answer pair (paper Table 4). Evaluative peaks sit at layers 17 to 25, and neutral peaks are scattered.</figcaption>
   </figure>
 </section>
 
@@ -588,8 +665,8 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="col">
     <div class="eyebrow">Replication</div>
     <h2>Ten instruction-tuned models, three families, one sign</h2>
-    <p>The paired shift is positive, with a 95% interval above zero, in every instruction-tuned checkpoint we tried, from 2B to 32B parameters across Gemma, Qwen and Llama. All ten show a within-family peak alignment above +0.20.</p>
-    <p>Llama-3.1-8B is the instructive outlier. Its peak cosine (+0.249 at layer 29) is comparable to Gemma's, but its shift is four times smaller than Gemma-3-12B's. The cosine measures where the framing points. It does not measure how strongly later layers amplify it.</p>
+    <p>The paired shift is positive, with a 95% interval above zero, in every instruction-tuned checkpoint we tried, from 2B to 32B parameters across Gemma, Qwen and Llama. All ten reach a within-family peak alignment above +0.20.</p>
+    <p>Llama-3.1-8B is the instructive outlier. Its peak cosine (+0.249 at layer 29) is comparable to Gemma's, and its shift is four times smaller than that of Gemma-3-12B. The cosine measures where the framing points. How strongly later layers amplify it is a separate quantity that the cosine does not see.</p>
   </div>
   <figure class="wide band">
     <div class="bench">
@@ -598,7 +675,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
         <span class="small">Bootstrap 95% CI, 10,000 paired triplet resamples</span></div>
       <div class="pad chart"><svg id="forest" viewBox="0 0 1000 420" role="img" aria-label="Paired sympathetic-condemning shift with 95% intervals for the pretrained Gemma-3-4B and ten instruction-tuned models; PT straddles zero, all IT intervals are positive."></svg></div>
     </div>
-    <figcaption><b>Figure 8</b>The grey row is the only pretrained checkpoint, the matched Gemma-3-4B-PT, and its interval straddles zero. Hover a row for the numbers.</figcaption>
+    <figcaption><b>Figure 7</b>The grey row is the only pretrained checkpoint, the matched Gemma-3-4B-PT, and its interval straddles zero. Hover a row for the numbers.</figcaption>
   </figure>
 </section>
 
@@ -606,8 +683,8 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="col">
     <div class="eyebrow">Robustness</div>
     <h2>Most of the inversions are perpetrator stories</h2>
-    <p>In the tuned model, 17 of the 100 dilemmas shift the wrong way. Hand-annotated for narrative perspective, 15 of them are perpetrator-POV: the sympathetic frame is narrated by the actor, but the act is the canonical wrongdoing of the story. The Rumbling example above has this structure. In these cases the verdict follows the depicted act more than the narrator's voice.</p>
-    <p>Remove them and the shift rises to +15.22, with 98% of the remaining dilemmas positive. The direction of the routing is intact; its size is held down when the act itself is clearly condemnable. A benchmark built on first-person wrongdoer narration could therefore underestimate the routing.</p>
+    <p>In the tuned model 17 of the 100 dilemmas shift the wrong way. Hand-annotated for narrative perspective, 15 of them are perpetrator-POV. The sympathetic frame is narrated by the actor, and the act is the canonical wrongdoing of the story, as in the Rumbling example in the dataset section. In these cases the verdict follows the depicted act more than the narrator's voice.</p>
+    <p>Remove them and the shift rises to +15.22, with 98% of the remaining dilemmas positive. The routing keeps its direction, and its size is held down when the act itself is clearly condemnable. A benchmark built on first-person wrongdoer narration could therefore underestimate the routing.</p>
     <div class="perpctl"><button class="btn" id="perpToggle" aria-pressed="false" type="button">Remove the 15 perpetrator-POV dilemmas</button><span id="perpNow"><b>+12.18</b> mean shift · 0.83 positive · n = 100</span></div>
     <div class="bench pad" style="margin-top:18px">
       <div class="waffle" id="waffle" role="img" aria-label="100 triplets: 83 positive shift, 15 negative and perpetrator-POV, 2 negative other."></div>
@@ -626,14 +703,14 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   <div class="col">
     <div class="eyebrow">Scope</div>
     <h2>What this does and doesn't show</h2>
-    <p>The evidence supports a routing claim for one matched pair on this dataset. It is not a complete circuit map, and it is not a general account of moral framing.</p>
+    <p>The evidence supports a routing claim for one matched pair on this dataset. It is neither a complete circuit map nor a general account of moral framing.</p>
   </div>
   <div class="wide sides2">
     <div class="sd">
       <div class="label">It shows</div>
       <ul>
         <li>In Gemma-3-4B on these 100 dilemmas, the framing is decodable before instruction tuning but moves the verdict only after it (<a href="#instrument">Figure 1</a>).</li>
-        <li>Four measurements converge on one mid-to-late pathway in the tuned model: the alignment cosine, residual patching, a ten-head writer set and a rank-4 subspace (<a href="#causal">causal tests</a>, <a href="#heads">writer heads</a>).</li>
+        <li>Four measurements converge on one mid-to-late route in the tuned model, namely the alignment cosine, residual patching, a ten-head writer set and a rank-4 subspace (<a href="#causal">causal tests</a>, <a href="#heads">writer heads</a>).</li>
         <li>The positive shift, and a within-family peak alignment above +0.20, appear in ten instruction-tuned models from three families.</li>
       </ul>
     </div>
@@ -641,7 +718,7 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
       <div class="label">It does not show</div>
       <ul>
         <li>That this holds beyond one matched pair. The ten other checkpoints are instruction-tuned only.</li>
-        <li>That the framing direction is pure framing. The variants are not minimal pairs; they also differ in narrator, perspective and emphasis.</li>
+        <li>That the framing direction is pure framing. The variants are not minimal pairs, since they also differ in narrator, perspective and emphasis.</li>
         <li>Held-out causal estimates. Layers and heads were chosen on the same 100 dilemmas they were measured on, and the patching and ablation effects have no confidence intervals.</li>
         <li>The rest of the circuit. The ten heads carry 59% of the shift, and the remainder is not localised (<a href="#heads">try the ablations</a>).</li>
       </ul>
@@ -649,14 +726,14 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   </div>
   <div class="col" style="margin-top:28px">
     <h3>A screen you can run on other behaviours</h3>
-    <p>The alignment cosine needs one cached forward pass per layer, a difference of class means and one column of W<sub>U</sub>. Given a chat model and its base checkpoint, compute ρ(ℓ) in both for any two contrastive prompt classes, such as refusal versus compliance. Look for a layer-localised peak in the tuned model and a flat line in the base one, then test it with interventions matched to the behaviour. Treat a peak as a candidate pathway until those interventions confirm it.</p>
-    <p class="small">Next tests from the paper: non-fictional and minimal-pair datasets, a held-out split for layer and head selection with bootstrap intervals, path patching downstream of the writer heads, and a developmental run across fine-tuning checkpoints.</p>
+    <p>The alignment cosine needs one cached forward pass per layer, a difference of class means and one column of W<sub>U</sub>. Given a chat model and its base checkpoint, compute ρ(ℓ) in both for any two contrasting prompt classes, such as refusal and compliance. Look for a layer-localised peak in the tuned model and a flat line in the base one, then test it with interventions matched to the behaviour. A peak is only a candidate route until those interventions confirm it.</p>
+    <p class="small">Next tests from the paper are non-fictional and minimal-pair datasets, a held-out split for choosing layers and heads with bootstrap intervals, path patching downstream of the writer heads, and a run across fine-tuning checkpoints.</p>
   </div>
 </section>
 
 <section class="col" id="cite">
   <div class="eyebrow">Cite</div>
-  <h2>BibTeX</h2>
+  <h2>Cite this article</h2>
   <div class="bibwrap"><pre class="bib" id="bib">@inproceedings{konrad2026decoded,
   title     = {Decoded but Unused: Instruction Tuning Routes Moral
                Framing into the Judgment Readout},
@@ -665,11 +742,11 @@ svg .gl{stroke:var(--faint)} svg .gl0{stroke:var(--rule)}
   year      = {2026},
   url       = {https://openreview.net/forum?id=da9ylT2doy}
 }</pre><button class="btn" id="copybib" type="button">Copy</button></div>
-  <p class="small" style="margin-top:14px">Code, dataset and cached results behind every figure: <a href="https://github.com/aiml-sdu/decoded-but-unused">github.com/aiml-sdu/decoded-but-unused</a>. An arXiv version is in preparation.</p>
+  <p class="small" style="margin-top:14px">Code, dataset and the cached results behind every figure are at <a href="https://github.com/aiml-sdu/decoded-but-unused">github.com/aiml-sdu/decoded-but-unused</a>. An arXiv version is in preparation.</p>
 </section>
 
 <footer class="col">
-  <div>Konrad, Tanyel &amp; Ayvaz · ICML 2026 Workshop on Mechanistic Interpretability, Seoul.</div>
+  <div>Konrad, Tanyel and Ayvaz · ICML 2026 Workshop on Mechanistic Interpretability, Seoul.</div>
   <div style="margin-top:6px">Every plotted value is read from the paper's stored figure data or its tables.</div>
 </footer>
 
@@ -953,6 +1030,19 @@ const sg=(v,d=2)=>(v<0?'−':'+')+Math.abs(v).toFixed(d);
 const tip=$('#tip'); const show=(h,ev)=>{tip.innerHTML=h;tip.classList.add('on');const w=tip.offsetWidth,hh=tip.offsetHeight;tip.style.left=Math.max(8,Math.min(innerWidth-w-8,ev.clientX+14))+'px';tip.style.top=(ev.clientY+hh+20>innerHeight?ev.clientY-hh-12:ev.clientY+14)+'px';}; const hide=()=>tip.classList.remove('on');
 function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b||!root.contains(b)) return; [...root.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed', x===b)); cb(b); }); }
 
+
+/* chapter cards: small live thumbnails drawn from the stored data */
+(function(){
+  const AL=D.fig_align_pt_vs_it.rows;
+  const t1=$('#th1'); if(t1){ const x=l=>4+l*(112/33), y=v=>48-(v+0.02)/0.34*44;
+    el('polyline',{points:AL.map(r=>x(r[0])+','+y(r[2])).join(' '),class:'t-pt'},t1);
+    const it=el('polyline',{points:AL.map(r=>x(r[0])+','+y(r[1])).join(' '),class:'t-it'},t1);
+    if(!reduce){ const len=it.getTotalLength?it.getTotalLength():300; it.style.strokeDasharray=len; it.style.strokeDashoffset=len; it.style.transition='stroke-dashoffset 1.6s ease'; new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ it.style.strokeDashoffset=0; o.disconnect(); } }).observe(t1); } }
+  const t2=$('#th2'); if(t2){ [[0.885,'t-c'],[0.521,'t-s']].forEach(([v,c],k)=>el('rect',{x:6,y:10+k*20,width:108*v,height:12,rx:2,class:c},t2)); }
+  const t3=$('#th3'); if(t3){ const cw=112/8, ch=50/16; D.fig_writer_heads.rows.forEach(([l,h,v])=>{ const a=Math.min(1,Math.abs(v)/0.72); el('rect',{x:4+h*cw+.5,y:2+(l-10)*ch+.3,width:cw-1,height:ch-.6,class:v>=0?'t-s':'t-c',opacity:a<0.04?0.08:Math.pow(a,0.7)},t3); }); }
+  const t4=$('#th4'); if(t4){ const CF=D.cross_family_ci, x=v=>8+(v+2)/24*104; CF.forEach((c,i)=>{ const y=4+i*4.6; el('line',{x1:x(c.ci_lo),x2:x(c.ci_hi),y1:y,y2:y,class:'t-m'},t4); el('circle',{cx:x(c.mean),cy:y,r:1.8,class:c.model.includes('PT')?'t-p':'t-c'},t4); }); el('line',{x1:x(0),x2:x(0),y1:0,y2:54,class:'t-m'},t4); }
+})();
+
 /* hook · three tellings of one event */
 (function(){
   const s=$('#tellSeg'); if(!s) return;
@@ -963,6 +1053,7 @@ function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.clo
 (function(){
   const svg=$('#dilScatter'); if(!svg) return;
   const R = X.rows; // [condemning score, sympathetic score] per dilemma, Gemma-3-4B-IT
+  const PT = D.cross_family_ci.find(c=>c.model==='Gemma-3-4B-PT');
   let mode='scatter';
   function draw(){
     const pe=svg.parentElement, cs=getComputedStyle(pe), W=Math.max(280, pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)), H=mode==='scatter'?Math.min(420,W*0.8):240;
@@ -976,6 +1067,8 @@ function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.clo
       const t1=el('text',{x:x(hi)-4,y:y(hi)+16,'text-anchor':'end',class:'tk'},svg); t1.textContent='no shift';
       const ax=el('text',{x:(m.l+W-m.r)/2,y:H-4,'text-anchor':'middle',class:'tk'},svg); ax.textContent='condemning framing: Yes − No logit';
       const ay=el('text',{x:12,y:(m.t+H-m.b)/2,'text-anchor':'middle',class:'tk',transform:`rotate(-90 12 ${(m.t+H-m.b)/2})`},svg); ay.textContent='sympathetic framing';
+      if(window.__ptPole){ const off=PT.mean; el('line',{x1:x(lo),y1:y(lo+off),x2:x(hi-off),y2:y(hi),stroke:'var(--pt)','stroke-width':2.2},svg);
+        const tl=el('text',{x:x(-24),y:y(-24+off)-10,class:'tk',style:'fill:var(--pt)'},svg); tl.textContent=`pretrained mean shift ${sg(off)} (aggregate only)`; }
       R.forEach(([c,s],i)=>{ const d=s-c; const p=el('circle',{cx:x(c),cy:y(s),r:4.2,fill:d>0?'var(--it)':'var(--sym)','fill-opacity':.75,stroke:'var(--surface)','stroke-width':1,class:'dot'},svg);
         p.addEventListener('mouseenter',ev=>show(`dilemma ${i+1} (stored order)<br>condemning ${sg(c)}<br>sympathetic ${sg(s)}<br>shift ${sg(d)}`,ev)); p.addEventListener('mouseleave',hide); });
     } else {
@@ -986,11 +1079,14 @@ function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.clo
       ds.forEach((o,k)=>{ const b=el('rect',{x:x(k)-1.6,y:Math.min(y(0),y(o.d)),width:3.2,height:Math.abs(y(o.d)-y(0)),fill:o.d>0?'var(--it)':'var(--sym)',class:'dot'},svg);
         const h=el('rect',{x:x(k)-3,y:m.t,width:6,height:H-m.t-m.b,fill:'transparent'},svg); h.addEventListener('mouseenter',ev=>show(`dilemma ${o.i+1}<br>shift ${sg(o.d)}`,ev)); h.addEventListener('mouseleave',hide); });
       el('line',{x1:m.l,x2:W-m.r,y1:y(mean),y2:y(mean),stroke:'var(--ink)','stroke-dasharray':'4 3'},svg);
+      if(window.__ptPole){ el('rect',{x:m.l,y:y(PT.ci_hi),width:W-m.l-m.r,height:Math.max(2,y(PT.ci_lo)-y(PT.ci_hi)),fill:'var(--pt)',opacity:.45},svg);
+        const tl=el('text',{x:W-m.r-6,y:y(PT.ci_hi)-6,'text-anchor':'end',class:'tk',style:'fill:var(--pt)'},svg); tl.textContent=`pretrained mean ${sg(PT.mean)}, 95% CI [${PT.ci_lo.toFixed(2)}, ${PT.ci_hi.toFixed(2)}], aggregate only`; }
       const t=el('text',{x:m.l+6,y:y(mean)-6,class:'tk',style:'fill:var(--ink)'},svg); t.textContent=`mean shift ${sg(mean)}`;
       const ax=el('text',{x:(m.l+W-m.r)/2,y:H-8,'text-anchor':'middle',class:'tk'},svg); ax.textContent='100 dilemmas, sorted by paired shift (logits)';
     }
   }
   seg($('#dilMode'), b=>{ mode=b.dataset.m; draw(); });
+  const pb=$('#ptPole'); if(pb) pb.onclick=()=>{ window.__ptPole=!window.__ptPole; pb.setAttribute('aria-pressed',window.__ptPole); pb.textContent=window.__ptPole?'Hide the pretrained model':'Show the pretrained model'; draw(); };
   addEventListener('resize', ()=>{ clearTimeout(draw.t); draw.t=setTimeout(draw,150); });
   draw();
 })();
@@ -1042,7 +1138,7 @@ function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.clo
   function setDir(d){ dir=d; box.dataset.dir=d;
     $('#pdClean').textContent = d==='cs' ? 'condemning framing' : 'sympathetic framing';
     $('#pdCorr').textContent = d==='cs' ? 'sympathetic framing' : 'condemning framing';
-    $('#pdOut').innerHTML = `Stored result at layer 20, <code>hook_resid_pre</code>, n = 83: patching ${rec[d].lab} recovers <b>${rec[d].v.toFixed(3)}</b> of the judgment gap.`;
+    $('#pdOut').innerHTML = `Stored result at layer 20, <code>hook_resid_pre</code>, n = 83. Patching ${rec[d].lab} recovers <b>${rec[d].v.toFixed(3)}</b> of the judgment gap.`;
     $$('#patch rect').forEach(r=>{ const f=r.getAttribute('fill'); if(f==='var(--sym)'||f==='var(--cond)'){ const mine = (d==='cs'&&f==='var(--cond)')||(d==='sc'&&f==='var(--sym)'); r.style.opacity = mine?1:.25; } });
     box.classList.remove('done'); }
   seg($('#pdDir'), b=>setDir(b.dataset.d));
