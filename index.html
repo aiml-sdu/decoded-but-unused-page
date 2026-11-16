@@ -13,8 +13,8 @@
    because the paper's argument is a matched comparison. Grey is PT, blue is IT; terracotta only for the
    sympathetic framing (and for heads that write toward the judgment). */
 :root{
-  --bg:#FAFAF9; --surface:#FFFFFF; --ink:#141619; --ink2:#4B5058; --muted:#7A7F87; --rule:#DFE1E4; --faint:#EEF0F2;
-  --it:#1F5FAD; --it-soft:rgba(31,95,173,.09); --pt:#8A9099; --pt-soft:rgba(138,144,153,.14);
+  --bg:#FAFAF9; --surface:#FFFFFF; --ink:#141619; --ink2:#4B5058; --muted:#676C74; --rule:#DFE1E4; --faint:#EEF0F2;
+  --it:#1F5FAD; --it-soft:rgba(31,95,173,.09); --pt:#6B717A; --pt-soft:rgba(138,144,153,.14);
   --sym:#B5472A; --sym-soft:rgba(181,71,42,.10); --cond:#1F5FAD;
   --f-display:"Newsreader", "Iowan Old Style", Georgia, serif;
   --f-body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -840,7 +840,7 @@ pca('pcaPT','pt'); pca('pcaIT','it');
 /* ---------- Figure 3: logit lens ---------- */
 const LT=D.fig3_lens_trajectories.rows, SG=D.fig3_sc_gap.rows; let lensMode='traj';
 reg(function lens(){
-  const s=$('#lens'), H=280, W=fit(s,H), m={l:40,r:W<500?62:96,t:12,b:24}, mode=lensMode;
+  const s=$('#lens'), H=280, W=fit(s,H), m={l:40,r:W<500?62:132,t:12,b:24}, mode=lensMode;
   const dom = mode==='traj'?[-23,11]:[-1,15];
   const x=l=>m.l+l*(W-m.l-m.r)/33, y=v=>m.t+(1-(v-dom[0])/(dom[1]-dom[0]))*(H-m.t-m.b);
   (mode==='traj'?[-20,-15,-10,-5,0,5,10]:[0,5,10,15]).forEach(t=>{grid(s,m.l,W-m.r,y(t),t===0?'var(--rule)':'var(--faint)');txt(s,m.l-8,y(t)+3.5,t,{'text-anchor':'end'});});
@@ -930,16 +930,16 @@ reg(function abl(){
 
 /* ---------- Figure 6: readout pairs ---------- */
 reg(function pairs(){
-  const s=$('#pairs'), H=430, W=fit(s,H), m={l:Math.min(160,W*0.4),r:20,t:24,b:24};
+  const s=$('#pairs'), H=430, W=fit(s,H), m={l:Math.min(160,W*0.46),r:20,t:24,b:24}, nar=W<480;
   const ev=[['Yes/No',.31],['yes/no',.29],['acceptable/unaccept.',.17],['True/False',.16],['true/false',.14],['correct/incorrect',.11],['good/bad',.09],['right/wrong',.09],['justified/unjustified',.07]];
   const nu=[['north/south',.051],['three/seven',.042],['cat/dog',.040],['red/blue',.033],['today/yesterday',.028]];
   const x=v=>m.l+v/0.34*(W-m.l-m.r), rh=25;
   [0,.1,.2,.3].forEach(t=>{el('line',{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,stroke:'var(--faint)'},s);txt(s,x(t),H-6,t.toFixed(1),{'text-anchor':'middle'});});
   el('line',{x1:x(.16),x2:x(.16),y1:m.t,y2:H-m.b,stroke:'var(--it)','stroke-dasharray':'3 3',opacity:.6},s);
-  txt(s,x(.16)+6,m.t-8,'evaluative mean 0.16',{fill:'var(--it)'});
+  txt(s,nar?W-m.r:x(.16)+6,m.t-8,'evaluative mean 0.16',nar?{fill:'var(--it)','text-anchor':'end'}:{fill:'var(--it)'});
   el('line',{x1:x(.04),x2:x(.04),y1:m.t,y2:H-m.b,stroke:'var(--muted)','stroke-dasharray':'3 3',opacity:.6},s);
   let y=m.t+14;
-  const row=(n,v,col,grp)=>{ txt(s,m.l-12,y+4,n,{'text-anchor':'end',class:'lab'}); el('line',{x1:x(0),x2:x(v),y1:y,y2:y,stroke:col,'stroke-width':2},s);
+  const row=(n,v,col,grp)=>{ txt(s,m.l-12,y+4,n,nar?{'text-anchor':'end',class:'lab',style:'font-size:10.5px'}:{'text-anchor':'end',class:'lab'}); el('line',{x1:x(0),x2:x(v),y1:y,y2:y,stroke:col,'stroke-width':2},s);
     el('circle',{cx:x(v),cy:y,r:5.5,fill:col,stroke:'var(--surface)','stroke-width':2},s);
     const hb=el('rect',{x:0,y:y-rh/2,width:W,height:rh,fill:'transparent'},s); hover(hb,`${n} · ${grp}<br>peak |ρ| ${v.toFixed(3)}`); y+=rh; };
   ev.forEach(r=>row(r[0],r[1],'var(--it)','evaluative')); y+=14;
@@ -953,7 +953,7 @@ const CF=D.cross_family_ci; const params={'Gemma-3-4B-PT':4,'Gemma-3-4B-IT':4,'G
 const fam=n=>n.startsWith('Gemma-2')?'Gemma-2':n.startsWith('Gemma-3')?'Gemma-3':n.startsWith('Qwen')?'Qwen-2.5':'Llama-3.1';
 let fmode='size';
 reg(function forest(){
-  const keep=c=>c.model.includes('PT')||!window.__fam||window.__fam==='all'||fam(c.model)===window.__fam, s=$('#forest'), rh=34, H=10+30+CF.filter(keep).length*rh, W=fit(s,H), narrow=W<560, m={l:narrow?132:180,r:narrow?14:118,t:10,b:30};
+  const keep=c=>c.model.includes('PT')||!window.__fam||window.__fam==='all'||fam(c.model)===window.__fam, s=$('#forest'), rh=34, H=10+30+CF.filter(keep).length*rh, W=fit(s,H), narrow=W<560, m={l:narrow?132:180,r:narrow?14:136,t:10,b:30};
   const x=v=>m.l+(v+2)/24*(W-m.l-m.r);
   const pt=CF.filter(c=>c.model.includes('PT')), it=CF.filter(c=>!c.model.includes('PT')), fo=['Gemma-2','Gemma-3','Qwen-2.5','Llama-3.1'];
   it.sort(fmode==='size'?(a,b)=>params[a.model]-params[b.model]||a.model.localeCompare(b.model):fmode==='eff'?(a,b)=>b.mean-a.mean:(a,b)=>fo.indexOf(fam(a.model))-fo.indexOf(fam(b.model))||params[a.model]-params[b.model]);
@@ -1161,12 +1161,12 @@ function seg(root, cb){ root.addEventListener('click', e=>{ const b=e.target.clo
 (function(){
   const svg=$('#inputChart'); if(!svg) return;
   const items=[['Moral content, moral question',0.307,'var(--it)'],['Sentiment content',0.022,'var(--pt)'],['Sentiment content, moral question',-0.007,'var(--pt)']];
-  function draw(){ const pe=svg.parentElement, cs=getComputedStyle(pe), W=Math.max(280,pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)), H=150, ml=Math.min(230,W*0.45), mr=56;
+  function draw(){ const pe=svg.parentElement, cs=getComputedStyle(pe), W=Math.max(280,pe.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)), nw=W<480, H=nw?172:150, ml=nw?4:Math.min(230,W*0.45), mr=56;
     svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('height',H); svg.innerHTML='';
     const x=v=>ml+(v+0.02)/0.35*(W-ml-mr);
     el('line',{x1:x(0),x2:x(0),y1:4,y2:H-22,stroke:'var(--muted)'},svg);
     [0,0.1,0.2,0.3].forEach(t=>{ const a=el('text',{x:x(t),y:H-6,'text-anchor':'middle',class:'tk'},svg); a.textContent=t.toFixed(1); });
-    items.forEach(([n,v,c],k)=>{ const y=10+k*40; const a=el('text',{x:ml-10,y:y+15,'text-anchor':'end',class:'lb'},svg); a.textContent=n;
+    items.forEach(([n,v,c],k)=>{ const y=nw?20+k*50:10+k*40; const a=el('text',nw?{x:x(0)+5,y:y-5,class:'lb'}:{x:ml-10,y:y+15,'text-anchor':'end',class:'lb'},svg); a.textContent=n;
       el('rect',{x:Math.min(x(0),x(v)),y,width:Math.max(1.5,Math.abs(x(v)-x(0))),height:22,rx:2,fill:c},svg);
       const b=el('text',{x:Math.max(x(v),x(0))+6,y:y+15,class:'tk',style:'fill:var(--ink)'},svg); b.textContent=sg(v,3); });
   }
