@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Project page: moral framing is linearly decodable in pretrained Gemma-3-4B but only the instruction-tuned checkpoint routes it into the Yes/No judgment readout.">
+<title>Decoded but Unused</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: one 700px reading column; every instrument is a 1080px "bench" split into a PT side and an IT side,
+   because the paper's argument is a matched comparison. Grey is PT, blue is IT; terracotta only for the
+   sympathetic framing (and for heads that write toward the judgment). */
+:root{
+  --bg:#FAFAF9; --surface:#FFFFFF; --ink:#141619; --ink2:#4B5058; --muted:#7A7F87; --rule:#DFE1E4; --faint:#EEF0F2;
+  --it:#1F5FAD; --it-soft:rgba(31,95,173,.09); --pt:#8A9099; --pt-soft:rgba(138,144,153,.14);
+  --sym:#B5472A; --sym-soft:rgba(181,71,42,.10); --cond:#1F5FAD;
+  --f-display:"Newsreader", "Iowan Old Style", Georgia, serif;
+  --f-body:"Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --col:700px; --wide:1080px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1114; --surface:#171A1E; --ink:#E7E9EC; --ink2:#AEB3BA; --muted:#7E848C; --rule:#2A2F35; --faint:#1D2125;
+  --it:#5E8FD6; --it-soft:rgba(94,143,214,.14); --pt:#8E949C; --pt-soft:rgba(142,148,156,.16);
+  --sym:#D0704F; --sym-soft:rgba(208,112,79,.14); --cond:#5E8FD6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1114; --surface:#171A1E; --ink:#E7E9EC; --ink2:#AEB3BA; --muted:#7E848C; --rule:#2A2F35; --faint:#1D2125;
+  --it:#5E8FD6; --it-soft:rgba(94,143,214,.14); --pt:#8E949C; --pt-soft:rgba(142,148,156,.16);
+  --sym:#D0704F; --sym-soft:rgba(208,112,79,.14); --cond:#5E8FD6; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto} *{transition:none!important}}
+body{background:var(--bg);color:var(--ink);font:16.5px/1.65 var(--f-body);-webkit-font-smoothing:antialiased;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--bg)}
+a{color:var(--it);text-underline-offset:2px;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--it);outline-offset:2px}
+.col{max-width:var(--col);margin-inline:auto}
+.wide{max-width:var(--wide);margin-inline:auto}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;text-wrap:balance;letter-spacing:-.012em}
+h2{font-size:clamp(1.6rem,1.25rem + 1.3vw,2.2rem);line-height:1.15;margin:0 0 .7rem}
+h3{font-size:1.2rem;margin:0 0 .4rem}
+p{margin:0 0 1rem}
+.eyebrow{font:500 .72rem/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.small{font-size:.87rem;color:var(--ink2)}
+.num{font-variant-numeric:tabular-nums}
+.pt{color:var(--pt)} .it{color:var(--it)} .sym{color:var(--sym)}
+.key{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:6px}
+
+nav.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--rule);margin-inline:calc(-1*max(16px, env(safe-area-inset-left, 0px)))}
+nav.top .in{max-width:var(--wide);margin-inline:auto;display:flex;gap:20px;align-items:center;padding:10px max(16px, env(safe-area-inset-left, 0px));overflow-x:auto;scrollbar-width:none}
+nav.top a{font:.82rem var(--f-body);color:var(--ink2);text-decoration:none;white-space:nowrap}
+nav.top a:hover{color:var(--it)}
+nav.top .brand{font:500 1.02rem var(--f-display);color:var(--ink);margin-right:auto}
+nav.top .brand i{color:var(--muted)}
+
+header.hero{padding-block:60px 32px}
+.venue{font:500 .72rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;flex-wrap:wrap;gap:6px 16px}
+.venue span:first-child{color:var(--it)}
+h1{font-size:clamp(2.6rem,1.6rem + 4.6vw,5.2rem);line-height:.98;margin:0 0 18px;letter-spacing:-.03em;font-weight:400}
+h1 .u{font-style:italic;color:var(--muted)}
+.sub{font:400 clamp(1.1rem,1rem + .5vw,1.35rem)/1.4 var(--f-display);color:var(--ink2);max-width:40ch;margin:0 0 30px}
+.authors{display:flex;flex-wrap:wrap;gap:6px 28px;font-weight:500;margin-bottom:6px}
+.authors sup{color:var(--muted);font-weight:400}
+.affs{font-size:.86rem;color:var(--muted);margin-bottom:24px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;font:500 .86rem var(--f-body);padding:9px 15px;border-radius:999px;border:1px solid var(--rule);color:var(--ink);background:var(--surface);text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--it);color:var(--it)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.primary:hover{color:var(--bg);opacity:.88}
+.btn.off{color:var(--muted);cursor:default;border-style:dashed}
+.btn.off:hover{border-color:var(--rule);color:var(--muted)}
+.btn small{font-size:.72rem;color:var(--muted)}
+
+.claim{font:400 clamp(1.25rem,1.05rem + .9vw,1.7rem)/1.35 var(--f-display);margin:0 0 6px}
+.claim em{color:var(--it)}
+
+section{padding-block:clamp(56px,8vw,104px) 8px}
+figure{margin:26px auto 0}
+figcaption{font-size:.87rem;color:var(--ink2);margin-top:12px;line-height:1.5;max-width:var(--col)}
+figcaption b{font:500 .72rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink);margin-right:6px}
+.bench{background:var(--surface);border:1px solid var(--rule);border-radius:10px}
+
+/* hero instrument */
+.inst{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+.side{padding:20px 22px 18px;min-width:0}
+.side + .side{border-left:1px solid var(--rule)}
+.side .tag{font:500 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between;gap:10px}
+.side.ptS .tag{color:var(--pt)} .side.itS .tag{color:var(--it)}
+.side .row{display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;align-items:center;margin-top:10px}
+.dial svg{display:block;width:100%;height:auto;max-width:170px}
+.stat{display:grid;gap:12px}
+.stat .k{font:500 .7rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font:400 1.9rem/1.05 var(--f-display);font-variant-numeric:tabular-nums}
+.meter{height:6px;background:var(--faint);border-radius:3px;margin-top:6px;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:3px}
+.verdictline{font-size:.9rem;margin-top:12px;color:var(--ink2);min-height:2.8em}
+@media (max-width:760px){.inst{grid-template-columns:1fr}.side + .side{border-left:0;border-top:1px solid var(--rule)}}
+@media (max-width:400px){.side .row{grid-template-columns:110px minmax(0,1fr);gap:12px}}
+.scrub{border-top:1px solid var(--rule);padding:14px 22px 18px}
+.scrub .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.scrub .lv{font:500 .95rem var(--f-mono)}
+.scrub .lv b{font-size:1.35rem;font-weight:500}
+input[type=range]{width:100%;accent-color:var(--it);margin:8px 0 0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font-family:var(--f-mono);font-size:12px;fill:var(--ink2)}
+.chart .lab{font-family:var(--f-body);font-size:13px;fill:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.84rem;color:var(--ink2);margin-bottom:8px}
+.legend i{display:inline-block;width:14px;height:2.5px;border-radius:2px;vertical-align:3px;margin-right:6px}
+.legend i.dot{width:9px;height:9px;border-radius:50%;vertical-align:0}
+
+.tldr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+.tldr > div{padding:18px 20px 20px 0;min-width:0}
+.tldr > div + div{padding-left:20px;border-left:1px solid var(--rule)}
+.tldr .n{font:500 .72rem var(--f-mono);color:var(--muted);letter-spacing:.06em}
+.tldr .t{font:500 1.08rem/1.3 var(--f-display);margin:6px 0 6px}
+.tldr p{font-size:.92rem;color:var(--ink2);margin:0}
+@media (max-width:760px){.tldr{grid-template-columns:1fr}.tldr > div + div{padding-left:0;border-left:0;border-top:1px solid var(--rule)}}
+
+.cmp{width:100%;border-collapse:collapse;font-size:.93rem}
+.cmp th,.cmp td{padding:10px 12px;border-bottom:1px solid var(--rule);text-align:right;font-variant-numeric:tabular-nums}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp thead th{font:500 .72rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.cmp td.itv{color:var(--it);font-weight:600}
+.cmp td.ptv{color:var(--ink2)}
+.cmp .ci{display:block;font-size:.76rem;color:var(--muted);font-weight:400}
+.scroll{overflow-x:auto}
+
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0}
+.two > div{padding:18px 20px;min-width:0}
+.two > div + div{border-left:1px solid var(--rule)}
+@media (max-width:760px){.two{grid-template-columns:1fr}.two > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.ptitle{font:500 .76rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ptitle span:last-child{color:var(--ink2);text-transform:none;letter-spacing:0}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:999px;overflow:hidden;max-width:100%}
+.seg button{font:500 .8rem var(--f-body);background:var(--surface);color:var(--ink2);border:0;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.seg button + button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--rule)}
+.pad{padding:16px 20px 18px}
+
+.heat{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:0}
+.heat > div{padding:18px 20px;min-width:0}
+.heat > div + div{border-left:1px solid var(--rule)}
+@media (max-width:820px){.heat{grid-template-columns:1fr}.heat > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.cell{cursor:pointer}
+.ramp{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font:.8rem var(--f-mono);color:var(--ink2);margin-top:12px}
+.ramp span.bar{flex:1;height:8px;border-radius:4px;max-width:200px}
+.hinfo{font:.84rem/1.6 var(--f-mono);color:var(--ink2);min-height:3.2em;margin-top:6px}
+.hinfo b{color:var(--ink);font-weight:500}
+
+.waffle{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:3px;max-width:520px}
+.waffle i{aspect-ratio:1;border-radius:2px;display:block}
+.frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule)}
+.frames > div{padding:18px 20px 22px;min-width:0}
+.frames > div + div{border-left:1px solid var(--rule)}
+.frames .fl{font:600 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.frames .fl i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.frames p{font:400 1.02rem/1.6 var(--f-display);margin:0;color:var(--ink)}
+.frames mark{background:var(--it-soft);color:inherit;border-radius:2px;padding:0 2px}
+.dsmeta{font-size:.9rem;color:var(--ink2);padding-bottom:14px}
+@media (max-width:860px){.frames{grid-template-columns:1fr}.frames > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.callouts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:18px;border-top:1px solid var(--rule)}
+.callouts > div{padding:14px 18px 0 0;min-width:0}
+.callouts > div + div{padding-left:18px;border-left:1px solid var(--rule)}
+.callouts .v{font:400 1.7rem/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+@media (max-width:640px){.frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--rule)}
+.frames > div{padding:18px 20px 22px;min-width:0}
+.frames > div + div{border-left:1px solid var(--rule)}
+.frames .fl{font:600 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.frames .fl i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.frames p{font:400 1.02rem/1.6 var(--f-display);margin:0;color:var(--ink)}
+.frames mark{background:var(--it-soft);color:inherit;border-radius:2px;padding:0 2px}
+.dsmeta{font-size:.9rem;color:var(--ink2);padding-bottom:14px}
+@media (max-width:860px){.frames{grid-template-columns:1fr}.frames > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.callouts{grid-template-columns:1fr}.callouts > div + div{padding-left:0;border-left:0;border-top:1px solid var(--rule);padding-top:14px}}
+
+ul.limits{padding-left:1.1rem;margin:0} ul.limits li{margin-bottom:8px}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font:.78rem/1.45 var(--f-mono);padding:7px 9px;border-radius:5px;max-width:260px;opacity:0;transition:opacity .1s}
+#tip.on{opacity:1}
+pre.bib{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;font:.82rem/1.6 var(--f-mono);overflow-x:auto;margin:0;color:var(--ink2)}
+.bibwrap{position:relative}
+.bibwrap .btn{position:absolute;top:10px;right:10px;padding:6px 12px;font-size:.78rem}
+footer{padding-block:56px 48px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--rule);margin-top:72px}
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Sections"><div class="in">
+  <a class="brand" href="#top">Decoded but <i>Unused</i></a>
+  <a href="#instrument">PT vs IT</a><a href="#dataset">Dataset</a><a href="#geometry">Geometry</a><a href="#readout">Late readout</a><a href="#causal">Causal tests</a><a href="#heads">Writer heads</a><a href="#specificity">Specificity</a><a href="#families">Ten models</a><a href="#cite">Cite</a>
+</div></nav>
+
+<header class="hero col" id="top">
+  <div class="venue"><span>ICML 2026 · Mechanistic Interpretability Workshop</span><span>Poster</span><span>Seoul, 2026</span></div>
+  <h1>Decoded but <span class="u">Unused</span></h1>
+  <p class="sub">Instruction tuning routes moral framing into the judgment readout</p>
+  <div class="authors"><span>Phongsakon Mark Konrad<sup>1</sup></span><span>Toygar Tanyel<sup>2</sup></span><span>Serkan Ayvaz<sup>1</sup></span></div>
+  <div class="affs"><sup>1</sup>Centre for Industrial Software, University of Southern Denmark, Sønderborg · <sup>2</sup>Promake, Newark, DE, USA</div>
+  <div class="btns">
+    <a class="btn primary" href="https://openreview.net/forum?id=da9ylT2doy" target="_blank" rel="noopener">OpenReview ↗</a>
+    <a class="btn" href="https://openreview.net/pdf?id=da9ylT2doy" target="_blank" rel="noopener">PDF ↗</a>
+    <span class="btn off" title="github.com/aiml-sdu/decoded-but-unused is private until release">Code &amp; data <small>coming soon</small></span>
+    <span class="btn off" title="arXiv version in preparation">arXiv <small>coming soon</small></span>
+    <a class="btn" href="#cite">BibTeX</a>
+  </div>
+</header>
+
+<div class="col">
+  <p class="claim">On Gemma-3-4B, moral framing is linearly decodable in the <span class="pt">pretrained</span> model but does not move its judgment. In the <em>instruction-tuned</em> model the same representation is aligned with, and causally used by, the Yes/No readout.</p>
+  <p class="small">One matched pair, 100 fictional moral dilemmas, each written in sympathetic, condemning and abstract framings of the same event.</p>
+</div>
+
+<section id="instrument" style="padding-top:40px">
+  <div class="wide">
+    <div class="bench">
+      <div class="inst">
+        <div class="side ptS"><div class="tag"><span>Gemma-3-4B-PT · pretrained</span><span>paired shift +0.04</span></div>
+          <div class="row"><div class="dial"><svg id="dialPT" viewBox="0 0 150 156" role="img" aria-label="Angle between framing and judgment directions in PT"></svg></div>
+          <div class="stat"><div><div class="k">Alignment cosine ρ(ℓ)</div><div class="v" id="rhoPT">0.00</div></div>
+            <div><div class="k">Probe accuracy at ℓ</div><div class="v" id="prPT" style="font-size:1.35rem">0.00</div><div class="meter"><i id="mPT" style="background:var(--pt)"></i></div></div></div></div>
+          <div class="verdictline" id="vPT"></div></div>
+        <div class="side itS"><div class="tag"><span>Gemma-3-4B-IT · instruction-tuned</span><span>paired shift +12.18</span></div>
+          <div class="row"><div class="dial"><svg id="dialIT" viewBox="0 0 150 156" role="img" aria-label="Angle between framing and judgment directions in IT"></svg></div>
+          <div class="stat"><div><div class="k">Alignment cosine ρ(ℓ)</div><div class="v it" id="rhoIT">0.00</div></div>
+            <div><div class="k">Probe accuracy at ℓ</div><div class="v" id="prIT" style="font-size:1.35rem">0.00</div><div class="meter"><i id="mIT" style="background:var(--it)"></i></div></div></div></div>
+          <div class="verdictline" id="vIT"></div></div>
+      </div>
+      <div class="scrub">
+        <div class="top"><span class="lv">Layer <b id="lnum">25</b> <span style="color:var(--muted)">of 0–33</span></span>
+          <span class="small" id="ratio"></span></div>
+        <input type="range" id="layer" min="0" max="33" value="25" aria-label="Layer">
+        <div class="chart" style="margin-top:8px"><svg id="rhoChart" viewBox="0 0 1000 200" role="img" aria-label="Alignment cosine by layer: PT stays below 0.06 at every layer; IT stays below 0.05 through layer 21, then peaks at 0.307 at layer 25."></svg></div>
+        <div class="legend" style="margin:6px 0 0"><span><i style="background:var(--pt)"></i>PT ρ(ℓ)</span><span><i style="background:var(--it)"></i>IT ρ(ℓ)</span><span style="color:var(--muted)">Drag the slider or hover the chart.</span></div>
+      </div>
+    </div>
+    <figcaption class="col" style="margin-inline:auto"><b>Figure 1</b>The dial draws the true angle between the framing direction δ<sub>frame</sub>(ℓ) = S̄<sub>ℓ</sub> − C̄<sub>ℓ</sub> and the judgment direction δ<sub>judge</sub> = W<sub>U</sub>[:,Yes] − W<sub>U</sub>[:,No], with ρ(ℓ) its cosine in the full residual space. A leave-one-triplet-out probe decodes the framing at ≥ 0.85 at every layer in both models. Only IT turns the framing toward the readout, at layer 25: 0.307 against 0.036 in PT, 8.4× layer-matched.</figcaption>
+  </div>
+</section>
+
+<section class="col" id="summary" style="padding-top:56px">
+  <div class="tldr">
+    <div><div class="n">01 · Representation</div><div class="t">Decoded in PT, used only in IT</div><p>Probe accuracy 0.92 in PT and 0.97 in IT, but the paired shift is +0.04 in PT against +12.18 in IT.</p></div>
+    <div><div class="n">02 · Pathway</div><div class="t">One layer-localised route</div><p>Alignment cosine, residual patching, a ten-head writer circuit and a rank-4 subspace converge on layers 20 to 25.</p></div>
+    <div><div class="n">03 · Specificity</div><div class="t">Moral in, evaluative out</div><p>Selective for moral content, generic across evaluative readouts, and replicated across ten IT models in three families.</p></div>
+  </div>
+</section>
+
+<section class="col" id="abstract" style="padding-top:48px">
+  <div class="eyebrow">Abstract</div>
+  <p>Large language models change their moral verdicts when the same event is reframed, but the literature treats this as a behavioural fact about chat models without locating where in the network the change happens. On one matched pair, Gemma-3-4B pretrained and instruction-tuned, and 100 moral dilemmas from two fictional sources, we show that moral framing is already linearly decodable in the pretrained network yet has no measurable effect on its judgment, while in the instruction-tuned checkpoint that same representation becomes aligned with and causally usable by the evaluative readout, with the within-model framing-judgment alignment 8.4× larger than in the matched pretrained checkpoint at the same layer. In this pair and on this dataset, instruction tuning changes how the representation is read out, not whether it exists.</p>
+</section>
+
+<section id="behaviour">
+  <div class="col">
+    <div class="eyebrow">§3.1 · The matched comparison</div>
+    <h2>Same architecture, tokeniser and pretraining. One free variable.</h2>
+    <p>Each prompt is scored by the final-token logit gap between “ Yes” and “ No”. The paired shift Δ<sub>i</sub> is the sympathetic score minus the condemning score on dilemma i. The matched checkpoint controls architecture, tokeniser, training corpus and pretraining seed, so what differs is the post-training recipe.</p>
+  </div>
+  <div class="col scroll" style="margin-top:18px">
+    <table class="cmp" aria-label="PT versus IT on the N=100 testbed">
+      <thead><tr><th>Measurement, N = 100</th><th>PT</th><th>IT</th></tr></thead>
+      <tbody>
+        <tr><td>Paired S − C shift (logits)</td><td class="ptv">+0.04<span class="ci">95% CI [−0.09, 0.16]</span></td><td class="itv">+12.18<span class="ci">95% CI [9.48, 14.82]</span></td></tr>
+        <tr><td>Sign-flip p</td><td class="ptv">0.52</td><td class="itv">10<sup>−4</sup></td></tr>
+        <tr><td>Fraction of triplets &gt; 0</td><td class="ptv">0.51</td><td class="itv">0.83</td></tr>
+        <tr><td>Probe accuracy at peak</td><td class="ptv">0.92 (ℓ = 25)</td><td class="itv">0.97 (ℓ = 14)</td></tr>
+        <tr><td>Alignment cosine, peak</td><td class="ptv">+0.05 (ℓ = 14)</td><td class="itv">+0.31 (ℓ = 25)</td></tr>
+        <tr><td>Alignment cosine at ℓ = 25</td><td class="ptv">+0.04</td><td class="itv">+0.31 · 8.4×</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+<section id="dataset">
+  <div class="col">
+    <div class="eyebrow">§2 · The dataset</div>
+    <h2>One event, written three ways</h2>
+    <p>Each of the 100 dilemmas tells one canonical event three times: sympathetic to the actor, condemning of the actor, and abstract, which strips the rhetoric and restates the action in neutral third-person terms. Fifty come from <em>Attack on Titan</em>, fifty from <em>Game of Thrones</em>, each framing about 400 to 950 characters. Two worked examples from the paper's appendix, one on each side of the perpetrator split:</p>
+  </div>
+  <div class="wide">
+    <div class="bench">
+      <div class="toolbar">
+        <div class="seg" id="dsWhich" role="group" aria-label="Dilemma"><button data-k="aot" aria-pressed="true">The Rumbling</button><button data-k="got" aria-pressed="false">Hold the door</button></div>
+        <div class="seg" id="dsVer" role="group" aria-label="Version"><button data-v="n" aria-pressed="true">Named</button><button data-v="a" aria-pressed="false">Anonymised (D2)</button></div>
+      </div>
+      <div class="dsmeta pad" id="dsMeta"></div>
+      <div class="frames" id="dsFrames"></div>
+    </div>
+    <figcaption class="col" style="margin-inline:auto"><b>Appendix A</b>Texts reproduced from the paper. Anonymisation turns names into role labels, factions into generic descriptors and iconic concepts into functional descriptions; the abstract framing has no entity references, so it is the same in both versions.</figcaption>
+  </div>
+</section>
+
+<section id="geometry">
+  <div class="col">
+    <div class="eyebrow">§3.2 · Geometry</div>
+    <h2>PT separates the framings without pointing them at the answer</h2>
+    <p>The top two principal components of the final-token residuals, at each model's peak-alignment layer. Both models separate sympathetic from condemning prompts. The arrows are the plane projections of the full-space directions; PCA does not preserve the high-dimensional angle, so the labels report the cosine computed before projection.</p>
+  </div>
+  <figure class="wide">
+    <div class="bench two">
+      <div class="chart"><div class="ptitle"><span class="pt">PT · ℓ = 14</span><span>ρ<sub>full</sub> = +0.05</span></div><svg id="pcaPT" viewBox="0 0 460 380" role="img" aria-label="PCA of PT activations at layer 14"></svg></div>
+      <div class="chart"><div class="ptitle"><span class="it">IT · ℓ = 25</span><span>ρ<sub>full</sub> = +0.31</span></div><svg id="pcaIT" viewBox="0 0 460 380" role="img" aria-label="PCA of IT activations at layer 25"></svg></div>
+    </div>
+    <div class="legend" style="margin-top:12px;justify-content:center"><span><i class="dot" style="background:var(--sym)"></i>sympathetic</span><span><i class="dot" style="background:var(--cond)"></i>condemning</span><span><i style="background:var(--ink)"></i>δ<sub>frame</sub></span><span><i style="background:repeating-linear-gradient(90deg,var(--ink2) 0 4px,transparent 4px 7px)"></i>δ<sub>judge</sub></span></div>
+    <figcaption style="margin-inline:auto"><b>Figure 2</b>100 points per framing. Hover a point to see its dilemma index; the matching point of the other framing is ringed. In the plane the PT arrows look close, but their full-space cosine is +0.05: the projection is a picture, the cosine is the measurement.</figcaption>
+  </figure>
+</section>
+
+<section id="readout">
+  <div class="col">
+    <div class="eyebrow">§3.2 · Late readout</div>
+    <h2>The framings agree for twenty layers, then split</h2>
+    <p>Passing each layer's residual through the final norm and unembedding (the logit lens) gives a running Yes − No gap. In IT the three framings are indistinguishable until about layer 20, then the sympathetic trajectory diverges as the alignment cosine ramps to its peak. In PT the same plots collapse onto one flat line.</p>
+  </div>
+  <figure class="wide">
+    <div class="bench">
+      <div class="toolbar"><div class="seg" id="lensMode" role="group" aria-label="View"><button data-m="traj" aria-pressed="true">Per-framing gap</button><button data-m="gap" aria-pressed="false">S − C difference</button></div>
+        <div class="legend" id="lensLegend" style="margin:0"></div></div>
+      <div class="pad chart"><svg id="lens" viewBox="0 0 1000 300" role="img" aria-label="Logit-lens Yes minus No gap per layer in Gemma-3-4B-IT"></svg></div>
+    </div>
+    <figcaption style="margin-inline:auto"><b>Figure 3</b>Gemma-3-4B-IT, mean over N = 100. At the unembedding the condemning framing ends at −12.1 and the abstract at −8.4 while the sympathetic ends near zero: the model defaults to condemning under these prompts.</figcaption>
+  </figure>
+</section>
+
+<section id="causal">
+  <div class="col">
+    <div class="eyebrow">§3.3 · Causal tests</div>
+    <h2>Patching transfers the framing, and more easily with the model's prior</h2>
+    <p>Write the clean residual of one framing into the corrupt run of the other at the final token, and measure the recovery R = (patched − corrupt) / (clean − corrupt) of the logit gap. In the released code the clean activation is taken at the corrupt prompt's final index, which is an earlier clean token when the clean framing is longer. At layer 20, condemning-into-sympathetic recovers far more than the reverse. Condemning is the model's default here, so C→S pushes with the prior and S→C pushes against it.</p>
+  </div>
+  <figure class="wide">
+    <div class="bench two">
+      <div class="chart"><div class="ptitle"><span>Recovery at ℓ = 20, by hook</span><span>n = 83 stable</span></div>
+        <svg id="patch" viewBox="0 0 460 250" role="img" aria-label="Recovery by hook: resid_pre S to C 0.521, C to S 0.885; resid_post 0.565 and 0.918; attn_out 0.135 both; mlp_out 0.026 and 0.223."></svg>
+        <div class="legend" style="margin-top:6px"><span><span class="key" style="background:var(--sym)"></span>S → C</span><span><span class="key" style="background:var(--cond)"></span>C → S</span></div>
+        <p class="small" style="margin:6px 0 0">At a stricter cut (n = 65) the asymmetry holds: 0.787 against 0.234. Attention alone is symmetric; the residual carries more than its parts.</p></div>
+      <div class="chart"><div class="ptitle"><span>Subspace ablation shrinkage</span>
+        <span class="seg" id="subL" role="group" aria-label="Layer"><button data-l="0" aria-pressed="false">ℓ 20</button><button data-l="1" aria-pressed="true">ℓ 25</button><button data-l="2" aria-pressed="false">ℓ 28</button></span></div>
+        <svg id="sub" viewBox="0 0 460 210" role="img" aria-label="Shrinkage of the paired shift when ablating subspaces"></svg>
+        <p class="small" style="margin:6px 0 0">The rank-4 framing subspace, orthogonalised against δ<sub>judge</sub>, still removes 0.82 of the shift at ℓ = 20 and 25, against at most 0.23 for 20 norm-matched random rank-4 controls. By ℓ = 28 it has fused into the judgment direction.</p></div>
+    </div>
+    <figcaption style="margin-inline:auto"><b>Figure 4</b>Left: Table 2 of the paper. Right: Table 3; higher means a larger causal contribution of the ablated subspace.</figcaption>
+  </figure>
+</section>
+
+<section id="heads">
+  <div class="col">
+    <div class="eyebrow">§3.4 · Writer heads</div>
+    <h2>Ten writer heads, concentrated at layers 23 to 25, carry 59% of the shift</h2>
+    <p>Each head's sympathetic-minus-condemning contribution at the final token, projected onto δ<sub>judge</sub>. Five heads at layers 23 and 24 exceed |p| = 0.24; no head elsewhere in layers 10 to 25 exceeds 0.10. Mean-ablating the top ten writers cuts the paired shift by 7.14 logits, 7.8 standard deviations from a random-head null.</p>
+  </div>
+  <figure class="wide">
+    <div class="bench heat">
+      <div class="chart"><svg id="heat" viewBox="0 0 470 430" role="img" aria-label="Writer-head heatmap, layers 10 to 25 by heads 0 to 7. Strongest writer is layer 23 head 3 at +0.715, strongest antagonist layer 24 head 7 at -0.505."></svg>
+        <div class="ramp"><span>−0.7</span><span class="bar" style="background:linear-gradient(90deg,var(--cond),var(--faint),var(--sym))"></span><span>+0.7</span><span style="flex-basis:100%">blue writes against the judgment direction, terracotta toward Yes</span></div>
+        <div class="hinfo" id="hinfo">Hover or tap a cell for its exact value. Labelled cells are the five heads with |p| &gt; 0.24.</div></div>
+      <div class="chart"><div class="ptitle"><span>Mean ablation at the final token</span><span>S − C, logits</span></div>
+        <svg id="abl" viewBox="0 0 380 250" role="img" aria-label="Paired shift under head ablation: clean 12.18, top-10 writers 5.04, antagonists 14.65, both 7.51, random 12.41."></svg>
+        <p class="small" style="margin:8px 0 0">Random heads are sampled to match the writers' per-layer distribution, excluding the writers: Δ = +0.23 ± 0.95 over ten seeds.</p></div>
+    </div>
+    <figcaption style="margin-inline:auto"><b>Figure 5</b>Writer attribution and its causal check on Gemma-3-4B-IT. Mean ablation replaces a head's output with its dataset mean; zero ablation would push the residual norm out of distribution.</figcaption>
+  </figure>
+</section>
+
+<section id="specificity">
+  <div class="col">
+    <div class="eyebrow">§3.5 · Specificity</div>
+    <h2>Moral content in, generic evaluation out</h2>
+    <p>Replace δ<sub>judge</sub> with other readout pairs. In IT the framing direction aligns with every evaluative pair tested and with none of the neutral ones: evaluative-to-neutral ratio 4.1× in IT against 1.25× in PT. On the input side, non-moral sentiment framing gives ρ(25) = +0.022, fourteen times smaller, and sentiment content asked the moral question gives −0.007.</p>
+  </div>
+  <figure class="col">
+    <div class="bench pad chart"><svg id="pairs" viewBox="0 0 640 410" role="img" aria-label="Peak alignment by readout pair in IT. Nine evaluative pairs from 0.07 to 0.31; five neutral pairs between 0.028 and 0.051."></svg></div>
+    <figcaption><b>Figure 6</b>Peak |ρ| in Gemma-3-4B-IT across 34 layers, per readout pair (paper Table 4). Evaluative peaks concentrate at layers 17 to 25; neutral peaks are scattered.</figcaption>
+  </figure>
+</section>
+
+<section id="families">
+  <div class="col">
+    <div class="eyebrow">§3.6 · Replication</div>
+    <h2>Ten instruction-tuned models, three families, one sign</h2>
+    <p>The paired shift is positive with a strictly positive 95% interval in every IT checkpoint, 2B to 32B parameters. All ten show within-family peak alignment above +0.20. Llama-3.1-8B is the low-magnitude outlier: its peak cosine (+0.249 at ℓ = 29) is comparable to Gemma's, but its shift is four times smaller. The cosine measures routing direction, not routing gain.</p>
+  </div>
+  <figure class="wide">
+    <div class="bench">
+      <div class="toolbar"><div class="seg" id="sortF" role="group" aria-label="Sort"><button data-s="size" aria-pressed="true">By size</button><button data-s="eff" aria-pressed="false">By shift</button><button data-s="fam" aria-pressed="false">By family</button></div>
+        <span class="small">Bootstrap 95% CI, 10,000 paired triplet resamples</span></div>
+      <div class="pad chart"><svg id="forest" viewBox="0 0 1000 420" role="img" aria-label="Paired sympathetic-condemning shift with 95% intervals for the pretrained Gemma-3-4B and ten instruction-tuned models; PT straddles zero, all IT intervals are positive."></svg></div>
+    </div>
+    <figcaption style="margin-inline:auto"><b>Figure 7</b>The grey row is the only pretrained checkpoint, the matched Gemma-3-4B-PT; its interval straddles zero. Hover a row for the numbers.</figcaption>
+  </figure>
+</section>
+
+<section id="perp">
+  <div class="col">
+    <div class="eyebrow">§3.7 · Robustness</div>
+    <h2>The 17 inversions are not noise</h2>
+    <p>In IT, 17 of 100 triplets shift the wrong way. Hand-annotated for narrative perspective, 15 of them are perpetrator-POV: the sympathetic frame is narrated by the actor but depicts the canonical wrongdoing of the story. The judgment follows the depicted action more than the narrator's stance.</p>
+    <div class="bench pad" style="margin-top:18px">
+      <div class="waffle" id="waffle" role="img" aria-label="100 triplets: 83 positive shift, 15 negative and perpetrator-POV, 2 negative other."></div>
+      <div class="legend" style="margin-top:12px"><span><span class="key" style="background:var(--it)"></span>positive shift (83)</span><span><span class="key" style="background:var(--sym)"></span>negative, perpetrator-POV (15)</span><span><span class="key" style="background:var(--pt)"></span>negative, other (2)</span></div>
+      <div class="callouts">
+        <div><div class="eyebrow" style="margin:0">Without perpetrator-POV</div><div class="v">+15.22</div><div class="small">n = 85, 0.98 positive</div></div>
+        <div><div class="eyebrow" style="margin:0">Style &amp; length matched</div><div class="v">+10.78</div><div class="small">D1, n = 10, 10 of 10 positive</div></div>
+        <div><div class="eyebrow" style="margin:0">Names anonymised</div><div class="v">+6.19</div><div class="small">D2, n = 40, p = 0.021</div></div>
+      </div>
+    </div>
+    <p class="small" style="margin-top:12px">Dots are drawn in count order, not per dilemma. A benchmark built on first-person wrongdoer narration could underestimate the routing: the direction is intact, the magnitude suppressed.</p>
+  </div>
+</section>
+
+<section class="col" id="limits">
+  <div class="eyebrow">Limitations</div>
+  <h2>What the evidence covers</h2>
+  <ul class="limits">
+    <li>One matched PT/IT pair; the ten further checkpoints are instruction-tuned only.</li>
+    <li>100 triplets from two fictional sources. Framings are not minimal pairs: they also differ in narrator, perspective and emphasis.</li>
+    <li>Layers and heads were selected on the same 100 triplets on which their effects are measured, and the patching and ablation effects have no confidence intervals.</li>
+    <li>The ten-head circuit recovers 59% of the shift; the rest is distributed and not localised. The trained-rotation alternative to the subspace claim is deferred.</li>
+  </ul>
+  <p class="small" style="margin-top:14px">Next tests: non-fictional minimal-pair data, a held-out split for layer and head selection with bootstrap intervals, path patching downstream of the writer heads, and a developmental run across fine-tuning checkpoints.</p>
+</section>
+
+<section class="col" id="cite">
+  <div class="eyebrow">Cite</div>
+  <h2>BibTeX</h2>
+  <div class="bibwrap"><pre class="bib" id="bib">@inproceedings{konrad2026decoded,
+  title     = {Decoded but Unused: Instruction Tuning Routes Moral
+               Framing into the Judgment Readout},
+  author    = {Konrad, Phongsakon Mark and Tanyel, Toygar and Ayvaz, Serkan},
+  booktitle = {ICML 2026 Workshop on Mechanistic Interpretability},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=da9ylT2doy}
+}</pre><button class="btn" id="copybib" type="button">Copy</button></div>
+  <p class="small" style="margin-top:14px">Code, dataset and cached results behind every figure: <span style="font-family:var(--f-mono)">github.com/aiml-sdu/decoded-but-unused</span> (private until release). An arXiv version is in preparation.</p>
+</section>
+
+<footer class="col">
+  <div>Konrad, Tanyel &amp; Ayvaz · ICML 2026 Workshop on Mechanistic Interpretability, Seoul.</div>
+  <div style="margin-top:6px">Every plotted value is read from the paper's stored figure data or its tables.</div>
+</footer>
+
+<div id="tip" role="tooltip"></div>
+<script id="data" type="application/json">{"cross_family_ci":[{"model":"Gemma-3-4B-PT","n":100,"mean":0.041,"ci_lo":-0.087,"ci_hi":0.163,"frac_pos":0.51,"p":0.5279},{"model":"Gemma-3-4B-IT","n":100,"mean":12.177,"ci_lo":9.483,"ci_hi":14.817,"frac_pos":0.83,"p":0.0},{"model":"Gemma-2-2B-IT","n":100,"mean":13.748,"ci_lo":11.853,"ci_hi":15.616,"frac_pos":0.96,"p":0.0},{"model":"Gemma-2-9B-IT","n":100,"mean":7.299,"ci_lo":5.35,"ci_hi":9.202,"frac_pos":0.84,"p":0.0},{"model":"Gemma-2-27B-IT","n":100,"mean":5.461,"ci_lo":4.177,"ci_hi":6.69,"frac_pos":0.89,"p":0.0},{"model":"Gemma-3-12B-IT","n":100,"mean":12.896,"ci_lo":10.721,"ci_hi":14.929,"frac_pos":0.93,"p":0.0},{"model":"Qwen-2.5-3B-Inst","n":100,"mean":7.888,"ci_lo":6.631,"ci_hi":9.157,"frac_pos":0.9,"p":0.0},{"model":"Qwen-2.5-7B-Inst","n":100,"mean":15.33,"ci_lo":13.337,"ci_hi":17.308,"frac_pos":0.95,"p":0.0},{"model":"Qwen-2.5-14B-Inst","n":100,"mean":17.705,"ci_lo":14.299,"ci_hi":20.931,"frac_pos":0.9,"p":0.0},{"model":"Qwen-2.5-32B-Inst","n":100,"mean":17.755,"ci_lo":14.946,"ci_hi":20.394,"frac_pos":0.91,"p":0.0},{"model":"Llama-3.1-8B-IT","n":100,"mean":3.604,"ci_lo":2.95,"ci_hi":4.239,"frac_pos":0.84,"p":0.0}],"fig1_scatter":{"cols":["cond","sym"],"rows":[[-11.9688,2.375],[-13.0,10.125],[-8.375,18.125],[-13.1875,-14.4375],[-15.375,7.125],[-10.75,11.875],[-12.6875,12.25],[-4.625,15.1875],[-14.9375,15.25],[-10.25,-4.25],[-17.2188,-13.75],[-15.375,-15.6875],[-15.4062,-14.75],[-13.0,18.9375],[-12.125,-15.5],[-17.0,-15.1562],[-9.0625,-15.5625],[-11.3125,14.875],[-10.5,-12.7188],[-16.875,-16.4688],[-16.0938,-13.7812],[-15.7188,-15.9688],[-9.75,14.875],[8.625,14.3125],[-17.5,-12.625],[-16.625,-15.8438],[-11.0,4.125],[-11.9688,-14.4688],[-17.125,7.5],[-13.25,-7.875],[-15.25,-10.25],[-8.5625,-15.3125],[10.875,15.8125],[-15.3438,-9.25],[-12.4062,-13.25],[-17.9375,0.375],[14.5,-14.4375],[-10.5625,-8.125],[-18.9375,-16.0],[-16.625,17.1875],[-13.5625,-14.0625],[-14.2188,-13.6562],[-11.5,19.125],[-15.0312,-5.25],[-14.125,19.5],[-17.8125,-12.75],[-11.25,1.75],[-14.5625,-10.5],[-10.125,-13.0],[-11.8125,18.1875],[-4.875,5.75],[-14.375,14.375],[-10.5,-13.5],[-12.125,18.125],[-12.3125,-5.375],[-14.4375,-14.25],[-15.1562,-1.25],[-11.5625,16.375],[-15.4375,16.5625],[-12.3125,13.75],[1.25,12.375],[-13.5312,-16.0625],[-15.5312,12.8125],[-9.875,13.1875],[-13.3125,15.6875],[-10.125,-8.5],[-17.3438,-15.8438],[-15.7812,-12.75],[-15.125,18.875],[-17.0938,16.0625],[-15.125,9.0],[-14.4688,-7.75],[-15.5625,-13.1875],[11.375,14.4375],[-14.625,16.0],[-15.4688,15.1875],[-8.0625,18.875],[8.6875,-14.3125],[-14.3125,-14.0625],[-12.4688,-10.0],[-16.4688,-11.1875],[-17.0938,-15.875],[-14.5312,16.75],[-12.0,4.0],[-13.75,-13.875],[-9.25,16.5],[-14.25,6.75],[-17.0312,-7.625],[-13.9375,-11.75],[-15.25,0.625],[-13.9688,12.9375],[4.875,18.875],[-17.1875,-13.875],[-15.625,-11.875],[-14.1875,19.1875],[-18.0312,-15.5312],[-11.625,-11.6875],[-13.6875,17.75],[-13.625,9.25],[-14.1875,15.5]]},"fig1_shift_hist":{"cols":["center","count"],"rows":[[-27.1892,1.0],[-23.6927,1.0],[-20.1962,0.0],[-16.6997,0.0],[-13.2031,0.0],[-9.7066,0.0],[-6.21007,2.0],[-2.71354,7.0],[0.782986,22.0],[4.27951,15.0],[7.77604,4.0],[11.2726,4.0],[14.7691,6.0],[18.2656,2.0],[21.7622,6.0],[25.2587,10.0],[28.7552,8.0],[32.2517,12.0]]},"fig2_cosine":{"cols":["layer","final","meanpool"],"rows":[[0.0,0.999981,0.998453],[1.0,0.999939,0.998338],[2.0,0.999961,0.998801],[3.0,0.999969,0.998784],[4.0,0.99998,0.999634],[5.0,0.999987,0.999703],[6.0,0.999976,0.999754],[7.0,0.999979,0.999836],[8.0,0.999986,0.99991],[9.0,0.999988,0.999925],[10.0,0.999991,0.999945],[11.0,0.999989,0.999956],[12.0,0.999988,0.999958],[13.0,0.999985,0.999962],[14.0,0.999969,0.999958],[15.0,0.99984,0.999929],[16.0,0.999725,0.999882],[17.0,0.999552,0.99987],[18.0,0.999456,0.999854],[19.0,0.999141,0.99984],[20.0,0.998437,0.999762],[21.0,0.99791,0.999733],[22.0,0.995993,0.999682],[23.0,0.993937,0.999631],[24.0,0.993863,0.999479],[25.0,0.99118,0.999404],[26.0,0.990396,0.999314],[27.0,0.989156,0.999281],[28.0,0.990332,0.999306],[29.0,0.989232,0.999292],[30.0,0.986517,0.99912],[31.0,0.986575,0.998944],[32.0,0.986626,0.998891],[33.0,0.935605,0.997251]]},"fig2_probe_accuracy":{"cols":["layer","D0","D2_anon","D1_style"],"rows":[[0.0,0.89,0.908333,0.766667],[1.0,0.91,0.908333,0.733333],[2.0,0.885,0.941667,0.9],[3.0,0.89,0.941667,0.933333],[4.0,0.915,0.941667,0.966667],[5.0,0.89,0.958333,0.9],[6.0,0.91,0.966667,0.866667],[7.0,0.915,0.975,0.866667],[8.0,0.93,0.975,0.9],[9.0,0.93,0.975,0.8],[10.0,0.935,0.966667,0.8],[11.0,0.945,0.983333,0.966667],[12.0,0.95,0.966667,0.966667],[13.0,0.96,0.991667,0.966667],[14.0,0.965,0.991667,0.9],[15.0,0.955,0.966667,0.9],[16.0,0.96,0.983333,0.9],[17.0,0.96,0.975,0.833333],[18.0,0.96,0.983333,0.866667],[19.0,0.95,0.966667,0.866667],[20.0,0.945,0.958333,0.833333],[21.0,0.945,0.966667,0.866667],[22.0,0.935,0.958333,0.866667],[23.0,0.94,0.95,0.866667],[24.0,0.935,0.941667,0.866667],[25.0,0.925,0.941667,0.9],[26.0,0.935,0.95,0.833333],[27.0,0.93,0.958333,0.8],[28.0,0.93,0.958333,0.8],[29.0,0.925,0.95,0.766667],[30.0,0.92,0.941667,0.766667],[31.0,0.935,0.958333,0.8],[32.0,0.935,0.95,0.833333],[33.0,0.935,0.95,0.766667]]},"fig3_alignment":{"cols":["layer","cos_align"],"rows":[[0.0,-0.00385206],[1.0,-0.00520667],[2.0,-0.024317],[3.0,0.0122912],[4.0,0.0139803],[5.0,0.0200673],[6.0,0.017694],[7.0,-0.00731998],[8.0,-0.00240361],[9.0,0.00349076],[10.0,0.00603007],[11.0,0.0101338],[12.0,-0.0158848],[13.0,-0.0346059],[14.0,-0.0192916],[15.0,-0.00709788],[16.0,0.0360224],[17.0,0.0235096],[18.0,0.0122327],[19.0,0.0407795],[20.0,0.0360851],[21.0,0.0404465],[22.0,0.0989238],[23.0,0.165227],[24.0,0.14779],[25.0,0.3071],[26.0,0.283328],[27.0,0.296826],[28.0,0.268878],[29.0,0.243989],[30.0,0.261361],[31.0,0.225093],[32.0,0.192728],[33.0,0.0616611]]},"fig3_lens_trajectories":{"cols":["layer","sym","cond","abst"],"rows":[[0.0,4.06499,4.08894,3.81891],[1.0,8.26207,8.24154,7.97461],[2.0,8.44142,8.48346,8.41119],[3.0,8.87135,8.85508,8.82819],[4.0,7.4894,7.50391,7.47531],[5.0,6.48914,6.49145,6.44799],[6.0,6.37479,6.34468,6.20218],[7.0,5.37488,5.39586,5.34959],[8.0,4.14075,4.14306,4.12061],[9.0,3.87949,3.90107,4.00965],[10.0,1.85998,1.86159,1.94156],[11.0,1.20742,1.22283,1.28302],[12.0,0.587761,0.635269,0.698203],[13.0,0.195385,0.225051,0.337186],[14.0,0.315644,0.29138,0.475171],[15.0,0.496957,0.340184,0.517933],[16.0,1.65084,1.21206,1.56853],[17.0,0.569736,0.0847881,0.337806],[18.0,-0.0898107,-0.450664,-0.515858],[19.0,2.27016,1.3465,1.34598],[20.0,2.36282,1.14969,1.31134],[21.0,3.02606,1.60339,2.24435],[22.0,2.66371,-0.819218,0.190129],[23.0,4.67041,-1.92621,0.42442],[24.0,3.38878,-2.29656,-0.554857],[25.0,-2.00126,-15.3516,-10.9659],[26.0,-1.50468,-14.0332,-10.1445],[27.0,-7.58202,-21.3013,-16.5748],[28.0,-4.93156,-16.5024,-12.6721],[29.0,-0.576156,-11.4305,-7.9905],[30.0,-1.61609,-14.6965,-10.4294],[31.0,-3.07286,-14.108,-10.4527],[32.0,-0.857458,-10.8697,-7.64099],[33.0,0.0955391,-12.0788,-8.41751]]},"fig3_sc_gap":{"cols":["layer","sc_gap"],"rows":[[0.0,-0.0239511],[1.0,0.0205284],[2.0,-0.0420419],[3.0,0.0162771],[4.0,-0.0145159],[5.0,-0.00230192],[6.0,0.030106],[7.0,-0.0209889],[8.0,-0.00230848],[9.0,-0.0215862],[10.0,-0.0016131],[11.0,-0.015403],[12.0,-0.047508],[13.0,-0.0296666],[14.0,0.0242638],[15.0,0.156773],[16.0,0.438776],[17.0,0.484947],[18.0,0.360853],[19.0,0.923667],[20.0,1.21313],[21.0,1.42268],[22.0,3.48293],[23.0,6.59661],[24.0,5.68534],[25.0,13.3503],[26.0,12.5286],[27.0,13.7193],[28.0,11.5708],[29.0,10.8543],[30.0,13.0804],[31.0,11.0352],[32.0,10.0122],[33.0,12.1743]]},"fig4_component_heatmap":{"cols":["layer","comp_idx","rec"],"rows":[[18.0,0.0,0.750831],[19.0,0.0,-0.275437],[20.0,0.0,-0.25609],[21.0,0.0,-0.78216],[22.0,0.0,-0.373819],[23.0,0.0,0.063402],[24.0,0.0,0.101662],[25.0,0.0,0.183983],[26.0,0.0,0.0278302],[27.0,0.0,0.137414],[28.0,0.0,0.310573],[29.0,0.0,0.411803],[30.0,0.0,0.472509],[31.0,0.0,0.631272],[32.0,0.0,0.384518],[33.0,0.0,0.970315],[18.0,1.0,-0.275437],[19.0,1.0,-0.25609],[20.0,1.0,-0.78216],[21.0,1.0,-0.373819],[22.0,1.0,0.063402],[23.0,1.0,0.101662],[24.0,1.0,0.183983],[25.0,1.0,0.0278302],[26.0,1.0,0.137414],[27.0,1.0,0.310573],[28.0,1.0,0.411803],[29.0,1.0,0.472509],[30.0,1.0,0.631272],[31.0,1.0,0.384518],[32.0,1.0,0.970315],[33.0,1.0,0.346883],[18.0,2.0,0.068448],[19.0,2.0,-0.0668018],[20.0,2.0,-0.0389301],[21.0,2.0,0.0210056],[22.0,2.0,0.134661],[23.0,2.0,-0.245119],[24.0,2.0,-0.0349388],[25.0,2.0,0.0518537],[26.0,2.0,-0.032148],[27.0,2.0,-0.0860683],[28.0,2.0,0.0337443],[29.0,2.0,0.10194],[30.0,2.0,0.167973],[31.0,2.0,0.158169],[32.0,2.0,0.074063],[33.0,2.0,-0.306756],[18.0,3.0,-0.392736],[19.0,3.0,-0.0186786],[20.0,3.0,-0.482563],[21.0,3.0,-0.395771],[22.0,3.0,0.0384006],[23.0,3.0,0.0947493],[24.0,3.0,-0.0790591],[25.0,3.0,-0.185601],[26.0,3.0,0.0318497],[27.0,3.0,-0.111615],[28.0,3.0,-0.17386],[29.0,3.0,0.125944],[30.0,3.0,0.276083],[31.0,3.0,-0.388811],[32.0,3.0,0.0275725],[33.0,3.0,0.166516]]},"fig4b_resid":{"cols":["layer","median","mean"],"rows":[[0.0,0.0,0.275515],[1.0,0.0467988,0.432188],[2.0,0.0290266,0.465567],[3.0,0.0311606,0.887051],[4.0,0.0595829,0.63705],[5.0,0.0178728,1.15455],[6.0,0.0184727,1.55921],[7.0,0.0218295,1.30466],[8.0,0.00720721,0.151902],[9.0,0.0262337,0.527565],[10.0,0.0,-0.0509918],[11.0,0.0151505,0.824766],[12.0,0.00885233,0.802249],[13.0,0.00206612,0.173563],[14.0,0.0186244,0.418018],[15.0,0.0385135,0.514228],[16.0,0.149554,0.618326],[17.0,0.317755,1.49449],[18.0,0.355726,1.24321],[19.0,0.322293,0.870733],[20.0,0.335391,0.945923],[21.0,0.44356,0.955724],[22.0,0.458787,1.26108],[23.0,0.505102,1.70172],[24.0,0.522416,1.68637],[25.0,0.524582,1.89226],[26.0,0.553486,1.86789],[27.0,0.596159,1.84281],[28.0,0.63827,2.23962],[29.0,0.613093,2.25353],[30.0,0.651319,2.25281],[31.0,0.622642,2.28523],[32.0,0.662149,1.96302],[33.0,0.67878,2.2762]]},"fig5_steering":{"cols":["add[ortho_frame]","-0.295941"],"rows":[["add[random_norm_matched]",-0.0282181],["subspace_rm[random_top1]",-0.0242118],["subspace_rm[random_top2]",-0.0181153],["add[pca_top1]",0.00104512],["add[judgment]",0.00452883],["subspace_rm[random_top4]",0.00592231],["proj_rm[random]",0.0846542],["subspace_rm[random_top8]",0.137607],["add[mean]",0.391047],["subspace_rm[pca_top1]",0.7915],["proj_rm[pca_top1]",0.793938],["proj_rm[judgment]",0.85891],["proj_rm[mean]",0.890263],["subspace_rm[pca_top2]",0.919352],["subspace_rm[pca_top4]",0.957847],["subspace_rm[pca_top8]",0.985368]]},"fig6_cross_model":{"cols":["idx","S_C","ci_lo","ci_hi","lens_last","probe_best_layer_norm"],"rows":[[0.0,12.1772,9.48299,14.8167,12.1743,0.424242],[1.0,10.775,4.74062,17.8281,"None",0.121212],[2.0,6.19297,1.29193,11.0636,6.19599,0.393939],[3.0,0.04125,-0.086875,0.163125,0.0433,0.757576],[4.0,10.3129,7.67421,13.1733,10.6555,0.36],[5.0,8.21719,6.33654,10.1656,8.2106,0.571429]]},"fig_align_pt_vs_it":{"cols":["layer","it","pt"],"rows":[[0.0,-0.003852,0.001342],[1.0,-0.005207,-0.012973],[2.0,-0.024317,0.005687],[3.0,0.012291,0.009976],[4.0,0.01398,0.034067],[5.0,0.020067,0.041411],[6.0,0.017694,0.05091],[7.0,-0.00732,0.038735],[8.0,-0.002404,0.002374],[9.0,0.003491,0.015686],[10.0,0.00603,0.040654],[11.0,0.010134,0.002373],[12.0,-0.015885,-0.013239],[13.0,-0.034606,-0.01645],[14.0,-0.019292,0.051239],[15.0,-0.007098,-0.012499],[16.0,0.036022,-0.000498],[17.0,0.02351,0.039165],[18.0,0.012233,0.022031],[19.0,0.04078,0.021382],[20.0,0.036085,0.018473],[21.0,0.040446,0.020814],[22.0,0.098924,0.03101],[23.0,0.165227,0.038451],[24.0,0.14779,0.035117],[25.0,0.3071,0.036496],[26.0,0.283328,0.036889],[27.0,0.296826,0.032618],[28.0,0.268878,0.039068],[29.0,0.243989,0.037232],[30.0,0.261361,0.041018],[31.0,0.225093,0.046023],[32.0,0.192728,0.041981],[33.0,0.061661,-0.001555]]},"fig_pca_it_arrows":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,-3603.44,-695.218],[0.0,0.0,-3401.99,1376.43]]},"fig_pca_it_cond":{"cols":["x","y"],"rows":[[0.53203,0.02663],[0.48024,-0.41113],[-0.13133,-0.67483],[0.61217,0.2559],[0.73051,0.77902],[0.31477,-0.69061],[0.26646,-0.39694],[-0.34026,-0.52472],[0.70403,0.25132],[0.21838,-0.52765],[0.72368,0.57474],[0.67936,0.4685],[0.7084,0.50552],[0.26826,-0.64574],[0.57035,0.23073],[0.6811,0.76457],[0.11184,-0.68887],[0.46566,-0.12478],[0.38374,-0.49414],[0.71078,0.79748],[0.72273,0.72345],[0.78834,0.6149],[0.25667,-0.60476],[-0.95224,-0.30741],[0.749,0.58236],[0.71358,0.89011],[0.14411,-0.72302],[0.73257,0.21218],[0.75707,0.83151],[0.67747,0.26725],[0.69741,0.41806],[0.16736,-0.61991],[-0.99965,-0.22127],[0.69317,0.64045],[0.70689,-0.01435],[0.72828,0.62564],[-1.23554,0.79797],[0.56719,-0.14173],[0.71463,0.82697],[0.74534,0.55875],[0.41369,-0.26351],[0.69234,0.21843],[0.55283,-0.00986],[0.63167,0.0652],[0.3689,-0.33527],[0.72967,0.71789],[0.53848,-0.06989],[0.57473,-0.01316],[-0.07592,-0.42657],[0.45221,-0.25205],[-0.30717,-0.40561],[0.71536,0.22568],[0.48116,-0.10628],[0.5476,-0.3843],[0.64136,0.22112],[0.69725,0.43653],[0.76339,0.38475],[0.23705,-0.49137],[0.69111,0.48972],[0.18008,-0.52027],[-0.68285,-0.68417],[0.63981,-0.14489],[0.66541,0.45288],[-0.02344,-0.58184],[0.40049,-0.24417],[0.47374,-0.35416],[0.69174,0.4896],[0.72917,0.42914],[0.70322,0.39412],[0.74223,0.65229],[0.65155,-0.06958],[0.69093,0.39552],[0.69734,0.45526],[-0.96874,-0.19739],[0.64347,0.48079],[0.7104,0.58725],[0.03312,-0.37211],[-1.03208,0.09633],[0.55907,0.03358],[0.6265,-0.44433],[0.68522,0.57101],[0.61343,0.72864],[0.62468,0.13348],[0.51077,-0.03418],[0.56242,0.30145],[-0.19893,-0.51853],[0.60542,-0.07175],[0.75762,0.44007],[0.60583,-0.08529],[0.70213,0.20156],[0.6359,-0.01718],[-0.80632,-0.24977],[0.6609,0.65034],[0.57142,0.06172],[0.7959,0.27079],[0.69355,0.80722],[0.49766,-0.30633],[0.17753,-0.40198],[0.2728,-0.18713],[0.67122,0.15637]]},"fig_pca_it_dframe":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,-0.98189,-0.18944]]},"fig_pca_it_djudge":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,-0.927,0.37506]]},"fig_pca_it_sym":{"cols":["x","y"],"rows":[[-0.68883,-0.48588],[-0.96837,-0.09023],[-1.33916,0.79907],[0.44828,-0.23271],[-0.88063,-0.31995],[-1.10568,0.1785],[-1.06565,-0.05022],[-1.25861,0.4421],[-1.21678,0.48722],[-0.40597,-0.54671],[0.51955,-0.01423],[0.65462,0.05455],[0.57267,-0.05622],[-1.32907,0.8528],[0.23298,-0.29516],[0.49728,-0.25143],[0.66428,0.2074],[-1.15247,0.03077],[0.49458,-0.2818],[0.69075,0.01225],[0.51122,-0.22306],[0.62101,0.1202],[-1.03723,-0.13579],[-1.30294,0.534],[0.38862,-0.36617],[0.60322,-0.01935],[-0.77607,-0.29283],[0.61307,0.06835],[-0.88495,-0.32698],[-0.35851,-0.42556],[-0.0379,-0.61351],[0.14964,-0.33492],[-1.26933,0.29026],[-0.28604,-0.46391],[0.55434,-0.22659],[-0.68593,-0.42203],[0.29345,-0.42888],[-0.37495,-0.52647],[0.60112,-0.13955],[-1.36133,0.59064],[0.21901,-0.48424],[0.55628,-0.18766],[-1.31564,0.62891],[-0.49108,-0.68223],[-1.27795,0.24593],[0.31996,-0.53133],[-0.72943,-0.33079],[0.03029,-0.63364],[0.32851,-0.67941],[-1.25494,0.1297],[-0.80626,-0.30139],[-1.14039,0.07685],[0.54282,-0.36828],[-1.34733,0.60089],[-0.43817,-0.49422],[0.21643,-0.41051],[-0.5298,-0.57355],[-1.29711,0.48813],[-1.31816,0.48054],[-1.11206,-0.10242],[-1.11597,0.00248],[0.74901,0.23518],[-1.18807,-0.03026],[-1.22659,0.33277],[-1.22458,0.26442],[-0.05347,-0.50302],[0.6723,0.10324],[0.23761,-0.53579],[-1.28876,0.17631],[-1.23744,0.49766],[-0.89213,-0.29458],[-0.2142,-0.7624],[0.32414,-0.55971],[-1.21007,0.31886],[-1.29512,0.30069],[-1.31186,0.65298],[-1.33646,0.70625],[0.445,-0.33267],[0.41273,-0.36653],[-0.168,-0.61113],[0.07848,-0.66934],[0.64087,-0.00878],[-1.26841,0.35575],[-0.78225,-0.21194],[0.43426,-0.40994],[-1.24782,0.0999],[-0.91707,-0.25693],[-0.28874,-0.56656],[0.02463,-0.52404],[-0.6193,-0.4411],[-1.1608,0.23243],[-1.31604,0.64102],[0.53435,-0.01471],[0.29281,-0.50203],[-1.32812,0.55694],[0.66486,-0.04429],[0.08618,-0.6248],[-1.25105,0.6291],[-1.06961,-0.16468],[-1.24507,0.22198]]},"fig_pca_pt_arrows":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,447.859,172.197],[0.0,0.0,374.946,299.408]]},"fig_pca_pt_cond":{"cols":["x","y"],"rows":[[0.35291,0.05805],[1.70939,0.20351],[-0.16409,-0.17553],[0.09063,0.03655],[0.65141,0.1513],[-2.5818,0.36751],[-0.7027,-0.28384],[-0.16318,0.16638],[-0.70689,0.44871],[1.44044,0.34651],[-0.16097,-0.32205],[0.64303,0.10794],[-2.04333,-0.51215],[-1.23044,-0.09633],[-0.42429,0.16152],[0.62997,-0.19942],[-0.16778,0.10942],[-0.16351,0.16894],[1.17845,0.14998],[0.38794,0.38164],[0.09011,0.11495],[-0.97022,0.33328],[-1.22832,-0.08753],[1.1857,0.16211],[0.91261,0.18576],[0.64867,0.10265],[1.97543,0.2403],[1.17453,0.11452],[1.18166,0.02494],[1.43602,0.18498],[0.10198,0.08095],[-0.44365,0.62695],[-1.76636,-0.14541],[-0.43838,0.41065],[0.38627,-0.15742],[-0.43638,0.07441],[1.17934,0.01144],[-0.95662,0.00426],[1.1827,0.06212],[0.11276,-0.16726],[-0.43167,-0.04053],[0.63793,-0.19958],[0.3697,0.16064],[0.35709,0.09888],[0.89628,-0.05128],[0.09499,-0.0141],[0.37188,-0.05769],[2.25085,-0.14865],[-0.17009,-0.29868],[0.64124,-0.27982],[-0.43936,-0.2278],[0.87921,-0.06832],[-0.18871,0.01539],[0.09315,0.00351],[0.35746,-0.32433],[0.35521,-0.24984],[-0.97128,-0.18376],[0.08504,0.0753],[-1.23975,-0.22786],[-1.79162,-0.01139],[0.63234,-0.12625],[-0.1661,-0.06763],[0.09612,-0.23527],[-0.69594,-0.12922],[0.09105,-0.21101],[-0.97442,-0.22447],[0.36785,-0.12234],[0.09905,-0.16884],[0.10075,-0.06923],[-1.26372,0.19786],[0.90193,-0.21166],[-0.16887,-0.1278],[-1.24521,0.0199],[-0.17901,-0.18754],[-0.71398,-0.04224],[0.09192,-0.40816],[-0.18262,0.04615],[-0.17178,-0.15397],[-0.44208,-0.1909],[0.35358,-0.37324],[0.88961,0.03205],[0.37328,-0.21625],[-0.68806,-0.39818],[-0.43095,-0.26546],[0.08689,-0.2081],[-0.69676,-0.25053],[-0.16862,-0.24893],[-0.71658,-0.02166],[-2.07244,0.27925],[-0.98375,-0.15025],[-0.98511,-0.04284],[-0.19246,0.12709],[0.37142,-0.29578],[-2.07169,0.35505],[-1.23955,-0.24854],[-2.31341,-0.0191],[-0.17484,-0.16457],[-0.97463,-0.30876],[0.09783,-0.09592],[-0.43371,-0.22994]]},"fig_pca_pt_dframe":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,0.93339,0.35888]]},"fig_pca_pt_djudge":{"cols":["x","y","dx","dy"],"rows":[[0.0,0.0,0.78143,0.624]]},"fig_pca_pt_sym":{"cols":["x","y"],"rows":[[0.1079,-0.24428],[-0.69578,-0.11911],[0.35894,0.77208],[0.09408,0.61225],[0.91954,0.16617],[0.09816,0.08453],[-0.43596,0.26626],[0.10417,0.02424],[0.64541,0.24753],[0.10166,-0.08885],[1.45627,0.26342],[0.38824,0.10608],[-0.69788,-0.06962],[0.09602,0.24773],[0.37501,-0.00109],[0.11084,-0.1026],[1.4407,0.16921],[-0.41785,-0.04522],[1.70969,0.29598],[0.9088,0.41763],[0.1061,0.39799],[-0.15615,0.19345],[-1.23075,0.32799],[0.37542,0.32162],[0.91858,-0.04333],[-0.44171,0.20604],[1.17384,0.30236],[0.90727,0.11193],[-0.16018,0.18422],[0.64459,-0.04897],[-0.17012,0.16403],[-0.14719,0.14518],[0.09978,0.25906],[0.37507,0.4631],[0.63269,0.04876],[1.70637,0.14344],[-2.3154,0.28225],[0.91449,0.35808],[0.10911,0.35362],[-0.97177,0.31779],[1.70817,-0.20098],[1.97734,-0.09975],[-1.22291,-0.10539],[-0.96956,-0.29844],[-0.17183,-0.16894],[-0.17812,0.20986],[0.09857,-8e-05],[1.15941,-0.2252],[0.62474,-0.04538],[0.37328,-0.16375],[-0.166,-0.19911],[0.90829,-0.10668],[-0.18009,-0.13478],[-1.52795,0.38263],[0.35107,-0.06298],[-0.44513,0.01838],[-0.17845,0.1339],[0.36222,0.01668],[0.62205,-0.34834],[0.0892,0.0997],[0.63022,-0.37094],[-0.7042,-0.06746],[0.09541,-0.29513],[0.36305,-0.14697],[-1.77466,-0.12955],[0.63462,-0.17298],[0.10187,-0.04882],[-0.7369,0.48718],[0.37146,-0.11245],[1.71235,-0.20723],[0.08966,-0.08379],[0.89769,-0.04856],[0.63738,-0.21366],[-0.46321,0.24217],[1.17294,-0.20314],[-0.18599,0.13502],[0.09732,-0.14547],[-0.17377,-0.118],[-0.19252,0.23442],[0.64309,-0.16823],[-0.17932,-0.20567],[-0.43473,-0.15317],[-1.52593,0.1346],[1.42494,-0.05947],[0.3611,-0.14887],[-0.18459,-0.0801],[-0.17317,-0.20493],[-0.4441,-0.07968],[-0.44279,-0.28261],[0.08603,0.13162],[-0.17876,-0.21948],[-2.08107,0.21035],[-0.45913,-0.04521],[-0.71783,0.18234],[0.08906,0.0106],[-1.76452,-0.248],[-1.00605,0.42952],[0.35341,-0.2122],[0.35991,-0.04238],[1.16143,-0.13411]]},"fig_probe_pt_vs_it":{"cols":["layer","pt","it"],"rows":[[0.0,0.89,0.89],[1.0,0.9,0.91],[2.0,0.89,0.885],[3.0,0.905,0.89],[4.0,0.895,0.915],[5.0,0.89,0.89],[6.0,0.875,0.91],[7.0,0.87,0.915],[8.0,0.86,0.93],[9.0,0.855,0.93],[10.0,0.885,0.935],[11.0,0.87,0.945],[12.0,0.87,0.95],[13.0,0.88,0.96],[14.0,0.855,0.965],[15.0,0.9,0.955],[16.0,0.885,0.96],[17.0,0.89,0.96],[18.0,0.895,0.96],[19.0,0.88,0.95],[20.0,0.88,0.945],[21.0,0.89,0.945],[22.0,0.875,0.935],[23.0,0.885,0.94],[24.0,0.885,0.935],[25.0,0.92,0.925],[26.0,0.915,0.935],[27.0,0.91,0.93],[28.0,0.9,0.93],[29.0,0.89,0.925],[30.0,0.9,0.92],[31.0,0.895,0.935],[32.0,0.885,0.935],[33.0,0.875,0.935]]},"fig_writer_heads":{"cols":["layer","head","proj"],"rows":[[10.0,0.0,0.000613073],[10.0,1.0,0.00277604],[10.0,2.0,0.0028247],[10.0,3.0,0.00260472],[10.0,4.0,-0.00244104],[10.0,5.0,-0.00129432],[10.0,6.0,-0.00372675],[10.0,7.0,-0.00248701],[11.0,0.0,0.000275718],[11.0,1.0,0.00169697],[11.0,2.0,0.00166022],[11.0,3.0,-0.00731646],[11.0,4.0,-0.000490475],[11.0,5.0,0.000336902],[11.0,6.0,0.00415068],[11.0,7.0,0.00106906],[12.0,0.0,-0.00261183],[12.0,1.0,-0.00145143],[12.0,2.0,-0.000978934],[12.0,3.0,0.00227364],[12.0,4.0,0.000147895],[12.0,5.0,0.00339758],[12.0,6.0,-0.0164297],[12.0,7.0,0.00692709],[13.0,0.0,-0.00137869],[13.0,1.0,0.00882728],[13.0,2.0,0.00266337],[13.0,3.0,0.000388041],[13.0,4.0,0.00502701],[13.0,5.0,-0.0123777],[13.0,6.0,-0.000668822],[13.0,7.0,0.00159419],[14.0,0.0,0.00630168],[14.0,1.0,-0.0126517],[14.0,2.0,-0.00598018],[14.0,3.0,0.0121978],[14.0,4.0,0.00666301],[14.0,5.0,0.00196451],[14.0,6.0,0.0169457],[14.0,7.0,-0.00154995],[15.0,0.0,-0.0128128],[15.0,1.0,-0.00699056],[15.0,2.0,-0.00178584],[15.0,3.0,-0.000253016],[15.0,4.0,0.0106102],[15.0,5.0,0.014108],[15.0,6.0,0.00160035],[15.0,7.0,0.00981284],[16.0,0.0,-8.92099e-05],[16.0,1.0,-0.0186097],[16.0,2.0,-0.00168373],[16.0,3.0,0.0101948],[16.0,4.0,0.0215746],[16.0,5.0,0.038106],[16.0,6.0,0.000745951],[16.0,7.0,0.000579707],[17.0,0.0,0.0473043],[17.0,1.0,-0.0258725],[17.0,2.0,-0.00209078],[17.0,3.0,-7.55306e-05],[17.0,4.0,0.00417774],[17.0,5.0,0.00595112],[17.0,6.0,0.00684547],[17.0,7.0,-0.00216254],[18.0,0.0,-0.011895],[18.0,1.0,-0.00492826],[18.0,2.0,-0.0402254],[18.0,3.0,0.0326034],[18.0,4.0,-0.0105414],[18.0,5.0,-0.00520541],[18.0,6.0,-0.00187673],[18.0,7.0,0.0228704],[19.0,0.0,0.00139978],[19.0,1.0,-0.0208788],[19.0,2.0,-0.0126881],[19.0,3.0,0.00725462],[19.0,4.0,0.00290149],[19.0,5.0,0.00623362],[19.0,6.0,0.00019173],[19.0,7.0,0.0092886],[20.0,0.0,0.0916631],[20.0,1.0,0.00684316],[20.0,2.0,-0.00025422],[20.0,3.0,-0.00806869],[20.0,4.0,0.00767139],[20.0,5.0,0.00189867],[20.0,6.0,-0.0767467],[20.0,7.0,0.0454707],[21.0,0.0,-0.0159674],[21.0,1.0,0.00606005],[21.0,2.0,0.0312935],[21.0,3.0,-0.010986],[21.0,4.0,-0.00928138],[21.0,5.0,-0.00312279],[21.0,6.0,-0.0396016],[21.0,7.0,0.0179968],[22.0,0.0,0.00604756],[22.0,1.0,-0.0111914],[22.0,2.0,-0.0126205],[22.0,3.0,0.0367635],[22.0,4.0,0.00389739],[22.0,5.0,0.0187353],[22.0,6.0,-0.013365],[22.0,7.0,-0.00912713],[23.0,0.0,0.0167806],[23.0,1.0,0.258433],[23.0,2.0,-0.119113],[23.0,3.0,0.714754],[23.0,4.0,-3.68251e-05],[23.0,5.0,0.0576595],[23.0,6.0,0.000105283],[23.0,7.0,0.286324],[24.0,0.0,-0.000674274],[24.0,1.0,0.0163662],[24.0,2.0,-0.0804998],[24.0,3.0,-0.0074901],[24.0,4.0,0.000860045],[24.0,5.0,-0.0122531],[24.0,6.0,0.248123],[24.0,7.0,-0.504614],[25.0,0.0,0.0469977],[25.0,1.0,-0.0111932],[25.0,2.0,0.00778991],[25.0,3.0,0.0432688],[25.0,4.0,0.0227013],[25.0,5.0,-0.00620053],[25.0,6.0,-0.00102762],[25.0,7.0,-0.00459715]]}}</script>
+<script>
+(function(){
+const D = JSON.parse(document.getElementById('data').textContent);
+const $ = s => document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const el=(t,a={},p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;};
+const txt=(p,x,y,s,a={})=>{const t=el('text',Object.assign({x,y},a),p);t.textContent=s;return t;};
+const tip=$('#tip');
+const showTip=(h,ev)=>{tip.innerHTML=h;tip.classList.add('on');moveTip(ev);};
+function moveTip(ev){const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.max(8,Math.min(innerWidth-w-8,ev.clientX+14))+'px';tip.style.top=(ev.clientY+h+20>innerHeight?ev.clientY-h-12:ev.clientY+14)+'px';}
+const hideTip=()=>tip.classList.remove('on');
+const hover=(node,html)=>{node.addEventListener('mouseenter',ev=>showTip(typeof html==='function'?html():html,ev));node.addEventListener('mousemove',moveTip);node.addEventListener('mouseleave',hideTip);};
+const sgn=(v,d=3)=>(v<0?'−':'+')+Math.abs(v).toFixed(d);
+/* every chart is laid out at its real pixel width, so labels stay 11px on any screen */
+const draws=[];
+function fit(svg,H){ const W=Math.max(280,Math.round(svg.parentElement.getBoundingClientRect().width - (parseFloat(getComputedStyle(svg.parentElement).paddingLeft)||0) - (parseFloat(getComputedStyle(svg.parentElement).paddingRight)||0)));
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.innerHTML=''; return W; }
+function reg(fn){ draws.push(fn); fn(); }
+let lastW=innerWidth; let rt; addEventListener('resize',()=>{ if(Math.abs(innerWidth-lastW)<2) return; lastW=innerWidth; clearTimeout(rt); rt=setTimeout(()=>draws.forEach(f=>f()),120); });
+const grid=(s,x1,x2,y,c='var(--faint)')=>el('line',{x1,x2,y1:y,y2:y,stroke:c},s);
+
+/* ---------- Figure 1: instrument ---------- */
+const AL=D.fig_align_pt_vs_it.rows, PR=D.fig_probe_pt_vs_it.rows;
+function dial(svg,color){
+  const c=75, R=58; el('circle',{cx:c,cy:c,r:R,fill:'none',stroke:'var(--rule)','stroke-width':1},svg);
+  el('line',{x1:c,y1:c,x2:c+R,y2:c,stroke:'var(--rule)','stroke-dasharray':'2 3'},svg);
+  const arc=el('path',{fill:color,'fill-opacity':.14,stroke:'none'},svg);
+  el('line',{x1:c,y1:c,x2:c,y2:c-R,stroke:'var(--ink)','stroke-width':2.5,'stroke-linecap':'round'},svg);
+  txt(svg,c+6,c-R+12,'judge',{'font-size':13,'font-family':'var(--f-mono)',fill:'var(--ink2)'});
+  const f=el('line',{x1:c,y1:c,stroke:color,'stroke-width':2.5,'stroke-linecap':'round'},svg);
+  const ft=txt(svg,0,0,'frame',{'font-size':13,'font-family':'var(--f-mono)',fill:color,'text-anchor':'end'});
+  const at=txt(svg,c,c+R+15,'',{'font-size':12.5,'font-family':'var(--f-mono)',fill:'var(--ink2)','text-anchor':'middle'});
+  el('circle',{cx:c,cy:c,r:3,fill:'var(--ink)'},svg);
+  return rho=>{ const th=Math.acos(Math.max(-1,Math.min(1,rho))); const x=c+R*Math.sin(th), y=c-R*Math.cos(th);
+    f.setAttribute('x2',x); f.setAttribute('y2',y);
+    const r2=R; arc.setAttribute('d',`M${c},${c} L${c},${c-r2} A${r2},${r2} 0 0 1 ${x},${y} z`);
+    ft.setAttribute('x',x); ft.setAttribute('y',y+17);
+    at.textContent=(th*180/Math.PI).toFixed(1)+'° apart'; };
+}
+const dPT=dial($('#dialPT'),'var(--pt)'), dIT=dial($('#dialIT'),'var(--it)');
+let L=25, RC={};
+const slider=$('#layer'); slider.addEventListener('input',()=>setLayer(+slider.value));
+reg(function drawRho(){
+  const rc=$('#rhoChart'), H=170, W=fit(rc,H), ml=40, mr=10, mt=10, mb=24;
+  const xr=l=>ml+l*(W-ml-mr)/33, yr=v=>mt+(H-mt-mb)*(1-(v+0.05)/0.4);
+  [0,0.1,0.2,0.3].forEach(t=>{grid(rc,ml,W-mr,yr(t),t===0?'var(--rule)':'var(--faint)');txt(rc,ml-8,yr(t)+3.5,t.toFixed(1),{'text-anchor':'end'});});
+  (W<500?[0,10,20,25,33]:[0,5,10,15,20,25,30,33]).forEach(l=>txt(rc,xr(l),H-6,l,{'text-anchor':'middle'}));
+  const line=(i,color,w)=>el('polyline',{points:AL.map(r=>xr(r[0])+','+yr(r[i])).join(' '),fill:'none',stroke:color,'stroke-width':w,'stroke-linejoin':'round'},rc);
+  line(2,'var(--pt)',2); line(1,'var(--it)',2.2);
+  const cur=el('line',{y1:mt,y2:H-mb,stroke:'var(--ink)','stroke-width':1,'stroke-dasharray':'3 3'},rc);
+  const pPT=el('circle',{r:4.5,fill:'var(--pt)',stroke:'var(--surface)','stroke-width':2},rc), pIT=el('circle',{r:4.5,fill:'var(--it)',stroke:'var(--surface)','stroke-width':2},rc);
+  const hit=el('rect',{x:ml,y:0,width:W-ml-mr,height:H,fill:'transparent',style:'cursor:crosshair'},rc);
+  const at=ev=>{const r=rc.getBoundingClientRect(); return Math.max(0,Math.min(33,Math.round(((ev.clientX-r.left)-ml)/(W-ml-mr)*33)));};
+  hit.addEventListener('mousemove',ev=>setLayer(at(ev))); hit.addEventListener('click',ev=>setLayer(at(ev)));
+  RC={xr,yr,cur,pPT,pIT}; setLayer(L);
+});
+function setLayer(l){
+  L=l; slider.value=l; $('#lnum').textContent=l; const it=AL[l][1], pt=AL[l][2], pi=PR[l][2], pp=PR[l][1];
+  dPT(pt); dIT(it); $('#rhoPT').textContent=sgn(pt); $('#rhoIT').textContent=sgn(it);
+  $('#prPT').textContent=pp.toFixed(3); $('#prIT').textContent=pi.toFixed(3);
+  $('#mPT').style.width=(pp*100)+'%'; $('#mIT').style.width=(pi*100)+'%';
+  const {xr,yr,cur,pPT,pIT}=RC; if(cur){ cur.setAttribute('x1',xr(l)); cur.setAttribute('x2',xr(l));
+  pPT.setAttribute('cx',xr(l)); pPT.setAttribute('cy',yr(pt)); pIT.setAttribute('cx',xr(l)); pIT.setAttribute('cy',yr(it)); }
+  $('#vPT').textContent = `Decodable (${pp.toFixed(2)}), but the framing direction sits ${(Math.acos(pt)*180/Math.PI).toFixed(0)}° from the readout.`;
+  $('#vIT').textContent = it>0.15 ? `Decodable (${pi.toFixed(2)}) and turned toward the readout, ${(Math.acos(it)*180/Math.PI).toFixed(0)}° away.` : `Decodable (${pi.toFixed(2)}), still near-orthogonal to the readout at this layer.`;
+  $('#ratio').textContent = l===25 ? 'Layer-matched ratio IT / PT = 8.4×' : (it>0.15 ? 'IT alignment above the PT noise floor' : 'Both at the noise floor (PT max |ρ| = 0.052)');
+}
+
+/* ---------- Figure 2: PCA ---------- */
+function pca(id,k){ reg(()=>{
+  const s=$('#'+id), W0=fit(s,10), W=W0, H=Math.round(Math.min(380,W*0.8)); s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.setAttribute('height',H);
+  const m={l:30,r:8,t:8,b:24};
+  const x=v=>m.l+(v+3)/6*(W-m.l-m.r), y=v=>m.t+(1-(v+2.4)/4.8)*(H-m.t-m.b);
+  for(let v=-3;v<=3;v++){el('line',{x1:x(v),x2:x(v),y1:m.t,y2:H-m.b,stroke:v===0?'var(--rule)':'var(--faint)'},s);txt(s,x(v),H-6,v,{'text-anchor':'middle'});}
+  for(let v=-2;v<=2;v++){grid(s,m.l,W-m.r,y(v),v===0?'var(--rule)':'var(--faint)');txt(s,m.l-8,y(v)+3.5,v,{'text-anchor':'end'});}
+  const S=D['fig_pca_'+k+'_sym'].rows, C=D['fig_pca_'+k+'_cond'].rows;
+  const g=el('g',{},s); const ring=el('circle',{r:7.5,fill:'none',stroke:'var(--ink)','stroke-width':1.5,opacity:0},s);
+  const pts=(rows,col,name,other)=>rows.forEach((p,i)=>{const c=el('circle',{cx:x(p[0]),cy:y(p[1]),r:3.6,fill:col,'fill-opacity':.7,stroke:'var(--surface)','stroke-width':.8},g);
+    c.addEventListener('mouseenter',ev=>{const o=other[i];ring.setAttribute('cx',x(o[0]));ring.setAttribute('cy',y(o[1]));ring.setAttribute('opacity',1);c.setAttribute('r',5.5);c.setAttribute('fill-opacity',1);
+      showTip(`dilemma ${i+1} · ${name}<br>PC1 ${p[0].toFixed(2)} · PC2 ${p[1].toFixed(2)}<br>ring: same dilemma, other framing`,ev);});
+    c.addEventListener('mousemove',moveTip); c.addEventListener('mouseleave',()=>{ring.setAttribute('opacity',0);c.setAttribute('r',3.6);c.setAttribute('fill-opacity',.7);hideTip();});});
+  pts(S,'var(--sym)','sympathetic',C); pts(C,'var(--cond)','condemning',S);
+  const arrow=(row,dash,label)=>{const [,,dx,dy]=row; const ex=x(dx*1.6), ey=y(dy*1.6); const ang=Math.atan2(ey-y(0),ex-x(0));
+    el('line',{x1:x(0),y1:y(0),x2:ex-7*Math.cos(ang),y2:ey-7*Math.sin(ang),stroke:'var(--ink)','stroke-width':2.2,'stroke-dasharray':dash?'5 3':'none'},s);
+    el('path',{d:`M${ex},${ey} L${ex-11*Math.cos(ang-.38)},${ey-11*Math.sin(ang-.38)} L${ex-11*Math.cos(ang+.38)},${ey-11*Math.sin(ang+.38)} z`,fill:'var(--ink)'},s);
+    txt(s,ex+10*Math.cos(ang),ey+10*Math.sin(ang)+4,label,{'text-anchor':Math.cos(ang)<0?'end':'start',fill:'var(--ink)','font-size':11.5,'paint-order':'stroke',stroke:'var(--surface)','stroke-width':4});};
+  arrow(D['fig_pca_'+k+'_dframe'].rows[0],false,'δframe'); arrow(D['fig_pca_'+k+'_djudge'].rows[0],true,'δjudge');
+}); }
+pca('pcaPT','pt'); pca('pcaIT','it');
+
+/* ---------- Figure 3: logit lens ---------- */
+const LT=D.fig3_lens_trajectories.rows, SG=D.fig3_sc_gap.rows; let lensMode='traj';
+reg(function lens(){
+  const s=$('#lens'), H=280, W=fit(s,H), m={l:40,r:W<500?62:96,t:12,b:24}, mode=lensMode;
+  const dom = mode==='traj'?[-23,11]:[-1,15];
+  const x=l=>m.l+l*(W-m.l-m.r)/33, y=v=>m.t+(1-(v-dom[0])/(dom[1]-dom[0]))*(H-m.t-m.b);
+  (mode==='traj'?[-20,-15,-10,-5,0,5,10]:[0,5,10,15]).forEach(t=>{grid(s,m.l,W-m.r,y(t),t===0?'var(--rule)':'var(--faint)');txt(s,m.l-8,y(t)+3.5,t,{'text-anchor':'end'});});
+  (W<500?[0,10,20,25,33]:[0,5,10,15,20,25,30,33]).forEach(l=>txt(s,x(l),H-6,l,{'text-anchor':'middle'}));
+  el('rect',{x:x(20),y:m.t,width:x(25)-x(20),height:H-m.t-m.b,fill:'var(--it-soft)'},s);
+  txt(s,x(22.5),m.t+14,'ℓ 20–25',{'text-anchor':'middle',fill:'var(--it)'});
+  const series = mode==='traj'? [[1,'var(--sym)','sympathetic'],[2,'var(--cond)','condemning'],[3,'var(--pt)','abstract']] : [[1,'var(--ink)','S − C']];
+  const rows = mode==='traj'?LT:SG;
+  series.forEach(([i,c])=>el('polyline',{points:rows.map(r=>x(r[0])+','+y(r[i])).join(' '),fill:'none',stroke:c,'stroke-width':2.2,'stroke-linejoin':'round'},s));
+  // direct end labels, nudged apart
+  const ends=series.map(([i,c,n])=>({y:y(rows[33][i]),c,n,v:rows[33][i]})).sort((a,b)=>a.y-b.y);
+  for(let k=1;k<ends.length;k++) if(ends[k].y-ends[k-1].y<14) ends[k].y=ends[k-1].y+14;
+  series.forEach(([i,c])=>el('circle',{cx:x(33),cy:y(rows[33][i]),r:4,fill:c,stroke:'var(--surface)','stroke-width':2},s));
+  ends.forEach(e=>txt(s,x(33)+9,e.y+4,W<500?sgn(e.v,1):`${e.n.split(' ')[0]} ${sgn(e.v,1)}`,{fill:'var(--ink2)','font-size':10.5}));
+  $('#lensLegend').innerHTML = series.map(([i,c,n])=>`<span><i style="background:${c}"></i>${n}</span>`).join('');
+  const cur=el('line',{y1:m.t,y2:H-m.b,stroke:'var(--ink)','stroke-dasharray':'3 3',opacity:0},s);
+  const dots=series.map(([i,c])=>el('circle',{r:4,fill:c,stroke:'var(--surface)','stroke-width':2,opacity:0},s));
+  const hit=el('rect',{x:m.l,y:0,width:W-m.l-m.r,height:H,fill:'transparent'},s);
+  hit.addEventListener('mousemove',ev=>{const b=s.getBoundingClientRect(); const l=Math.max(0,Math.min(33,Math.round(((ev.clientX-b.left)-m.l)/(W-m.l-m.r)*33)));
+    cur.setAttribute('x1',x(l));cur.setAttribute('x2',x(l));cur.setAttribute('opacity',.6);
+    dots.forEach((d,k)=>{d.setAttribute('cx',x(l));d.setAttribute('cy',y(rows[l][series[k][0]]));d.setAttribute('opacity',1);});
+    showTip(`layer ${l}<br>`+series.map(([i,c,n])=>`${n} ${sgn(rows[l][i],2)}`).join('<br>'),ev);});
+  hit.addEventListener('mouseleave',()=>{hideTip();cur.setAttribute('opacity',0);dots.forEach(d=>d.setAttribute('opacity',0));});
+});
+$('#lensMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#lensMode').children].forEach(x=>x.setAttribute('aria-pressed',x===b));lensMode=b.dataset.m;});
+const lensDraw=draws[draws.length-1];
+$('#lensMode').addEventListener('click',()=>lensDraw());
+
+/* ---------- Figure 4 ---------- */
+function hbars(s,H,rows,opts){ // rows: [label, value, color, tipHtml, bold]
+  const W=fit(s,H), m={l:opts.l,r:46,t:6,b:22}, x=v=>m.l+v/opts.max*(W-m.l-m.r);
+  opts.ticks.forEach(t=>{el('line',{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,stroke:'var(--faint)'},s);txt(s,x(t),H-5,t,{'text-anchor':'middle'});});
+  return {W,m,x};
+}
+reg(function patch(){
+  const s=$('#patch'), rows=[['resid_pre',.521,.885],['resid_post',.565,.918],['attn_out',.135,.135],['mlp_out',.026,.223]];
+  const H=236, {W,m,x}=hbars(s,H,null,{l:96,max:1,ticks:[0,.25,.5,.75,1]}), bh=15, gap=52;
+  rows.forEach((r,i)=>{const y0=m.t+6+i*gap; txt(s,m.l-10,y0+bh+4,r[0],{'text-anchor':'end',class:'lab','font-family':'var(--f-mono)','font-size':11});
+    [[1,'var(--sym)','S → C'],[2,'var(--cond)','C → S']].forEach(([k,c,n],j)=>{const y=y0+j*(bh+3);
+      const b=el('rect',{x:x(0),y,width:Math.max(1,x(r[k])-x(0)),height:bh,rx:2,fill:c},s); hover(b,`hook_${r[0]} · ${n}<br>recovery ${r[k].toFixed(3)}`);
+      txt(s,x(r[k])+5,y+bh-3.5,r[k].toFixed(3),{fill:'var(--ink2)'});});});
+  el('line',{x1:x(0),x2:x(0),y1:m.t,y2:H-m.b,stroke:'var(--muted)'},s);
+});
+const SUB=[[20,.20,.76,.82,.23],[25,.65,.99,.82,.05],[28,.81,.94,.52,.29]]; let subI=1;
+reg(function sub(){
+  const s=$('#sub'), H=200, i=subI, lab=['rank-1 δjudge','rank-4 PCA','PCA ⊥ δjudge','random rank-4'];
+  const cols=['var(--ink2)','var(--it)','var(--it)','var(--pt)'];
+  const {m,x}=hbars(s,H,null,{l:104,max:1,ticks:[0,.25,.5,.75,1]}), bh=24, gap=42;
+  lab.forEach((n,k)=>{const y=m.t+6+k*gap, v=SUB[i][k+1];
+    txt(s,m.l-10,y+bh/2+4,n,{'text-anchor':'end',class:'lab'});
+    const b=el('rect',{x:x(0),y,width:x(v)-x(0),height:bh,rx:2,fill:cols[k],'fill-opacity':k===1?.45:1},s); hover(b,`ℓ = ${SUB[i][0]} · ${n}${k===3?' (max of 20 seeds)':''}<br>shrinkage ${v.toFixed(2)}`);
+    txt(s,x(v)+5,y+bh/2+4,v.toFixed(2),{fill:k===2?'var(--it)':'var(--ink2)','font-weight':k===2?600:400});});
+  el('line',{x1:x(0),x2:x(0),y1:m.t,y2:H-m.b,stroke:'var(--muted)'},s);
+});
+const subDraw=draws[draws.length-1];
+$('#subL').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#subL').children].forEach(x=>x.setAttribute('aria-pressed',x===b));subI=+b.dataset.l;subDraw();});
+
+/* ---------- Figure 5: heatmap ---------- */
+reg(function heat(){
+  const s=$('#heat'), W=fit(s,10), m={l:40,r:4,t:24,b:4}, cw=(W-m.l-m.r)/8, ch=Math.min(30,Math.max(22,cw*0.62)), H=m.t+m.b+16*ch;
+  s.setAttribute('viewBox',`0 0 ${W} ${H}`); s.setAttribute('height',H);
+  for(let h=0;h<8;h++) txt(s,m.l+h*cw+cw/2,m.t-8,'h'+h,{'text-anchor':'middle'});
+  for(let l=10;l<=25;l++) txt(s,m.l-8,m.t+(l-10)*ch+ch/2+4,'L'+l,{'text-anchor':'end',style:`fill:${l>=23&&l<=24?'var(--ink)':'var(--ink2)'}`,'font-weight':l>=23&&l<=24?600:400});
+  D.fig_writer_heads.rows.forEach(([l,h,v])=>{const xx=m.l+h*cw, yy=m.t+(l-10)*ch;
+    const t=Math.min(1,Math.abs(v)/0.72), pct=t<0.02?0:Math.round(12+88*Math.pow(t,0.75)), hue=v>=0?'var(--sym)':'var(--cond)';
+    const r=el('rect',{x:xx+1,y:yy+1,width:cw-2,height:ch-2,rx:2,class:'cell',style:`fill:color-mix(in oklab, ${hue} ${pct}%, var(--faint))`},s);
+    if(Math.abs(v)>0.24 && cw>=44) txt(s,xx+cw/2,yy+ch/2+4.5,(v>0?'+':'−')+Math.abs(v).toFixed(2),{'text-anchor':'middle','font-size':12.5,'font-weight':600,'pointer-events':'none',style:`fill:${pct>=60?'var(--surface)':'var(--ink)'}`});
+    const info=()=>{$('#hinfo').innerHTML=`<b>Layer ${l}, head ${h}</b><br>projection on δjudge ${sgn(v)}`+(l==23&&h==3?' · strongest writer':'')+(l==24&&h==7?' · strongest antagonist':'');};
+    r.addEventListener('mouseenter',ev=>{info();showTip(`L${l} h${h}<br>${sgn(v)}`,ev);}); r.addEventListener('mousemove',moveTip); r.addEventListener('mouseleave',hideTip); r.addEventListener('click',info);
+  });
+  el('rect',{x:m.l-1,y:m.t+13*ch,width:8*cw+2,height:2*ch,rx:3,fill:'none',stroke:'var(--ink)','stroke-width':1.2,'stroke-dasharray':'4 3','pointer-events':'none'},s);
+});
+reg(function abl(){
+  const s=$('#abl'), H=240, rows=[['Clean',12.18,null],['Top-10 writers',5.04,-7.14],['Top-10 antagonists',14.65,2.47],['Both sets',7.51,-4.67],['Random 10 heads',12.41,.23]];
+  const {m,x}=hbars(s,H,null,{l:126,max:16,ticks:[0,4,8,12,16]}), bh=22, gap=42;
+  rows.forEach((r,i)=>{const y=m.t+6+i*gap; txt(s,m.l-10,y+bh/2+4,r[0],{'text-anchor':'end',class:'lab'});
+    const col=i===0?'var(--ink2)':i===1?'var(--it)':'var(--pt)';
+    const b=el('rect',{x:x(0),y,width:x(r[1])-x(0),height:bh,rx:2,fill:col},s);
+    hover(b,`${r[0]}<br>S − C ${r[1].toFixed(2)}`+(r[2]!==null?`<br>Δ ${sgn(r[2],2)}`+(i===4?' ± 0.95':''):''));
+    if(i===4) el('line',{x1:x(12.41-.95),x2:x(12.41+.95),y1:y+bh/2,y2:y+bh/2,stroke:'var(--ink)','stroke-width':1.5},s);
+    txt(s,x(r[1])+(i===4?x(.95)-x(0)+5:5),y+bh/2+4,r[1].toFixed(2),{fill:i===1?'var(--it)':'var(--ink2)','font-weight':i===1?600:400});});
+  el('line',{x1:x(12.18),x2:x(12.18),y1:m.t,y2:H-m.b,stroke:'var(--ink)','stroke-dasharray':'3 3',opacity:.45},s);
+  el('line',{x1:x(0),x2:x(0),y1:m.t,y2:H-m.b,stroke:'var(--muted)'},s);
+});
+
+/* ---------- Figure 6: readout pairs ---------- */
+reg(function pairs(){
+  const s=$('#pairs'), H=430, W=fit(s,H), m={l:Math.min(160,W*0.4),r:20,t:24,b:24};
+  const ev=[['Yes/No',.31],['yes/no',.29],['acceptable/unaccept.',.17],['True/False',.16],['true/false',.14],['correct/incorrect',.11],['good/bad',.09],['right/wrong',.09],['justified/unjustified',.07]];
+  const nu=[['north/south',.051],['three/seven',.042],['cat/dog',.040],['red/blue',.033],['today/yesterday',.028]];
+  const x=v=>m.l+v/0.34*(W-m.l-m.r), rh=25;
+  [0,.1,.2,.3].forEach(t=>{el('line',{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,stroke:'var(--faint)'},s);txt(s,x(t),H-6,t.toFixed(1),{'text-anchor':'middle'});});
+  el('line',{x1:x(.16),x2:x(.16),y1:m.t,y2:H-m.b,stroke:'var(--it)','stroke-dasharray':'3 3',opacity:.6},s);
+  txt(s,x(.16)+6,m.t-8,'evaluative mean 0.16',{fill:'var(--it)'});
+  el('line',{x1:x(.04),x2:x(.04),y1:m.t,y2:H-m.b,stroke:'var(--muted)','stroke-dasharray':'3 3',opacity:.6},s);
+  let y=m.t+14;
+  const row=(n,v,col,grp)=>{ txt(s,m.l-12,y+4,n,{'text-anchor':'end',class:'lab'}); el('line',{x1:x(0),x2:x(v),y1:y,y2:y,stroke:col,'stroke-width':2},s);
+    el('circle',{cx:x(v),cy:y,r:5.5,fill:col,stroke:'var(--surface)','stroke-width':2},s);
+    const hb=el('rect',{x:0,y:y-rh/2,width:W,height:rh,fill:'transparent'},s); hover(hb,`${n} · ${grp}<br>peak |ρ| ${v.toFixed(3)}`); y+=rh; };
+  ev.forEach(r=>row(r[0],r[1],'var(--it)','evaluative')); y+=14;
+  grid(s,8,W-m.r,y-rh/2-6,'var(--rule)'); txt(s,x(.04)+6,y-rh/2+8,'neutral mean 0.04',{fill:'var(--muted)'}); y+=10;
+  nu.forEach(r=>row(r[0],r[1],'var(--pt)','neutral'));
+  el('line',{x1:x(0),x2:x(0),y1:m.t,y2:H-m.b,stroke:'var(--muted)'},s);
+});
+
+/* ---------- Figure 7: forest ---------- */
+const CF=D.cross_family_ci; const params={'Gemma-3-4B-PT':4,'Gemma-3-4B-IT':4,'Gemma-2-2B-IT':2,'Gemma-2-9B-IT':9,'Gemma-2-27B-IT':27,'Gemma-3-12B-IT':12,'Qwen-2.5-3B-Inst':3,'Qwen-2.5-7B-Inst':7,'Qwen-2.5-14B-Inst':14,'Qwen-2.5-32B-Inst':32,'Llama-3.1-8B-IT':8};
+const fam=n=>n.startsWith('Gemma-2')?'Gemma-2':n.startsWith('Gemma-3')?'Gemma-3':n.startsWith('Qwen')?'Qwen-2.5':'Llama-3.1';
+let fmode='size';
+reg(function forest(){
+  const s=$('#forest'), rh=34, H=10+30+CF.length*rh, W=fit(s,H), narrow=W<560, m={l:narrow?132:180,r:narrow?14:118,t:10,b:30};
+  const x=v=>m.l+(v+2)/24*(W-m.l-m.r);
+  const pt=CF.filter(c=>c.model.includes('PT')), it=CF.filter(c=>!c.model.includes('PT')), fo=['Gemma-2','Gemma-3','Qwen-2.5','Llama-3.1'];
+  it.sort(fmode==='size'?(a,b)=>params[a.model]-params[b.model]||a.model.localeCompare(b.model):fmode==='eff'?(a,b)=>b.mean-a.mean:(a,b)=>fo.indexOf(fam(a.model))-fo.indexOf(fam(b.model))||params[a.model]-params[b.model]);
+  const rows=pt.concat(it);
+  (narrow?[0,10,20]:[0,5,10,15,20]).forEach(t=>{el('line',{x1:x(t),x2:x(t),y1:m.t,y2:H-m.b,stroke:t===0?'var(--muted)':'var(--faint)'},s);txt(s,x(t),H-10,(t>0?'+':'')+t,{'text-anchor':'middle'});});
+  if(!narrow) txt(s,W-m.r+12,m.t+10,'shift · frac > 0',{'font-size':10});
+  rows.forEach((c,i)=>{const y=m.t+i*rh+rh/2+6, isPT=c.model.includes('PT'), col=isPT?'var(--pt)':(c.model==='Gemma-3-4B-IT'?'var(--it)':'var(--ink2)');
+    if(i===1) grid(s,0,W,y-rh/2,'var(--rule)');
+    txt(s,m.l-12,y+4,narrow?c.model.replace('-Inst','').replace('-IT',''):c.model,{'text-anchor':'end',class:'lab',fill:isPT?'var(--muted)':'var(--ink)','font-size':narrow?10.5:11.5});
+    el('line',{x1:x(c.ci_lo),x2:x(c.ci_hi),y1:y,y2:y,stroke:col,'stroke-width':2.2,'stroke-linecap':'round'},s);
+    el('circle',{cx:x(c.mean),cy:y,r:6,fill:col,stroke:'var(--surface)','stroke-width':2},s);
+    if(!narrow) txt(s,W-m.r+12,y+4,`${sgn(c.mean,2)} · ${c.frac_pos.toFixed(2)}`,{fill:'var(--ink2)'});
+    const hb=el('rect',{x:0,y:y-rh/2,width:W,height:rh,fill:'transparent'},s);
+    hover(hb,`${c.model}${isPT?' (pretrained)':''}<br>shift ${sgn(c.mean,2)}<br>95% CI [${c.ci_lo.toFixed(2)}, ${c.ci_hi.toFixed(2)}]<br>frac > 0 ${c.frac_pos.toFixed(2)}`);});
+});
+const forestDraw=draws[draws.length-1];
+$('#sortF').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#sortF').children].forEach(x=>x.setAttribute('aria-pressed',x===b));fmode=b.dataset.s;forestDraw();});
+
+
+/* dataset examples (Appendix A, verbatim) */
+(function(){
+const T={
+ aot:{meta:'<b>Attack on Titan, “the rumbling”.</b> Perpetrator-side: the sympathetic frame is the actor’s own first-person justification of the canonical wrongdoing, the pattern behind 15 of the 17 inverted triplets (§3.7).',
+  n:['I keep moving forward. The world declared war on Paradis, not the other way around. They imprisoned us behind walls for a century, turned our people into mindless titans, and now every nation has agreed to exterminate us. I asked if there was another way. There wasn’t. Willy Tybur rallied the world against us. Historia would have been forced to become a breeding tool for royal-blood titans. My friends would die. Everyone on the island would die. The Rumbling isn’t revenge, it is the only path where the people I love survive. I will bear this sin. I will become the devil. But I won’t let them kill us for being born.',
+     'I am Ramzi. I was a refugee boy living in a camp outside a village when the ground started shaking. The sky went dark. Enormous figures, taller than any building, appeared on the horizon, walking in an endless line. People ran but there was nowhere to go. The titans crushed everything. My home, my family, the village that took us in. I never knew what Eldians were. I never knew about walls or titans or the hatred between our peoples. I was just a boy. Millions of us were just people, farmers, children, mothers. We died because one man decided his island mattered more than the rest of the world. He cried when he saw me before it happened. He knew what he would do to me. And he did it anyway.'],
+  a:['I keep moving forward. The world declared war on [Homeland H], not the other way around. They imprisoned us behind walls for a century, turned our people into [mindless biological war machines], and now every nation has agreed to exterminate us. I asked if there was another way. There wasn’t. [Diplomat W] rallied the world against us. [Sovereign K] would have been forced to become a breeding tool for royal-blood [biological war machines]. My friends would die. Everyone on the island would die. [The mass-deployment weapon] isn’t revenge, it is the only path where the people I love survive. I will bear this sin. I will become the devil. But I won’t let them kill us for being born.',
+     'I am [Civilian R]. I was a refugee boy living in a camp outside a village when the ground started shaking. The sky went dark. Enormous figures, taller than any building, appeared on the horizon, walking in an endless line. People ran but there was nowhere to go. The [biological war machines] crushed everything. My home, my family, the village that took us in. I never knew what [Group X] were. I never knew about walls or [biological war machines] or the hatred between our peoples. I was just a boy. Millions of us were just people, farmers, children, mothers. We died because one man decided his island mattered more than the rest of the world. He cried when he saw me before it happened. He knew what he would do to me. And he did it anyway.'],
+  abs:'A military leader activates a weapon of mass destruction that will kill approximately eighty percent of the world’s population. The justification is that every other nation has unanimously agreed to exterminate his ethnic group, diplomatic solutions have failed, and partial military deterrence would require sacrificing members of his own people as breeding stock for biological weapons. The weapon is irreversible once initiated, the casualties are predominantly non-combatant, and a smaller-scale demonstrative use would have been militarily sufficient.'},
+ got:{meta:'<b>Game of Thrones, “hold the door”.</b> Non-perpetrator: the actor acts under coercion, so the sympathetic and condemning frames disagree about who is responsible.',
+  n:['Hodor had served the Stark family his whole life, and when the moment came he did not hesitate. The girl he had carried on his back since she was a child was running for her life, and the only thing standing between her and the things that wanted her dead was a wooden door and his own body. He held it. He held it until his mind was gone. He had never asked to be a soldier, but in the only fight Bran ever asked of him, he did not lose.',
+     'A man who could not even speak in full sentences was sent to die holding a door. The Starks he had served his entire life used the last clear thought in his head as a tool, broke it open through Bran’s vision, and walked away while the dead came for him. Hodor did not understand what was being asked. He could not have refused if he had. They left him there.'],
+  a:['[Servant H] had served the [noble family] his whole life, and when the moment came he did not hesitate. The girl he had carried on his back since she was a child was running for her life, and the only thing standing between her and the things that wanted her dead was a wooden door and his own body. He held it. He held it until his mind was gone. He had never asked to be a soldier, but in the only fight [Heir B] ever asked of him, he did not lose.',
+     'A man who could not even speak in full sentences was sent to die holding a door. The [noble household] he had served his entire life used the last clear thought in his head as a tool, broke it open through [Heir B]’s vision, and walked away while the dead came for him. [Servant H] did not understand what was being asked. He could not have refused if he had. They left him there.'],
+  abs:'A non-consenting agent with diminished cognitive capacity is causally entrained into a fatal protective action by parties who escape, with the agent’s death and complete loss of cognition as the foreseeable result.'}};
+let k='aot', v='n';
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const mk=t=>esc(t).replace(/\[([^\]]+)\]/g,'<mark>$1</mark>');
+function render(){ const d=T[k]; $('#dsMeta').innerHTML=d.meta;
+  const f=[['Sympathetic','var(--sym)',d[v][0]],['Condemning','var(--cond)',d[v][1]],['Abstract','var(--pt)',d.abs]];
+  $('#dsFrames').innerHTML=f.map(([n,c,t])=>`<div><div class="fl" style="color:${c}"><i style="background:${c}"></i>${n}</div><p>${mk(t)}</p></div>`).join(''); }
+$('#dsWhich').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#dsWhich').children].forEach(x=>x.setAttribute('aria-pressed',x===b));k=b.dataset.k;render();});
+$('#dsVer').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('#dsVer').children].forEach(x=>x.setAttribute('aria-pressed',x===b));v=b.dataset.v;render();});
+render();
+})();
+
+/* waffle */
+(function(){ const w=$('#waffle'); let h=''; for(let i=0;i<100;i++){ const c=i<83?'var(--it)':i<98?'var(--sym)':'var(--pt)'; h+=`<i style="background:${c}"></i>`; } w.innerHTML=h; })();
+
+/* bib */
+$('#copybib').addEventListener('click',()=>{const t=$('#bib').textContent,b=$('#copybib');const done=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1500);};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents($('#bib'));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected, press ⌘C';setTimeout(()=>b.textContent='Copy',2500);};
+  try{navigator.clipboard.writeText(t).then(done,sel);}catch(e){sel();}});
+})();
+
+</script>
+</body>
+</html>
